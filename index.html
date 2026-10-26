@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<!-- saved from url=(0191)file:///C:/Users/Lap_Tech/Desktop/%DA%A9%D8%A7%D8%B1%D9%B9%D9%86%20%D8%B4%DB%8C%D9%B9%20%DA%A9%DB%8C%D9%84%DA%A9%D9%88%D9%84%DB%8C%D9%B9%D8%B1%20(%D9%BE%D8%B1%DB%8C%20%D9%88%DB%8C%D9%88).html -->
+<html lang="ur"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>:root{color-scheme:light}body{margin:0}</style>
+</head>
+<body>
+<title>کارٹن شیٹ کیلکولیٹر</title>
+<link rel="stylesheet" href="./index_files/css2">
+<style>
+/* Layout: ایک سادہ کالم۔ اوپر جلدی ناپ اور تین خانے، پھر اپلائی۔ نیچے انچ میں نتیجہ: ریل، میجر، مربع انچ۔ */
+:root {
+  --bg: #ECEFED;
+  --surface: #FFFFFF;
+  --fg: #17262B;
+  --muted: #566a70;
+  --line: #CBD5D3;
+  --accent: #0F5C8C;
+  --accent-fg: #FFFFFF;
+  --accent-soft: #E1EEF6;
+  --cost: #B3261E;
+  --cost-bg: #FBE6E3;
+  --gain: #1B7A33;
+  --gain-bg: #E1F3E6;
+  --flute-bg: #FFF1A8;
+  --flute-line: #D2AE00;
+  --font-display: "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif;
+  --font-body: "Noto Naskh Arabic", "Segoe UI", Tahoma, sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11191C;
+    --surface: #1A2529;
+    --fg: #E4ECEC;
+    --muted: #93A4A8;
+    --line: #2F3E43;
+    --accent: #5DB3E8;
+    --accent-fg: #0B1A22;
+    --accent-soft: #1D3342;
+    --cost: #FF8F86;
+    --cost-bg: #3B2020;
+    --gain: #74D48E;
+    --gain-bg: #17301F;
+    --flute-bg: #3D3511;
+    --flute-line: #C9A227;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11191C;
+  --surface: #1A2529;
+  --fg: #E4ECEC;
+  --muted: #93A4A8;
+  --line: #2F3E43;
+  --accent: #5DB3E8;
+  --accent-fg: #0B1A22;
+  --accent-soft: #1D3342;
+  --cost: #FF8F86;
+  --cost-bg: #3B2020;
+  --gain: #74D48E;
+  --gain-bg: #17301F;
+  --flute-bg: #3D3511;
+  --flute-line: #C9A227;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  padding-inline: 16px;
+  padding-block: 20px 40px;
+}
+.wrap { max-width: 520px; margin-inline: auto; display: flex; flex-direction: column; gap: 16px; }
+h1 { font-family: var(--font-display); font-weight: 500; font-size: 1.9rem; line-height: 2.1; margin: 0; text-wrap: balance; }
+h2 { font-size: 1.05rem; font-weight: 600; margin: 0 0 10px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+
+.units { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-bottom: 14px; }
+.units button { font: inherit; font-size: .95rem; padding: 6px 4px; border: 0; background: transparent; color: var(--fg); cursor: pointer; }
+.units button + button { border-inline-start: 1px solid var(--line); }
+.units button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); font-weight: 600; }
+
+.field { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.field label { font-size: .88rem; color: var(--muted); line-height: 1.5; }
+.field input {
+  width: 100%; font-family: var(--font-num); font-size: 1.25rem; padding: 9px 8px;
+  background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; direction: ltr; text-align: center;
+}
+.dims { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+input:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.apply { width: 100%; font: inherit; font-size: 1.15rem; font-weight: 600; padding: 11px 14px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-fg); cursor: pointer; }
+.apply:active { opacity: .85; }
+.example { background: var(--accent-soft); padding: 6px 10px; border-radius: 8px; margin-bottom: 12px; font-size: .88rem; }
+.stale { margin: 0 0 10px; padding: 6px 10px; border-radius: 8px; background: var(--accent-soft); font-size: .88rem; }
+
+.big { display: flex; flex-direction: column; padding-block: 8px; border-top: 1px solid var(--line); }
+.big:first-of-type { border-top: 0; padding-top: 0; }
+.big .k { font-size: .92rem; color: var(--muted); line-height: 1.5; }
+.big .v { font-family: var(--font-num); font-weight: 600; font-size: 2.4rem; line-height: 1.25; color: var(--accent); direction: ltr; text-align: start; overflow-wrap: anywhere; }
+.big .v small { font-size: 1rem; font-weight: 400; color: var(--muted); margin-inline-start: 6px; }
+.orig { margin: 6px 0 0; padding-top: 10px; border-top: 1px solid var(--line); font-size: .95rem; color: var(--muted); }
+.orig b { font-family: var(--font-num); font-weight: 600; color: var(--fg); direction: ltr; unicode-bidi: isolate; }
+.field select { width: 100%; font-family: var(--font-body); font-size: 1rem; padding: 9px 6px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; }
+.panel > .mnote { margin-bottom: 10px; }
+#plantPanel .apply { margin-block: 10px; }
+.pf { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.pf > * { min-width: 0; }
+.pf .big { border-top: 0; padding-block: 4px; }
+.pf .big .v { font-size: 1.9rem; }
+.field.gap { margin-bottom: 10px; }
+.manual .full { grid-column: 1 / -1; }
+.sec { font-family: var(--font-display); font-weight: 500; font-size: 1.7rem; line-height: 2.1; margin: 20px 0 0; padding-top: 8px; border-top: 3px solid var(--accent); text-wrap: balance; }
+.five { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.five > * { min-width: 0; }
+.sub { font-size: .98rem; font-weight: 600; margin: 16px 0 6px; }
+.brk td small { color: var(--muted); }
+.tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+.big.size { --c: var(--accent); --cbg: var(--accent-soft); }
+.big.cost { --c: var(--cost); --cbg: var(--cost-bg); }
+.big.gain { --c: var(--gain); --cbg: var(--gain-bg); }
+.big.size, .big.cost, .big.gain {
+  background: var(--cbg); border-top: 0; border-inline-start: 5px solid var(--c);
+  border-radius: 8px; padding: 8px 12px; margin-block: 5px;
+}
+.big.size .v, .big.cost .v, .big.gain .v { color: var(--c); }
+.big.final { border-inline-start-width: 9px; }
+.big.final .v { font-size: 2.7rem; }
+.field.cost input { border-color: var(--cost); }
+.field.gain input { border-color: var(--gain); }
+.prow.fl select, .prow.fl input { background: var(--flute-bg); border-color: var(--flute-line); }
+.prow.fl > span:first-child { color: var(--flute-line); font-weight: 700; }
+.brk tr.fl td { background: var(--flute-bg); }
+.manual { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 4px; }
+.mnote { grid-column: 1 / -1; margin: 0; font-size: .82rem; color: var(--muted); line-height: 1.6; }
+input::placeholder { color: var(--muted); opacity: .85; font-family: var(--font-body); font-size: .85rem; }
+.paper { margin-block: 6px 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.paper h3 { font-size: .98rem; font-weight: 600; margin: 0 0 8px; }
+.prow { display: grid; grid-template-columns: 1.6rem 1.7fr 1fr 1fr; gap: 6px; align-items: center; margin-bottom: 6px; }
+.prow > * { min-width: 0; }
+.prow .hs { display: none; }
+.prow.head { font-size: .8rem; color: var(--muted); line-height: 1.4; margin-bottom: 2px; }
+.prow select, .prow input {
+  width: 100%; font-size: 1rem; padding: 8px 4px; background: var(--bg); color: var(--fg);
+  border: 1px solid var(--line); border-radius: 8px;
+}
+.prow select { font-family: var(--font-body); }
+.prow input { font-family: var(--font-num); direction: ltr; text-align: center; }
+.prow select.rs { grid-column: 1 / -1; font-size: .85rem; padding: 6px 4px; color: var(--muted); }
+.prow select.rs.on { color: var(--fg); }
+.ratelist { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; padding: 0 10px 10px; }
+.ratelist summary { cursor: pointer; padding: 10px 0; font-weight: 600; font-size: .95rem; }
+.rlrow { display: grid; grid-template-columns: 1.9fr 1fr .85fr .85fr .85fr 1.8rem; gap: 4px; align-items: center; margin-bottom: 4px; }
+.rlrow > * { min-width: 0; }
+.rlrow.head { font-size: .75rem; color: var(--muted); line-height: 1.3; }
+.rlrow input { width: 100%; font-size: .85rem; padding: 6px 3px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; direction: ltr; text-align: center; font-family: var(--font-num); }
+.rlrow input.t { font-family: var(--font-body); }
+.rlrow button { font: inherit; font-size: .9rem; padding: 4px 0; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--muted); cursor: pointer; }
+.rlbtns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin: 10px 0 6px; }
+.rlbtns button { font: inherit; font-size: .9rem; padding: 9px 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--fg); cursor: pointer; }
+.rlbtns button.main { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; }
+.rlbtns button:active { opacity: .85; }
+.rlmsg { margin: 0; font-size: .85rem; line-height: 1.6; min-height: 1.2em; }
+.rlmsg.err { color: var(--cost); }
+.pct { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.pct input { font-size: 1.1rem; }
+.brk-wrap { overflow-x: auto; margin-top: 10px; }
+.brk { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.brk th { color: var(--muted); font-weight: 500; text-align: start; padding: 4px 6px; }
+.brk td { padding: 4px 6px; border-top: 1px solid var(--line); }
+.brk td.n { font-family: var(--font-num); direction: ltr; text-align: center; }
+.brk tr.tot td { font-weight: 600; }
+select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.field input, .prow input, .prow select { scroll-margin-top: 16px; }
+html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+.stale { display: none !important; }
+[hidden] { display: none !important; }
+.units.two { grid-template-columns: repeat(2, 1fr); }
+#segFields { display: grid; grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; }
+#segFields .field { display: flex; flex-direction: column; justify-content: flex-end; }
+#segFields .field label { font-size: .72rem; line-height: 1.25; }
+#segFields .field input { font-size: .95rem; padding: 7px 3px; text-align: center; min-width: 0; }
+.segctl { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: .85rem; color: var(--muted); }
+.segctl .sp { flex: 1; }
+.segctl button { font: inherit; font-size: .85rem; padding: 4px 12px; min-height: 32px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--fg); cursor: pointer; }
+.segctl button:disabled { opacity: .4; cursor: default; }
+.units.four { grid-template-columns: repeat(4, 1fr); }
+.sizeout { margin: 12px 0 16px; }
+/* خلاصہ اور محفوظ شدہ کاسٹنگ */
+.sumsize { font-size: .9rem; line-height: 1.7; margin-top: 4px; }
+.brk td.pn { font-size: .8rem; unicode-bidi: plaintext; }
+.sumsave { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px; align-items: end; }
+.sumsave .full { grid-column: 1 / -1; }
+.dategrid { display: grid; grid-template-columns: .8fr 1.5fr 1fr; gap: 6px; }
+.dategrid .field { margin: 0; }
+.sumsave .field { margin: 0; }
+.sumsave button { font: inherit; font-size: .95rem; padding: 9px; border: 1px solid var(--accent); border-radius: 8px; background: var(--accent); color: var(--accent-fg); font-weight: 600; cursor: pointer; }
+.sumsave button.sec { background: var(--surface); color: var(--accent); }
+.copybtn { font: inherit; font-size: .95rem; font-weight: 600; padding: 8px 14px; margin-top: 8px; border: 1px solid var(--accent); border-radius: 8px; background: var(--surface); color: var(--accent); cursor: pointer; }
+.ctx { font-size: .85rem; line-height: 1.7; }
+.ctx div { padding: 0; }
+.ctx:empty { display: none; }
+.sumdoc .sr { color: var(--muted); }
+#copyBox { position: fixed; z-index: 60; bottom: 10px; left: 50%; transform: translateX(-50%); width: min(620px, 94vw); padding: 10px; background: var(--surface); border: 1px solid var(--accent); border-radius: 10px; box-shadow: 0 4px 18px rgb(0 0 0 / .25); }
+#copyBox textarea { width: 100%; font: inherit; font-size: .85rem; direction: rtl; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 6px; box-sizing: border-box; }
+#histView { margin-top: 8px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+#histView .hvbar { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 4px; }
+#histView .hvbar button { font: inherit; font-size: .85rem; padding: 3px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--fg); cursor: pointer; }
+.sumdoc { font-size: .88rem; line-height: 1.6; }
+.sumdoc .sh { margin-bottom: 4px; }
+.sumdoc .sh2 { font-weight: 600; margin-top: 8px; }
+.sumdoc .cr { display: flex; justify-content: space-between; gap: 8px; border-top: 1px solid var(--line); padding-top: 3px; margin-top: 3px; }
+.sumdoc .cd { color: var(--muted); font-size: .8rem; }
+.amt { display: grid; grid-template-columns: minmax(0, 1fr) 3.3rem; gap: 3px; }
+.tri:has(.amt) { grid-template-columns: 1.4fr 1.4fr .8fr; }
+.tri:has(.amt) input { padding-inline: 4px; }
+.amt select { font: inherit; font-size: .8rem; padding: 4px 0; min-width: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); }
+.tbar, .tbar2 { display: grid; gap: 6px; margin-bottom: 8px; }
+.tbar { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tbar2 { grid-template-columns: 1fr 1fr; }
+.tbar2 .field { margin: 0; }
+.tbar select, .tbar button { width: 100%; min-height: 36px; font: inherit; font-size: .85rem; padding: 6px 3px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; text-align: center; text-align-last: center; }
+.tbar button { background: var(--surface); }
+.tbar button[aria-expanded="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.ratelist.box { padding: 10px; margin: 0 0 8px; }
+.cmbrow { display: grid; grid-template-columns: minmax(0, 1fr) 5.4rem; gap: 6px; margin-bottom: 8px; align-items: end; }
+.cmbrow:has(#nbField[hidden]) { grid-template-columns: 1fr; }
+.cmbrow .field { margin: 0; }
+.cmbsave { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; margin: 6px 0; }
+.cmbsave input { font: inherit; font-size: .95rem; padding: 8px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
+.cmbsave button { font: inherit; font-size: .95rem; padding: 8px 14px; border: 1px solid var(--accent); border-radius: 8px; background: var(--accent); color: var(--accent-fg); font-weight: 600; cursor: pointer; }
+.cmbitem { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 4px 0; border-top: 1px solid var(--line); }
+.cmbitem .nm { text-align: start; background: none; border: 0; font: inherit; font-size: .92rem; font-weight: 600; color: var(--fg); cursor: pointer; padding: 5px 0; }
+.cmbitem .sm { color: var(--muted); font-size: .8rem; }
+.cmbitem .del { font: inherit; font-size: .82rem; padding: 3px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--muted); cursor: pointer; }
+.cmbitem .del.arm { color: var(--cost); border-color: var(--cost); }
+.big .d { font-size: .9rem; line-height: 1.7; color: var(--muted); margin-top: 2px; }
+.big .d:empty { display: none; }
+.big.mini { padding-block: 4px; }
+.big.mini .k { font-size: .8rem; }
+.big.mini .v { font-size: 1.05rem; font-weight: 500; color: var(--muted); }
+.big.mini .v small { font-size: .8rem; }
+#sizeBtn { margin-top: 6px; }
+.navstale { position: absolute; top: calc(100% + 4px); inset-inline: 0; padding: 6px 10px; border-radius: 8px; background: var(--accent-soft); color: var(--fg); border: 1px solid var(--accent); font-size: .85rem; line-height: 1.6; text-align: center; pointer-events: none; opacity: 0; transition: opacity .15s; }
+.navstale.show { opacity: 1; }
+.topnav { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding-block: 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav a { display: block; text-align: center; text-decoration: none; font-size: .88rem; font-weight: 600; line-height: 1.5; padding: 8px 2px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.topnav a:active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.topnav a.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.topnav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#inPanel, #plantPanel, #h-prod, #h-trial, #histPanel { scroll-margin-top: 64px; }
+.kb-space { height: 55vh; }
+/* ---------- ڈیسک ٹاپ: سب کچھ ایک ہی کھڑکی میں، کالموں میں ---------- */
+#stiffOut, #stiffOrig { display: none !important; }
+.grp { display: contents; }
+@media (min-width: 1000px) {
+  body { padding-inline: 12px; padding-block: 4px 12px; font-size: 14.5px; line-height: 1.55; }
+  .wrap { max-width: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: start; }
+  .wrap > h1 { grid-column: 1; align-self: center; }
+  .wrap > .topnav { grid-column: 2 / -1; align-self: center; position: static; border-bottom: 0; }
+  h1 { font-size: 1.35rem; line-height: 1.7; }
+  .topnav { width: 100%; max-width: 780px; margin-inline: 0 auto; padding-block: 0; }
+  .topnav a { padding: 5px 2px; font-size: .85rem; }
+  .panel { padding: 10px 12px; }
+  h2 { margin-bottom: 6px; font-size: 1rem; }
+  .grp { display: block; }
+  #histPanel { grid-column: 1 / -1; }
+  .sec { font-size: 1.15rem; line-height: 1.7; margin: 0 0 6px; padding-top: 4px; }
+  .kb-space { display: none; }
+  .units { margin-bottom: 8px; }
+  .units button { padding: 4px; font-size: .9rem; }
+  .field input { font-size: 1.05rem; padding: 6px 6px; }
+  .field select { padding: 6px 4px; font-size: .95rem; }
+  .field label { font-size: .82rem; }
+  .dims, .manual, .five, .tri { gap: 6px; margin-bottom: 8px; }
+  .apply { font-size: 1rem; padding: 8px 12px; }
+  .example { margin-bottom: 8px; padding: 4px 8px; font-size: .82rem; }
+  .mnote { font-size: .82rem; }
+  .big { padding-block: 5px; }
+  .big .k { font-size: .85rem; }
+  .big .v { font-size: 1.7rem; }
+  .big .d { font-size: .8rem; line-height: 1.5; }
+  .sizeout { margin: 8px 0 10px; }
+  /* پیپر کی قطار ایک ہی لائن میں: پرت | قسم | لسٹ سے پیپر | GSM | ریٹ */
+  .prow { grid-template-columns: 1.3rem 5.4rem minmax(0, 1fr) 3.7rem 3.9rem; gap: 4px; margin-bottom: 4px; }
+  .prow .hs { display: block; }
+  .prow.head { font-size: .72rem; margin-bottom: 1px; }
+  .prow.head .hs { order: 3; }
+  .prow.head .hg { order: 4; }
+  .prow.head .hp { order: 5; }
+  .prow select:not(.rs) { order: 2; }
+  .prow select.rs { order: 3; grid-column: auto; font-size: .82rem; padding: 6px 3px; }
+  .prow input[id^="G"] { order: 4; }
+  .prow input[id^="P"] { order: 5; }
+  .prow input, .prow select { font-size: .95rem; padding: 5px 3px; }
+  .paper h3 { margin: 4px 0 4px; font-size: .95rem; }
+  #plyTitle { display: none; }
+  .navstale { position: fixed; top: auto; bottom: 12px; inset-inline: auto; left: 50%; transform: translateX(-50%); width: min(520px, 90vw); z-index: 40; box-shadow: 0 2px 10px rgb(0 0 0 / .18); }
+  #inPanel .mnote:not(#szNote) { display: none; }
+  .paper .mnote { display: none; }
+  .ratelist .mnote { display: block; }
+  .ratelist { margin-top: 6px; }
+  .ratelist summary { padding: 6px 0; font-size: .88rem; }
+  /* نتیجے کے کارڈ: عنوان اور رقم ایک ہی لائن میں، وضاحت نیچے */
+  .big { flex-direction: row; flex-wrap: wrap; align-items: baseline; justify-content: space-between; column-gap: 8px; }
+  .big .k { order: 1; }
+  .big .v { order: 2; font-size: 1.3rem; }
+  .big .d { order: 3; flex-basis: 100%; }
+  .big.size, .big.cost, .big.gain { padding-inline: 8px; }
+  .pf .big .v { font-size: 1.3rem; }
+  .pf { gap: 6px; margin-top: 6px; }
+  .big.mini .v { font-size: .95rem; }
+  .sub { margin: 8px 0 4px; font-size: .92rem; }
+  .brk td, .brk th { padding-block: 2px; }
+}
+@media (min-width: 1700px) {
+  .wrap { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  #grpProd, #grpTrial { grid-column: span 2; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* جو چنا ہو وہ نیلے رنگ میں */
+.tbar select, .tbar2 select, .amt select { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; }
+.tbar select option, .tbar2 select option, .amt select option { background: var(--surface); color: var(--fg); font-weight: 400; }
+.cmbrow select:has(option[value=""]:not(:checked)) { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; }
+.cmbrow select:has(option[value=""]:not(:checked)) option { background: var(--surface); color: var(--fg); font-weight: 400; }
+.prow select.rs.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.prow select.rs.on option { background: var(--surface); color: var(--fg); }
+
+/* متن والے خانے: عام فونٹ اور اردو کے ساتھ انگریزی/عدد کی صحیح ترتیب */
+.field input#PRem, .field input#sumCo, .field input#sumRem { font-family: var(--font-body); font-size: 1rem; direction: rtl; unicode-bidi: plaintext; text-align: start; }
+
+/* تاریخ کا چھوٹا سیل، فولڈر کا حصہ اور تصویر کا ڈبہ */
+.datecell { font-family: var(--font-num); direction: ltr; text-align: center; padding: 9px 6px; min-height: 40px; box-sizing: border-box; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); font-size: .95rem; }
+.folderbox { margin-bottom: 10px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: .88rem; line-height: 1.7; }
+.folderbox .copybtn { margin-top: 4px; }
+#copyImg { display: block; max-width: 100%; max-height: 62vh; margin: 8px auto; border: 1px solid var(--line); }
+#copyDl { display: inline-block; text-decoration: none; margin-inline-end: 6px; }
+.sumdoc .sh .sm { color: var(--muted); font-size: .8rem; }
+@media (max-width: 520px) { .topnav a { font-size: .78rem; padding-inline: 1px; } }
+</style>
+
+<div class="wrap" dir="rtl" lang="ur">
+  <h1>کارٹن شیٹ کیلکولیٹر</h1>
+
+  <nav class="topnav" id="topnav" aria-label="سیکشن">
+    <a href="file:///C:/Users/Lap_Tech/Desktop/%DA%A9%D8%A7%D8%B1%D9%B9%D9%86%20%D8%B4%DB%8C%D9%B9%20%DA%A9%DB%8C%D9%84%DA%A9%D9%88%D9%84%DB%8C%D9%B9%D8%B1%20(%D9%BE%D8%B1%DB%8C%20%D9%88%DB%8C%D9%88).html#inPanel" data-t="inPanel" class="on">ڈبے کا ناپ</a>
+    <a href="file:///C:/Users/Lap_Tech/Desktop/%DA%A9%D8%A7%D8%B1%D9%B9%D9%86%20%D8%B4%DB%8C%D9%B9%20%DA%A9%DB%8C%D9%84%DA%A9%D9%88%D9%84%DB%8C%D9%B9%D8%B1%20(%D9%BE%D8%B1%DB%8C%20%D9%88%DB%8C%D9%88).html#plantPanel" data-t="plantPanel">پلانٹ</a>
+    <a href="file:///C:/Users/Lap_Tech/Desktop/%DA%A9%D8%A7%D8%B1%D9%B9%D9%86%20%D8%B4%DB%8C%D9%B9%20%DA%A9%DB%8C%D9%84%DA%A9%D9%88%D9%84%DB%8C%D9%B9%D8%B1%20(%D9%BE%D8%B1%DB%8C%20%D9%88%DB%8C%D9%88).html#h-prod" data-t="h-prod">پروڈکشن پلان</a>
+    <a href="file:///C:/Users/Lap_Tech/Desktop/%DA%A9%D8%A7%D8%B1%D9%B9%D9%86%20%D8%B4%DB%8C%D9%B9%20%DA%A9%DB%8C%D9%84%DA%A9%D9%88%D9%84%DB%8C%D9%B9%D8%B1%20(%D9%BE%D8%B1%DB%8C%20%D9%88%DB%8C%D9%88).html#h-trial" data-t="h-trial">پلانٹ رن</a>
+    <a href="file:///C:/Users/Lap_Tech/Desktop/%DA%A9%D8%A7%D8%B1%D9%B9%D9%86%20%D8%B4%DB%8C%D9%B9%20%DA%A9%DB%8C%D9%84%DA%A9%D9%88%D9%84%DB%8C%D9%B9%D8%B1%20(%D9%BE%D8%B1%DB%8C%20%D9%88%DB%8C%D9%88).html#histPanel" data-t="histPanel">محفوظ شدہ</a>
+    <div class="navstale" id="navStale" aria-live="polite">کچھ بدل گیا ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</div>
+  </nav>
+
+  <section class="panel" id="inPanel" aria-labelledby="h-in">
+    <h2 id="h-in">ڈبے کا ناپ</h2>
+    <div class="example" id="example" hidden="">یہ مثال کے ناپ ہیں۔ اپنے ڈبے کا ناپ لکھیں۔</div>
+
+    <div class="tbar2">
+      <div class="field"><label for="modeSel">قسم</label>
+        <select id="modeSel"><option value="box">ڈبہ</option><option value="stiff">اسٹفنر</option></select></div>
+      <div class="field" id="unitField"><label for="unitSel">سائز کی اکائی</label>
+        <select id="unitSel"><option value="mm">ملی میٹر</option><option value="cm">سینٹی میٹر</option><option value="in">انچ</option></select></div>
+      <div class="field" id="sUnitField" hidden=""><label for="sUnitSel">سائز کی اکائی</label>
+        <select id="sUnitSel"><option value="mm">ملی میٹر</option><option value="cm">سینٹی میٹر</option><option value="in">انچ</option></select></div>
+    </div>
+
+    <div class="dims" id="boxDims">
+      <div class="field"><label for="L">لمبائی</label><input id="L" type="text" inputmode="decimal" autocomplete="off" value="400"></div>
+      <div class="field"><label for="W">چوڑائی</label><input id="W" type="text" inputmode="decimal" autocomplete="off" value="300"></div>
+      <div class="field"><label for="H">اونچائی</label><input id="H" type="text" inputmode="decimal" autocomplete="off" value="250"></div>
+    </div>
+    <div id="stiffBox" hidden="">
+      <div class="segctl">
+        <span id="segCount">کل سائز: 4</span>
+        <span class="sp"></span>
+        <button type="button" id="segDel" aria-label="ایک سائز گھٹائیں">－</button>
+        <button type="button" id="segAdd" aria-label="ایک سائز بڑھائیں">＋ سائز</button>
+      </div>
+      <div id="segFields" style="--cols: 4;">
+        <div class="field"><label for="S0" id="SL0">L1</label><input id="S0" type="text" inputmode="decimal" autocomplete="off" value="44"></div>
+        <div class="field"><label for="S1" id="SL1">گیجٹ 1</label><input id="S1" type="text" inputmode="decimal" autocomplete="off" value="12.5"></div>
+        <div class="field"><label for="S2" id="SL2">L2</label><input id="S2" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+        <div class="field"><label for="S3" id="SL3">آخری (میجر)</label><input id="S3" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+        <div class="field" hidden=""><label for="S4" id="SL4">L3</label><input id="S4" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+        <div class="field" hidden=""><label for="S5" id="SL5">گیجٹ 3</label><input id="S5" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+        <div class="field" hidden=""><label for="S6" id="SL6">L4</label><input id="S6" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+        <div class="field" hidden=""><label for="S7" id="SL7">گیجٹ 4</label><input id="S7" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+        <div class="field" hidden=""><label for="S8" id="SL8">L5</label><input id="S8" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+        <div class="field" hidden=""><label for="S9" id="SL9">گیجٹ 5</label><input id="S9" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+        <div class="field" hidden=""><label for="S10" id="SL10">L6</label><input id="S10" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+        <div class="field" hidden=""><label for="S11" id="SL11">گیجٹ 6</label><input id="S11" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+      </div>
+      <p class="mnote">کم سے کم 2 سائز۔ ＋ دبا کر سائز بڑھائیں۔ آخری سائز میجر کے لیے ہے، اس سے پہلے کے سب سائز جمع ہو کر ریل بنتی ہے۔</p>
+    </div>
+    <div class="manual">
+      <div class="field"><label for="MR">ریل سائز اپنا (انچ)</label><input id="MR" type="text" inputmode="decimal" autocomplete="off" placeholder="خودکار: 24"></div>
+      <div class="field"><label for="MM">میجر اپنا (انچ)</label><input id="MM" type="text" inputmode="decimal" autocomplete="off" placeholder="خودکار: 65.78"></div>
+      <p class="mnote">اوپر کا اپلائی دبانے پر یہ خانے صاف ہو کر خودکار ریل اور میجر آتے ہیں۔ بدلنا ہو تو اس کے بعد یہاں لکھیں، نتیجہ فوراً بدل جاتا ہے اور سارا حساب آپ کے لکھے پر ہوگا۔</p>
+    </div>
+
+    <button class="apply" id="sizeBtn" type="button">اپلائی: ریل اور میجر دیکھیں</button>
+    <div class="sizeout" id="sizeOut" aria-live="polite">
+      <div class="big size"><span class="k">ریل سائز</span><span class="v" id="szReel">24<small>in</small></span></div>
+      <div class="big size"><span class="k">میجر سائز</span><span class="v" id="szMaj">65.78<small>in</small></span></div>
+      <div class="big size"><span class="k">کل مربع انچ</span><span class="v" id="szArea">1578.7<small>sq in</small></span></div>
+      <div id="szStiff" hidden="">
+        <div class="big size"><span class="k">میجر سے پیس</span><span class="v" id="szNP">—</span></div>
+        <div class="big size"><span class="k">ریل سے پیس</span><span class="v" id="szAcross">—</span></div>
+        <div class="big gain"><span class="k">ٹوٹل پیس</span><span class="v" id="szTot">—</span></div>
+      </div>
+      <p class="mnote" id="szNote">اصل ریل سائز <b>23.31 in</b>، ضیاع <b>0.69 in</b></p>
+    </div>
+
+  </section>
+
+  <section class="panel" id="paperPanel" aria-labelledby="h-paper">
+    <h2 id="h-paper">پیپر کا کمبی نیشن</h2>
+
+    <div class="paper">
+      <h3 id="plyTitle">پیپر (5 پلائی)</h3>
+      <div class="tbar">
+        <select id="plySel" aria-label="پلائی کی تعداد"><option value="3">3 پلائی</option><option value="5">5 پلائی</option><option value="7">7 پلائی</option></select>
+        <select id="rtSel" aria-label="ریٹ کی قسم"><option value="credit">کریڈٹ ریٹ</option><option value="cash">کیش ریٹ</option></select>
+        <button type="button" id="rlBtn" aria-expanded="false" aria-controls="rlDetails">ریٹ لسٹ ▾</button>
+        <button type="button" id="flBtn" aria-expanded="false" aria-controls="flDetails">نالی فیصد ▾</button>
+      </div>
+      <div class="ratelist box" id="rlDetails" hidden="">
+        <p class="mnote">ہر پرت کے نیچے "لسٹ سے پیپر چنیں" میں سے پیپر چنیں تو GSM اور ریٹ خود بھر جاتے ہیں (اوپر کریڈٹ یا کیش جو چنا ہو)۔ ریٹ بدلیں تو یہاں لکھ کر "محفوظ کریں" دبائیں۔</p>
+        <div id="rlBox"><div class="rlrow head"><span>برانڈ</span><span>کوالٹی</span><span>GSM</span><span>کریڈٹ</span><span>کیش</span><span></span></div><div class="rlrow" data-id="1"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="2"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="3"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="4"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="5"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="6"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="7"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="8"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="9"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="10"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="11"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="12"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="13"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div></div>
+        <div class="rlbtns">
+          <button type="button" id="rlAdd">نئی قطار</button>
+          <button type="button" id="rlSave" class="main">محفوظ کریں</button>
+          <button type="button" id="rlReset">اصل لسٹ بحال</button>
+        </div>
+        <p class="rlmsg" id="rlMsg" aria-live="polite"></p>
+      </div>
+      <div class="ratelist box" id="flDetails" hidden="">
+        <div class="pct">
+          <div class="field"><label for="X1">موٹی نالی میں اضافہ (%)</label><input id="X1" type="text" inputmode="decimal" autocomplete="off" value="40"></div>
+          <div class="field"><label for="X2">باریک نالی میں اضافہ (%)</label><input id="X2" type="text" inputmode="decimal" autocomplete="off" value="43"></div>
+        </div>
+      </div>
+      <div class="cmbrow">
+        <div class="field"><label for="cmbSel">محفوظ کمبی نیشن</label><select id="cmbSel"><option value="">— کمبی نیشن چنیں —</option><option value="SADAQAT  STF">SADAQAT  STF (5)</option><option value="SADAQAT BOX">SADAQAT BOX (5)</option><option value="MODERN APROVED COMB">MODERN APROVED COMB (5)</option><option value="COMMONDER SAMPLE">COMMONDER SAMPLE (5)</option><option value="DIOMOND STF">DIOMOND STF (5)</option><option value="DIOMOND BOX">DIOMOND BOX (5)</option><option value="DIOMOND BOX 7 PLY">DIOMOND BOX 7 PLY (7)</option><option value="DIOMOND STF WITH SF">DIOMOND STF WITH SF (5)</option></select></div>
+        <div class="field" id="nbField"><label for="NB" title="ایک شیٹ میں سے کتنے باکس نکلتے ہیں">فی شیٹ باکس</label><input id="NB" type="text" inputmode="decimal" autocomplete="off" value="1"></div>
+      </div>
+      <p class="example" id="pnote" hidden="">یہ مثال کے GSM اور ریٹ ہیں۔ اپنے پیپر کے لکھیں۔</p>
+      <div id="paperRows"><div class="prow head"><span>پرت</span><span>قسم</span><span class="hg">GSM</span><span class="hp">ریٹ فی کلو</span><span class="hs">ریٹ لسٹ سے پیپر</span></div><div class="prow" id="row0"><span>1</span><select id="T0" aria-label="پرت 1 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G0" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 1 کا GSM" value="150"><input id="P0" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 1 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS0" aria-label="پرت 1 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row1"><span>2</span><select id="T1" aria-label="پرت 2 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G1" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 2 کا GSM" value="120"><input id="P1" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 2 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS1" aria-label="پرت 2 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row2"><span>3</span><select id="T2" aria-label="پرت 3 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G2" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 3 کا GSM" value="100"><input id="P2" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 3 کا ریٹ فی کلو" value="90"><select class="rs on" id="RS2" aria-label="پرت 3 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row3"><span>4</span><select id="T3" aria-label="پرت 4 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G3" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 4 کا GSM" value="120"><input id="P3" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 4 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS3" aria-label="پرت 4 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row4"><span>5</span><select id="T4" aria-label="پرت 5 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G4" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 5 کا GSM" value="150"><input id="P4" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 5 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS4" aria-label="پرت 5 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row5" hidden=""><span>6</span><select id="T5" aria-label="پرت 6 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G5" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 6 کا GSM" value="120"><input id="P5" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 6 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS5" aria-label="پرت 6 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row6" hidden=""><span>7</span><select id="T6" aria-label="پرت 7 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G6" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 7 کا GSM" value="150"><input id="P6" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 7 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS6" aria-label="پرت 7 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div></div>
+      <details class="ratelist" id="cmbDetails">
+        <summary>کمبی نیشن محفوظ کریں</summary>
+        <p class="mnote">اوپر پرتوں میں جو کمبی نیشن لگا ہے (پلائی، قسم، GSM، ریٹ) اسے نام لکھ کر محفوظ کریں۔ پھر اوپر "محفوظ کمبی نیشن" سے وہ نام چنیں تو سب پرتیں خود بھر جاتی ہیں۔ اسی نام سے دوبارہ محفوظ کریں تو پرانا بدل جاتا ہے۔</p>
+        <div class="cmbsave">
+          <input id="cmbName" type="text" autocomplete="off" maxlength="40" placeholder="نام، مثلاً سداقت اسٹفنر کمبی نیشن" aria-label="کمبی نیشن کا نام">
+          <button type="button" id="cmbSave">محفوظ کریں</button>
+        </div>
+        <p class="rlmsg" id="cmbMsg" aria-live="polite"></p>
+        <div id="cmbList"><div class="cmbitem"><button type="button" class="nm">SADAQAT  STF</button><span class="sm">5 پلائی</span><button type="button" class="del" aria-label="SADAQAT  STF حذف کریں">حذف</button></div><div class="cmbitem"><button type="button" class="nm">SADAQAT BOX</button><span class="sm">5 پلائی</span><button type="button" class="del" aria-label="SADAQAT BOX حذف کریں">حذف</button></div><div class="cmbitem"><button type="button" class="nm">MODERN APROVED COMB</button><span class="sm">5 پلائی</span><button type="button" class="del" aria-label="MODERN APROVED COMB حذف کریں">حذف</button></div><div class="cmbitem"><button type="button" class="nm">COMMONDER SAMPLE</button><span class="sm">5 پلائی</span><button type="button" class="del" aria-label="COMMONDER SAMPLE حذف کریں">حذف</button></div><div class="cmbitem"><button type="button" class="nm">DIOMOND STF</button><span class="sm">5 پلائی</span><button type="button" class="del" aria-label="DIOMOND STF حذف کریں">حذف</button></div><div class="cmbitem"><button type="button" class="nm">DIOMOND BOX</button><span class="sm">5 پلائی</span><button type="button" class="del" aria-label="DIOMOND BOX حذف کریں">حذف</button></div><div class="cmbitem"><button type="button" class="nm">DIOMOND BOX 7 PLY</button><span class="sm">7 پلائی</span><button type="button" class="del" aria-label="DIOMOND BOX 7 PLY حذف کریں">حذف</button></div><div class="cmbitem"><button type="button" class="nm">DIOMOND STF WITH SF</button><span class="sm">5 پلائی</span><button type="button" class="del" aria-label="DIOMOND STF WITH SF حذف کریں">حذف</button></div></div>
+      </details>
+    </div>
+    <div class="paper">
+      <h3>خرچ، منافع اور GST</h3>
+      <div class="tri">
+        <div class="field cost"><label for="EX">خرچ</label><div class="amt"><input id="EX" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""><select id="EXU" aria-label="خرچ کی قسم"><option value="p">%</option><option value="r">روپے</option></select></div></div>
+        <div class="field gain"><label for="PR">منافع</label><div class="amt"><input id="PR" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""><select id="PRU" aria-label="منافع کی قسم"><option value="p">%</option><option value="r">روپے</option></select></div></div>
+        <div class="field gain"><label for="GS">GST</label><input id="GS" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""></div>
+      </div>
+      <p class="mnote">خرچ پیپر کاسٹ پر لگتا ہے، منافع باکس کاسٹ پر، اور GST سب سے آخر میں منافع والے ریٹ پر۔ تینوں آپ بدل سکتے ہیں۔</p>
+    </div>
+    <button class="apply" id="applyBtn" type="button">اپلائی</button>
+  </section>
+
+  <section class="panel" id="resultPanel" aria-labelledby="h-out" aria-live="polite">
+    <h2 id="h-out">نتیجہ: کاسٹ اور ریٹ</h2>
+    <p class="stale" id="stale" hidden="">ناپ بدل گیا ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</p>
+    <div class="big size" hidden=""><span class="k">ریل سائز</span><span class="v" id="outReel">24<small>in</small></span></div>
+    <div class="big size" hidden=""><span class="k">میجر (کاٹنے کی لمبائی)</span><span class="v" id="outLen">65.78<small>in</small></span></div>
+    <div class="big size" hidden=""><span class="k">کل مربع انچ</span><span class="v" id="outArea">1578.7<small>sq in</small></span></div>
+    <div id="stiffOut" hidden="">
+      <div class="big size"><span class="k">میجر سے پیس (لمبائی میں)</span><span class="v" id="sNP">—</span></div>
+      <div class="big size"><span class="k">ریل میں پیس (چوڑائی میں، ڈبل وغیرہ کے بعد)</span><span class="v" id="sAcross">—</span></div>
+      <div class="big gain"><span class="k">ٹوٹل پیس (ایک شیٹ سے)</span><span class="v" id="sTot">—</span></div>
+    </div>
+    <div class="big cost"><span class="k">پیپر کاسٹ (فی ڈبہ)</span><span class="v" id="outCost">74.45</span><span class="d" id="dCost">ایک شیٹ سے ایک ڈبہ</span></div>
+    <div class="big cost"><span class="k">باکس کاسٹ (خرچ کے ساتھ)</span><span class="v" id="outBox">107.95</span><span class="d" id="dBox">پیپر کاسٹ 74.45 + خرچ 45% (33.50 روپے) = 107.95</span><span class="d" id="dBoxSq">(مربع انچ ریٹ: 0.0684)</span></div>
+    <div class="big gain" hidden=""><span class="k">ریٹ (منافع کے ساتھ)</span><span class="v" id="outRate">107.95</span><span class="d" id="dRate">باکس کاسٹ 107.95 (منافع نہیں لگایا) = 107.95</span><span class="d" id="dRateSq">(مربع انچ ریٹ: 0.0684)</span></div>
+    <div class="big gain final" hidden=""><span class="k">آخری ریٹ (GST کے ساتھ)</span><span class="v" id="outFinal">107.95</span><span class="d" id="dFinal">باکس کاسٹ 107.95 (GST نہیں لگایا) = 107.95</span></div>
+    <div id="stiffOrig" hidden="">
+      <div class="big mini"><span class="k">اوریجنل ریل (جفت کرنے سے پہلے)</span><span class="v" id="sOrigReel">—</span></div>
+      <div class="big mini"><span class="k">اوریجنل میجر (پیس × آخری سائز)</span><span class="v" id="sOrigMaj">—</span></div>
+    </div>
+    <p class="orig" id="outOrig"><br>پوری شیٹ کی پیپر کاسٹ <b>74.45</b></p>
+    <h3 class="sub">خلاصہ</h3>
+    <div class="sumsize" id="sumSize"><div>ڈبے کا سائز: 50 × 31 × 27 سینٹی میٹر</div><div>ریل 24 in · میجر 65.78 in · کل مربع انچ 1578.7 · ایک شیٹ سے 1 باکس</div></div>
+    <div class="brk-wrap"><table class="brk" id="brk"><tbody><tr><th>پرت</th><th>قسم</th><th>پیپر</th><th>وزن شیٹ (g)</th><th>لاگت شیٹ</th></tr><tr><td>1</td><td>پلین</td><td class="pn">TL · 120</td><td class="n">122.2</td><td class="n">15.03</td></tr><tr><td>2</td><td>پلین</td><td class="pn">TL · 120</td><td class="n">122.2</td><td class="n">15.03</td></tr><tr><td>3</td><td>پلین</td><td class="pn">F · 100</td><td class="n">101.9</td><td class="n">10.19</td></tr><tr class="fl"><td>4</td><td>موٹی نالی</td><td class="pn">SF · 110</td><td class="n">156.9</td><td class="n">17.1</td></tr><tr class="fl"><td>5</td><td>موٹی نالی</td><td class="pn">SF · 110</td><td class="n">156.9</td><td class="n">17.1</td></tr><tr class="tot"><td colspan="3">کل</td><td class="n">660</td><td class="n">74.45</td></tr></tbody></table></div>
+    <div class="sumsave">
+      <div class="field"><label for="sumCo">کمپنی کا نام</label><input id="sumCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
+      <div class="field"><label>تاریخ</label><div class="datecell" id="sumDateShow">26 OCT 2026</div></div>
+      <div class="field full"><label for="sumRem">ریمارکس (پہچان کے لیے)</label><input id="sumRem" type="text" autocomplete="off" maxlength="120" placeholder="مثلاً PO نمبر، حوالہ، شہر"></div>
+      <button type="button" id="sumCopyBtn" class="sec">تصویر کاپی کریں</button>
+      <button type="button" id="sumSaveBtn">خلاصہ محفوظ کریں</button>
+      <button type="button" id="sumShareBtn" class="sec full">شیئر (واٹس ایپ وغیرہ)</button>
+    </div>
+    <p class="rlmsg" id="sumMsg" aria-live="polite"></p>
+  </section>
+  <section class="panel" id="plantPanel" aria-labelledby="h-plant" aria-live="polite">
+    <h2 id="h-plant">پلانٹ</h2>
+    <div class="example ctx" id="ctxPlant"><div>ڈبے کا سائز: 50 × 31 × 27 سینٹی میٹر</div><div>ریل 24 in · میجر 65.78 in · کل مربع انچ 1578.7 · ایک شیٹ سے 1 باکس</div></div>
+    <p class="mnote">پیپر کاسٹ وہی رہتی ہے۔ اس میں پلانٹ کی لیبر (ریٹ × شیٹ کے کل مربع انچ) جمع ہوتی ہے۔ پھر آپ کا خرچ، منافع اور GST لگتا ہے۔</p>
+    <div class="field gap cost"><label for="R1">پلانٹ لیبر ریٹ (فی مربع انچ)</label><input id="R1" type="text" inputmode="decimal" autocomplete="off" value="0.0125"></div>
+    <div class="tri">
+      <div class="field cost"><label for="PX">خرچ</label><div class="amt"><input id="PX" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""><select id="PXU" aria-label="خرچ کی قسم"><option value="p">%</option><option value="r">روپے</option></select></div></div>
+      <div class="field gain"><label for="PP">منافع</label><div class="amt"><input id="PP" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""><select id="PPU" aria-label="منافع کی قسم"><option value="p">%</option><option value="r">روپے</option></select></div></div>
+      <div class="field gain"><label for="PG">GST (%)</label><input id="PG" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""></div>
+    </div>
+    <button class="apply" id="applyBtn2" type="button">اپلائی</button>
+    <p class="stale" id="pstale" hidden="">ناپ یا ریٹ بدل گیا ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</p>
+    <div class="big cost"><span class="k">پلانٹ کا فی ڈبہ خرچ (لیبر)</span><span class="v" id="pLab">0</span><span class="d" id="dpLab">لیبر ریٹ 0 × 1578.7 مربع انچ = 0.00</span></div>
+    <p class="mnote" id="plNote"></p>
+    <div class="big cost"><span class="k">پلانٹ کاسٹ (پیپر کاسٹ + لیبر)</span><span class="v" id="pCost">74.45</span><span class="d" id="dpCost">پیپر کاسٹ 74.45 + لیبر 0.00 = 74.45</span></div>
+    <div class="big cost" hidden=""><span class="k">باکس کاسٹ (خرچ کے ساتھ)</span><span class="v" id="pBox">74.45</span><span class="d" id="dpBox">پلانٹ کاسٹ 74.45 (خرچ نہیں لگایا) = 74.45</span><span class="d" id="dpBoxSq">(مربع انچ ریٹ: 0.0472)</span></div>
+    <div class="big gain" hidden=""><span class="k">ریٹ (منافع کے ساتھ)</span><span class="v" id="pRate">74.45</span><span class="d" id="dpRate">پلانٹ کاسٹ 74.45 (منافع نہیں لگایا) = 74.45</span><span class="d" id="dpRateSq">(مربع انچ ریٹ: 0.0472)</span></div>
+    <div class="big gain final" hidden=""><span class="k">آخری ریٹ (GST کے ساتھ)</span><span class="v" id="pFinal">74.45</span><span class="d" id="dpFinal">پلانٹ کاسٹ 74.45 (GST نہیں لگایا) = 74.45</span></div>
+      <div class="sumsave" style="margin-top:12px">
+      <div class="field"><label for="PlCo">کمپنی کا نام</label><input id="PlCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
+      <div class="field"><label for="PlRem">ریمارکس</label><input id="PlRem" type="text" autocomplete="off" maxlength="120" placeholder="اختیاری"></div>
+      <button type="button" id="plCopyBtn" class="sec">تصویر کاپی کریں</button>
+      <button type="button" id="plSaveBtn">پلانٹ محفوظ کریں</button>
+      <button type="button" id="plShareBtn" class="sec full">شیئر (واٹس ایپ وغیرہ)</button>
+    </div>
+    <p class="rlmsg" id="plMsg" aria-live="polite"></p>
+  </section>
+  <div class="grp" id="grpProd">
+  <h2 class="sec" id="h-prod">پروڈکشن پلان</h2>
+  <section class="panel" id="prodPanel" aria-labelledby="h-prod" aria-live="polite">
+    <div class="example ctx" id="ctxProd"><div>ڈبے کا سائز: 50 × 31 × 27 سینٹی میٹر</div><div>ریل 24 in · میجر 65.78 in · کل مربع انچ 1578.7 · ایک شیٹ سے 1 باکس</div></div>
+    <div class="field gap"><label for="PRem">ریمارکس (PO نمبر، حوالہ، تاریخ، مدت وغیرہ)</label><input id="PRem" type="text" autocomplete="off" maxlength="200" placeholder="اختیاری"></div>
+    <div class="manual">
+      <div class="field"><label for="QT">آرڈر (کتنے ڈبے)</label><input id="QT" type="text" inputmode="decimal" autocomplete="off" value="10000"></div>
+      <div class="field"><label for="RL">ایک رول کی لمبائی (انچ)</label><input id="RL" type="text" inputmode="decimal" autocomplete="off" value="2400"></div>
+      <p class="mnote">رول = شیٹ × میجر ÷ رول کی لمبائی۔ 2400 انچ یعنی 200 فٹ کا رول۔ ایک رول میں ایک پلین اور ایک نالی والی پرت ساتھ چلتی ہیں، اس لیے رول جوڑی کے حساب سے گنے جاتے ہیں۔ بچ جانے والی پلین پرت نہیں گنی جاتی۔</p>
+    </div>
+    <button class="apply" id="applyBtn3" type="button">اپلائی</button>
+    <p class="stale" id="qstale" hidden="">ناپ یا تعداد بدل گئی ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</p>
+
+    <h3 class="sub">1) ہر پرت کا وزن</h3>
+    <div class="brk-wrap"><table class="brk" id="qTbl"><tbody><tr><th>پرت</th><th>قسم</th><th>پیپر</th><th>GSM</th><th>وزن (کلو)</th></tr><tr><td>1</td><td>پلین</td><td class="pn">TL · 120</td><td class="n">120</td><td class="n">117.3</td></tr><tr><td>2</td><td>پلین</td><td class="pn">TL · 120</td><td class="n">120</td><td class="n">117.3</td></tr><tr><td>3</td><td>پلین</td><td class="pn">F · 100</td><td class="n">100</td><td class="n">97.8</td></tr><tr class="fl"><td>4</td><td>موٹی نالی</td><td class="pn">SF · 110</td><td class="n">110</td><td class="n">150.6</td></tr><tr class="fl"><td>5</td><td>موٹی نالی</td><td class="pn">SF · 110</td><td class="n">110</td><td class="n">150.6</td></tr><tr class="tot"><td colspan="4">کل</td><td class="n">633.6</td></tr></tbody></table></div>
+
+    <h3 class="sub">2) مینول: درکار رول</h3>
+    <div class="brk-wrap"><table class="brk" id="qRolls"><tbody><tr><th>جوڑی</th><th>لمبائی (انچ)</th><th>حساب</th><th>رول</th></tr><tr class="fl"><td>1</td><td class="n">63,148</td><td class="n">26.31</td><td class="n"><b>27</b></td></tr><tr class="fl"><td>2</td><td class="n">63,148</td><td class="n">26.31</td><td class="n"><b>27</b></td></tr><tr class="tot"><td colspan="3">کل رول (2 × 27)</td><td class="n">54</td></tr><tr><td colspan="4"><small>پرت 1، 2 (پلین) رول میں نہیں گنی گئی۔</small></td></tr></tbody></table></div>
+
+    <h3 class="sub">3) پلانٹ: درکار شیٹ اور وزن</h3>
+    <div class="big size"><span class="k">درکار شیٹ</span><span class="v" id="qSheets">960</span></div>
+    <div class="big size"><span class="k">کل پیپر وزن (کلو)</span><span class="v" id="qTotal">633.6</span></div>
+    <p class="mnote" id="qNote"><b>960</b> ڈبے ÷ <b>1</b> باکس فی شیٹ = <b>960</b> شیٹ۔ شیٹ کا سائز <b>24 × 65.78</b> انچ۔ ہر جوڑی کی کل لمبائی = <b>960 × 65.78</b> انچ۔</p>
+    <div class="sumsave">
+      <div class="field full"><label for="PCo">کمپنی کا نام</label><input id="PCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
+      <button type="button" id="prodCopyBtn" class="sec">تصویر کاپی کریں</button>
+      <button type="button" id="prodSaveBtn">پروڈکشن پلان محفوظ کریں</button>
+      <button type="button" id="prodShareBtn" class="sec full">شیئر (واٹس ایپ وغیرہ)</button>
+    </div>
+    <p class="rlmsg" id="prodMsg" aria-live="polite"></p>
+  </section>
+  </div>
+
+  <div class="grp" id="grpTrial">
+  <h2 class="sec" id="h-trial">پلانٹ رن: اصل GSM</h2>
+  <section class="panel" id="trialPanel" aria-labelledby="h-trial" aria-live="polite">
+    <div class="example ctx" id="ctxTrial"><div>ڈبے کا سائز: 50 × 31 × 27 سینٹی میٹر</div><div>ریل 24 in · میجر 65.78 in · کل مربع انچ 1578.7 · ایک شیٹ سے 1 باکس</div></div>
+    <p class="mnote">پلانٹ پر چلانے کے بعد بنی ہوئی شیٹ اور ہر پرت کا اصل وزن لکھیں۔ GSM = وزن ÷ (شیٹ × ایک شیٹ کا رقبہ)۔ رقبہ اوپر والے ریل سائز اور میجر سے لیا جاتا ہے۔</p>
+    <p class="example" id="tnote">یہ مثال کے وزن ہیں۔ اپنے اصل وزن لکھیں۔</p>
+    <div class="field gap"><label for="TS">بنی ہوئی شیٹ</label><input id="TS" type="text" inputmode="decimal" autocomplete="off" value="5000"></div>
+    <div class="five">
+      <div class="field"><label for="V0">پرت 1 کا وزن (کلو)</label><input id="V0" type="text" inputmode="decimal" autocomplete="off" value="670"></div>
+      <div class="field"><label for="V1">پرت 2 کا وزن (کلو)</label><input id="V1" type="text" inputmode="decimal" autocomplete="off" value="745"></div>
+      <div class="field"><label for="V2">پرت 3 کا وزن (کلو)</label><input id="V2" type="text" inputmode="decimal" autocomplete="off" value="440"></div>
+      <div class="field"><label for="V3">پرت 4 کا وزن (کلو)</label><input id="V3" type="text" inputmode="decimal" autocomplete="off" value="770"></div>
+      <div class="field"><label for="V4">پرت 5 کا وزن (کلو)</label><input id="V4" type="text" inputmode="decimal" autocomplete="off" value="660"></div>
+      <div class="field" hidden=""><label for="V5">پرت 6 کا وزن (کلو)</label><input id="V5" type="text" inputmode="decimal" autocomplete="off" value="440"></div>
+      <div class="field" hidden=""><label for="V6">پرت 7 کا وزن (کلو)</label><input id="V6" type="text" inputmode="decimal" autocomplete="off" value="660"></div>
+    </div>
+    <button class="apply" id="applyBtn4" type="button">اپلائی</button>
+    <p class="stale" id="tstale" hidden="">ناپ یا وزن بدل گیا ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</p>
+    <div class="brk-wrap"><table class="brk" id="tTbl"><tbody><tr><th>پرت</th><th>وزن (کلو)</th><th>GSM (کنزمپشن)</th><th>پیپر GSM</th><th>منصوبہ GSM</th></tr><tr><td>1</td><td class="n">670</td><td class="n">131.6</td><td class="n"><b>131.6</b></td><td class="n">120</td></tr><tr><td>2</td><td class="n">745</td><td class="n">146.3</td><td class="n"><b>146.3</b></td><td class="n">120</td></tr><tr><td>3</td><td class="n">440</td><td class="n">86.4</td><td class="n"><b>86.4</b></td><td class="n">100</td></tr><tr class="fl"><td>4</td><td class="n">770</td><td class="n">151.2</td><td class="n"><b>108</b></td><td class="n">110</td></tr><tr class="fl"><td>5</td><td class="n">660</td><td class="n">129.6</td><td class="n"><b>92.6</b></td><td class="n">110</td></tr><tr class="tot"><td>کل</td><td class="n">3,285</td><td colspan="3"></td></tr></tbody></table></div>
+    <p class="mnote" id="tNote">کل وزن <b>3,285</b> کلو، فی شیٹ <b>657</b> گرام۔ ایک شیٹ کا رقبہ <b>1.0185</b> مربع میٹر۔ نالی والی (پیلی) پرت کا کنزمپشن GSM نالی کے اضافے کی وجہ سے زیادہ آتا ہے۔ اس اضافے کو ہٹا کر پیپر کا اصل GSM الگ لکھا ہے۔</p>
+    <h3 class="sub">کنزمپشن کے حساب سے لاگت</h3>
+    <div class="brk-wrap"><table class="brk" id="tCost"><tbody><tr><th>پرت</th><th>وزن (کلو)</th><th>ریٹ فی کلو</th><th>لاگت</th></tr><tr><td>1</td><td class="n">670</td><td class="n">123</td><td class="n">82,410</td></tr><tr><td>2</td><td class="n">745</td><td class="n">123</td><td class="n">91,635</td></tr><tr><td>3</td><td class="n">440</td><td class="n">100</td><td class="n">44,000</td></tr><tr class="fl"><td>4</td><td class="n">770</td><td class="n">109</td><td class="n">83,930</td></tr><tr class="fl"><td>5</td><td class="n">660</td><td class="n">109</td><td class="n">71,940</td></tr><tr class="tot"><td colspan="3">کل</td><td class="n">373,915</td></tr></tbody></table></div>
+    <div class="big cost"><span class="k">اصل پیپر کاسٹ (کل)</span><span class="v" id="tCostTot">373,915</span></div>
+    <div class="big cost"><span class="k">فی شیٹ</span><span class="v" id="tCostSheet">74.78</span></div>
+    <div class="big cost"><span class="k">فی باکس</span><span class="v" id="tCostBox">74.78</span></div>
+    <p class="mnote" id="tCostNote">لاگت = ہر پرت کا وزن × اوپر پیپر والے حصے میں لکھا اس کا ریٹ۔ منصوبے کے حساب سے فی شیٹ پیپر کاسٹ <b>74.45</b> تھی، اصل <b>74.78</b> آئی، فرق <b>+0.34</b> فی شیٹ۔</p>
+  </section>
+  </div>
+  <section class="panel" id="histPanel" aria-labelledby="h-hist">
+    <h2 id="h-hist">محفوظ شدہ ریکارڈ (4)</h2>
+    <div class="folderbox">
+      <div id="folderStatus">بیک اپ فولڈر: ابھی نہیں چنا</div>
+      <button type="button" id="folderBtn" class="copybtn">بیک اپ فولڈر چنیں</button>
+      <p class="rlmsg" id="folderMsg" aria-live="polite"></p>
+    </div>
+    <div class="tbar2"><div class="field"><label for="histFilter">دکھائیں</label>
+      <select id="histFilter"><option value="all">سب</option><option value="cost">کاسٹنگ خلاصہ</option><option value="plant">پلانٹ</option><option value="prod">پروڈکشن پلان</option></select></div></div>
+    <div id="histList"><div class="cmbitem"><button type="button" class="nm">[پروڈکشن پلان] MODERN · 26 OCT 2026 · کل رول 54</button><span class="sm"></span><button type="button" class="del" aria-label="MODERN حذف کریں">حذف</button></div><div class="cmbitem"><button type="button" class="nm">[کاسٹنگ خلاصہ] بغیر نام · 26 OCT 2026 · باکس کاسٹ 107.95</button><span class="sm"></span><button type="button" class="del" aria-label="بغیر نام حذف کریں">حذف</button></div><div class="cmbitem"><button type="button" class="nm">[کاسٹنگ خلاصہ] بغیر نام · 23 OCT 2026 · باکس کاسٹ 53.02</button><span class="sm"></span><button type="button" class="del" aria-label="بغیر نام حذف کریں">حذف</button></div><div class="cmbitem"><button type="button" class="nm">[کاسٹنگ خلاصہ] MODERN OIL · 22 OCT 2026 · باکس کاسٹ 53.02</button><span class="sm"></span><button type="button" class="del" aria-label="MODERN OIL حذف کریں">حذف</button></div></div>
+    <div id="histView" hidden=""></div>
+  </section>
+  <div id="copyBox" hidden="">
+    <p class="mnote">تصویر خود کاپی نہیں ہو سکی۔ تصویر پر دایاں کلک (موبائل پر دیر تک دبانا) کر کے کاپی یا محفوظ کریں، یا ڈاؤن لوڈ کریں:</p>
+    <img id="copyImg" alt="تصویر">
+    <a id="copyDl" class="copybtn" download="costing.png">ڈاؤن لوڈ</a>
+    <button type="button" id="copyClose" class="copybtn">بند کریں</button>
+  </div>
+  <div class="kb-space" aria-hidden="true"></div>
+</div>
+
+<script>
+(function () {
+  var F = { mm: 1, cm: 10, "in": 25.4 };
+  var JOINT = 35, CREASE = 6, MAJOR_ADD = 2; /* MAJOR_ADD: میجر میں جمع ہونے والے انچ */
+  var bBase = {}, sBase = {}, unit = "mm", sunit = "cm", stiffNB = 1, mode = "box", segs = 2, plies = 5, applied = false, pe = false, te = false, KEY = "carton-simple-v2";
+  /* مثال کے ابتدائی GSM اور ریٹ: اوپر پلین، پھر موٹی نالی، پلین، باریک نالی، نیچے پلین */
+  var DEF = { T: ["p", "t", "p", "n", "p", "t", "p"], G: [150, 120, 100, 120, 150, 120, 150], P: [95, 100, 90, 100, 95, 100, 95] };
+  var NUM = ["L", "W", "H", "MR", "MM", "NB", "QT", "RL", "EX", "PR", "GS", "R1", "PX", "PP", "PG", "X1", "X2"], SEL = [];
+  var TR = ["TS", "V0", "V1", "V2", "V3", "V4", "V5", "V6"];
+  NUM.push("TS");
+  var SEGMAX = 12, SEGIDS = [];
+  for (var sg = 0; sg < SEGMAX; sg++) { NUM.push("S" + sg); SEGIDS.push("S" + sg); }
+  for (var q = 0; q < 7; q++) { SEL.push("T" + q); NUM.push("G" + q, "P" + q, "V" + q); }
+  /* پیپر کے خانے: پرتوں کے GSM، ریٹ اور نالی کے اضافے */
+  function isPaper(id) { return /^[GP]\d$/.test(id) || id === "X1" || id === "X2"; }
+  var $ = function (id) { return document.getElementById(id); };
+  function r(v, d) { var p = Math.pow(10, d); return Math.round(v * p) / p; }
+
+  /* ہندی، اردو اور عربی ہندسوں کو عام ہندسوں میں بدلتا ہے */
+  function latin(s) {
+    return String(s)
+      .replace(/[۰-۹]/g, function (c) { return c.charCodeAt(0) - 0x06F0; })
+      .replace(/[٠-٩]/g, function (c) { return c.charCodeAt(0) - 0x0660; })
+      .replace(/[०-९]/g, function (c) { return c.charCodeAt(0) - 0x0966; })
+      .replace(/[٫،]/g, ".");
+  }
+  function val(id) { var v = parseFloat(latin($(id).value)); return isFinite(v) ? v : NaN; }
+
+  /* موبائل پر اپلائی کے بعد نتیجے تک اسکرول؛ ڈیسک ٹاپ پر سب کچھ سامنے ہوتا ہے، اس لیے نہیں */
+  function nudge(id, opts) {
+    if (window.matchMedia("(min-width: 1000px)").matches) return;
+    try { $(id).scrollIntoView(opts); } catch (e) {}
+  }
+  function buildRows() {
+    var h = '<div class="prow head"><span>پرت</span><span>قسم</span><span class="hg">GSM</span><span class="hp">ریٹ فی کلو</span><span class="hs">ریٹ لسٹ سے پیپر</span></div>';
+    for (var i = 0; i < 7; i++) {
+      h += '<div class="prow" id="row' + i + '"><span>' + (i + 1) + '</span>' +
+        '<select id="T' + i + '" aria-label="پرت ' + (i + 1) + ' کی قسم">' +
+        '<option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select>' +
+        '<input id="G' + i + '" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت ' + (i + 1) + ' کا GSM" value="' + DEF.G[i] + '">' +
+        '<input id="P' + i + '" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت ' + (i + 1) + ' کا ریٹ فی کلو" value="' + DEF.P[i] + '">' +
+        '<select class="rs" id="RS' + i + '" aria-label="پرت ' + (i + 1) + ' کے لیے لسٹ سے پیپر چنیں"></select></div>';
+    }
+    $("paperRows").innerHTML = h;
+    for (var j = 0; j < 7; j++) $("T" + j).value = DEF.T[j];
+  }
+  buildRows();
+
+  /* پلائی (3، 5 یا 7): جتنی پرتیں چنیں اتنی ہی لکھنے اور حساب میں آئیں گی */
+  /* ڈبہ یا اسٹفنر: اسٹفنر میں 4، 5 یا 6 فرمائشیں لکھی جاتی ہیں اور سب جمع ہو کر میجر بنتا ہے */
+  var UN = { mm: "ملی میٹر", cm: "سینٹی میٹر", "in": "انچ" };
+  /* سائز کے نام: لمبائی، گیجٹ، لمبائی، گیجٹ... اور آخری ہمیشہ میجر */
+  function segName(i, n) {
+    if (i === n - 1) return "آخری (میجر)";
+    return i % 2 === 0 ? "L" + (i / 2 + 1) : "گیجٹ " + ((i + 1) / 2);
+  }
+  function applyMode() {
+    var st = mode === "stiff";
+    $("boxDims").hidden = st;
+    $("stiffBox").hidden = !st;
+    $("unitField").hidden = st;
+    $("sUnitField").hidden = !st;
+    $("modeSel").value = mode;
+    $("sUnitSel").value = sunit;
+    $("NB").parentNode.hidden = st;
+    $("stiffOut").hidden = !st;
+    $("stiffOrig").hidden = !st;
+    for (var i = 0; i < SEGMAX; i++) {
+      $("S" + i).parentNode.hidden = i >= segs;
+      $("SL" + i).textContent = segName(i, segs);
+    }
+    /* سب سائز ایک ہی لائن میں (5 تک)، اس سے زیادہ ہوں تو دو لائنوں میں */
+    $("segFields").style.setProperty("--cols", String(segs <= 5 ? segs : Math.ceil(segs / 2)));
+    $("segCount").textContent = "کل سائز: " + segs;
+    $("segDel").disabled = segs <= 2;
+    $("segAdd").disabled = segs >= SEGMAX;
+  }
+
+
+  /* ---------- ریٹ لسٹ: پیپر چنیں تو GSM اور ریٹ خود بھر جائیں ---------- */
+  var RKEY = "carton-rates-v1", RL = [], rt = "credit", rlTimer = null;
+  var DEFAULT_RATES = [
+    ["PIONEER", "KLB", 125, 146, 146],
+    ["LOCAL", "KLB", 125, 132, 128],
+    ["LOCAL", "BB 2.5", 145, 113, 110],
+    ["UMAAR MOMIN", "BB 2.5", 145, 128, 128],
+    ["KING", "ATL", 150, 192, 200],
+    ["", "KCL", 150, 172, 177],
+    ["", "CMP", 100, 138, 130],
+    ["", "WTL", 135, 175, 175],
+    ["", "SF", 110, 109, 103],
+    ["", "CB", 210, 153, 137],
+    ["", "TL", 120, 123, 118],
+    ["", "F", 100, 100, 93]
+  ];
+  function defaultRates() {
+    return DEFAULT_RATES.map(function (a, i) { return { id: i + 1, b: a[0], q: a[1], g: a[2], c: a[3], h: a[4] }; });
+  }
+  function okItem(x) {
+    return x && typeof x.id === "number" && typeof x.b === "string" && typeof x.q === "string" && x.g > 0 && x.c >= 0 && x.h >= 0;
+  }
+  /* پرانی ڈیفالٹ لسٹ (جس میں ہر قطار میں KING لکھا تھا) پہچاننے کے لیے */
+  var OLD_KING = ["KCL", "CMP", "WTL", "SF", "CB", "TL", "F"];
+  function isOldDefault(s) {
+    var d = defaultRates();
+    if (s.length !== d.length) return false;
+    return s.every(function (x, i) {
+      var y = d[i], b = OLD_KING.indexOf(y.q) >= 0 && y.b === "" ? "KING" : y.b;
+      return x.b === b && x.q === y.q && x.g === y.g && x.c === y.c && x.h === y.h;
+    });
+  }
+  function loadRates() {
+    RL = defaultRates();
+    try {
+      var s = JSON.parse(localStorage.getItem(RKEY));
+      if (Array.isArray(s) && s.length && s.every(okItem)) {
+        if (isOldDefault(s)) persistRates(); else RL = s;
+      }
+    } catch (e) {}
+  }
+  function persistRates() { try { localStorage.setItem(RKEY, JSON.stringify(RL)); } catch (e) {} }
+  function rlLabel(x) { return (x.b ? x.b + " · " : "") + x.q + " · " + x.g; }
+  function rlFind(id) {
+    for (var i = 0; i < RL.length; i++) if (String(RL[i].id) === String(id)) return RL[i];
+    return null;
+  }
+  function fillRS() {
+    for (var i = 0; i < 7; i++) {
+      var sel = $("RS" + i), cur = sel.value;
+      sel.innerHTML = "";
+      var o0 = document.createElement("option");
+      o0.value = ""; o0.textContent = "— لسٹ سے چنیں —";
+      sel.appendChild(o0);
+      RL.forEach(function (x) {
+        var o = document.createElement("option");
+        o.value = String(x.id); o.textContent = rlLabel(x);
+        sel.appendChild(o);
+      });
+      sel.value = cur;
+      if (sel.value !== cur) sel.value = "";
+      sel.classList.toggle("on", sel.value !== "");
+    }
+  }
+  /* چنے ہوئے پیپر کا GSM اور ریٹ (کریڈٹ یا کیش) پرت میں بھرنا */
+  function applyPick(i) {
+    var sel = $("RS" + i), x = rlFind(sel.value);
+    sel.classList.toggle("on", !!x);
+    if (!x) return;
+    $("G" + i).value = String(x.g);
+    $("P" + i).value = String(rt === "cash" ? x.h : x.c);
+  }
+  function refreshPicks() { for (var i = 0; i < 7; i++) applyPick(i); }
+  function syncRt() {
+    $("rtSel").value = rt;
+  }
+
+  /* ریٹ لسٹ کا ایڈیٹر */
+  function rlMsg(t, bad) {
+    $("rlMsg").textContent = t;
+    $("rlMsg").className = "rlmsg" + (bad ? " err" : "");
+  }
+  function rlRow(x) {
+    var row = document.createElement("div");
+    row.className = "rlrow";
+    if (x && x.id) row.dataset.id = String(x.id);
+    function inp(cls, val, label, num) {
+      var e = document.createElement("input");
+      e.type = "text"; e.className = cls; e.value = val; e.autocomplete = "off";
+      e.setAttribute("aria-label", label);
+      if (num) e.setAttribute("inputmode", "decimal");
+      return e;
+    }
+    row.appendChild(inp("t b", x ? x.b : "", "برانڈ", false));
+    row.appendChild(inp("t q", x ? x.q : "", "کوالٹی", false));
+    row.appendChild(inp("g", x ? String(x.g) : "", "GSM", true));
+    row.appendChild(inp("c", x ? String(x.c) : "", "کریڈٹ ریٹ", true));
+    row.appendChild(inp("h", x ? String(x.h) : "", "کیش ریٹ", true));
+    var del = document.createElement("button");
+    del.type = "button"; del.textContent = "✕"; del.setAttribute("aria-label", "یہ قطار ہٹائیں");
+    del.addEventListener("click", function () { row.remove(); rlMsg("قطار ہٹا دی۔ آگے محفوظ کرنے کے لیے \"محفوظ کریں\" دبائیں۔", false); });
+    row.appendChild(del);
+    return row;
+  }
+  function renderRateEditor() {
+    var box = $("rlBox");
+    box.innerHTML = "";
+    var head = document.createElement("div");
+    head.className = "rlrow head";
+    ["برانڈ", "کوالٹی", "GSM", "کریڈٹ", "کیش", ""].forEach(function (t) {
+      var sp = document.createElement("span"); sp.textContent = t; head.appendChild(sp);
+    });
+    box.appendChild(head);
+    RL.forEach(function (x) { box.appendChild(rlRow(x)); });
+  }
+  function saveRatesFromEditor() {
+    var rows = document.querySelectorAll("#rlBox .rlrow:not(.head)"), out = [], maxId = 0, k;
+    for (k = 0; k < RL.length; k++) if (RL[k].id > maxId) maxId = RL[k].id;
+    for (k = 0; k < rows.length; k++) {
+      var row = rows[k];
+      var b = row.querySelector(".b").value.trim(), q = row.querySelector(".q").value.trim();
+      var gT = row.querySelector(".g").value.trim(), cT = row.querySelector(".c").value.trim(), hT = row.querySelector(".h").value.trim();
+      if (!b && !q && !gT && !cT && !hT) continue;
+      var g = parseFloat(gT), c = parseFloat(cT), h = parseFloat(hT);
+      if (!q || !(g > 0) || !(c >= 0) || !(h >= 0)) {
+        rlMsg("قطار " + (k + 1) + " میں کوالٹی، GSM اور دونوں ریٹ درست لکھیں۔", true);
+        return;
+      }
+      var id = row.dataset.id ? +row.dataset.id : ++maxId;
+      out.push({ id: id, b: b, q: q, g: g, c: c, h: h });
+    }
+    if (!out.length) { rlMsg("لسٹ خالی نہیں ہو سکتی۔ کم از کم ایک پیپر لکھیں۔", true); return; }
+    RL = out;
+    persistRates();
+    fillRS();
+    refreshPicks();
+    renderRateEditor();
+    save();
+    onEdit();
+    rlMsg("ریٹ لسٹ محفوظ ہو گئی۔ چنے ہوئے پیپروں کے ریٹ نئے ہو گئے ہیں، نتیجے کے لیے اپلائی دبائیں۔", false);
+  }
+  function resetRates() {
+    RL = defaultRates();
+    persistRates();
+    fillRS();
+    refreshPicks();
+    renderRateEditor();
+    save();
+    onEdit();
+    rlMsg("اصل ریٹ لسٹ بحال ہو گئی۔", false);
+  }
+
+
+  /* ---------- محفوظ کمبی نیشن: ایک بار محفوظ، بار بار ایک کلک میں ---------- */
+  var CKEY = "carton-combos-v1", CL = [];
+  function loadCombos() {
+    CL = [];
+    try {
+      var s = JSON.parse(localStorage.getItem(CKEY));
+      if (Array.isArray(s)) CL = s.filter(function (c) {
+        return c && typeof c.name === "string" && (c.plies === 3 || c.plies === 5 || c.plies === 7) && Array.isArray(c.layers) && c.layers.length === c.plies;
+      });
+    } catch (e) {}
+  }
+  function persistCombos() { try { localStorage.setItem(CKEY, JSON.stringify(CL)); } catch (e) {} }
+  function cmbFind(name) {
+    var n = String(name).trim().toLowerCase();
+    for (var i = 0; i < CL.length; i++) if (CL[i].name.trim().toLowerCase() === n) return i;
+    return -1;
+  }
+  function cmbMsg(t, bad) {
+    $("cmbMsg").textContent = t;
+    $("cmbMsg").className = "rlmsg" + (bad ? " err" : "");
+  }
+  function fillCombos() {
+    var sel = $("cmbSel"), cur = sel.value;
+    sel.innerHTML = "";
+    var o0 = document.createElement("option");
+    o0.value = ""; o0.textContent = CL.length ? "— کمبی نیشن چنیں —" : "— ابھی کوئی محفوظ نہیں —";
+    sel.appendChild(o0);
+    CL.forEach(function (c) {
+      var o = document.createElement("option");
+      o.value = c.name; o.textContent = c.name + " (" + c.plies + ")";
+      sel.appendChild(o);
+    });
+    sel.value = cur;
+    if (sel.value !== cur) sel.value = "";
+  }
+  function renderComboList() {
+    var box = $("cmbList");
+    box.innerHTML = "";
+    CL.forEach(function (c) {
+      var row = document.createElement("div");
+      row.className = "cmbitem";
+      var nm = document.createElement("button");
+      nm.type = "button"; nm.className = "nm"; nm.textContent = c.name;
+      nm.addEventListener("click", function () { applyCombo(c.name); });
+      var sm = document.createElement("span");
+      sm.className = "sm"; sm.textContent = c.plies + " پلائی";
+      var del = document.createElement("button");
+      del.type = "button"; del.className = "del"; del.textContent = "حذف";
+      del.setAttribute("aria-label", c.name + " حذف کریں");
+      var timer = null;
+      del.addEventListener("click", function () {
+        if (!timer) {
+          del.textContent = "پکا؟"; del.classList.add("arm");
+          timer = setTimeout(function () { timer = null; del.textContent = "حذف"; del.classList.remove("arm"); }, 3000);
+          return;
+        }
+        clearTimeout(timer); timer = null;
+        var i = cmbFind(c.name);
+        if (i >= 0) CL.splice(i, 1);
+        persistCombos(); fillCombos(); renderComboList();
+        cmbMsg("\"" + c.name + "\" حذف ہو گیا۔", false);
+      });
+      row.appendChild(nm); row.appendChild(sm); row.appendChild(del);
+      box.appendChild(row);
+    });
+  }
+  function saveCombo() {
+    var name = $("cmbName").value.trim();
+    if (!name) { cmbMsg("پہلے کمبی نیشن کا نام لکھیں۔", true); return; }
+    var layers = [];
+    for (var i = 0; i < plies; i++) {
+      var g = val("G" + i), p = val("P" + i);
+      if (!(g > 0) || !(p > 0)) { cmbMsg("پرت " + (i + 1) + " کا GSM اور ریٹ درست لکھیں۔", true); return; }
+      layers.push({ t: $("T" + i).value, g: g, p: p, rs: $("RS" + i).value });
+    }
+    var item = { name: name, plies: plies, layers: layers }, idx = cmbFind(name), again = idx >= 0;
+    if (again) CL[idx] = item; else CL.push(item);
+    persistCombos(); fillCombos(); renderComboList();
+    $("cmbSel").value = name;
+    $("cmbName").value = "";
+    cmbMsg("\"" + name + "\" " + (again ? "نئے سرے سے محفوظ ہو گیا (پرانا بدل گیا)۔" : "محفوظ ہو گیا۔ اب اوپر \"محفوظ کمبی نیشن\" میں موجود ہے۔"), false);
+  }
+  function applyCombo(name) {
+    var idx = cmbFind(name);
+    if (idx < 0) return;
+    var c = CL[idx];
+    plies = c.plies;
+    applyPlies();
+    for (var i = 0; i < c.plies; i++) {
+      var L = c.layers[i];
+      if (L.t === "p" || L.t === "t" || L.t === "n") $("T" + i).value = L.t;
+      $("G" + i).value = String(L.g);
+      $("P" + i).value = String(L.p);
+      var x = L.rs ? rlFind(L.rs) : null;
+      $("RS" + i).value = x ? String(x.id) : "";
+      applyPick(i);   /* ریٹ لسٹ والا پیپر ہو تو GSM اور ریٹ لسٹ کے موجودہ (کریڈٹ یا کیش) ریٹ سے */
+    }
+    onPaperEdit();
+    $("cmbSel").value = c.name;
+  }
+
+
+  /* ---------- خلاصہ، تصویر کی کاپی، محفوظ شدہ ریکارڈ اور فولڈر بیک اپ ---------- */
+  var HKEY = "carton-history-v1", HL = [], LAST = null, LROWS = [], LTOT = null, CTXLINES = [], PLAST = null;
+  var COIDS = ["sumCo", "PlCo", "PCo"];
+  var KIND = { cost: "کاسٹنگ خلاصہ", plant: "پلانٹ", prod: "پروڈکشن پلان" };
+  var KINDEN = { cost: "Costing", plant: "Plant", prod: "Production" };
+  var MON3 = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  var MON_UR = { "جنوری": 1, "فروری": 2, "مارچ": 3, "اپریل": 4, "مئی": 5, "جون": 6, "جولائی": 7, "اگست": 8, "ستمبر": 9, "اکتوبر": 10, "نومبر": 11, "دسمبر": 12 };
+  var CARDCLS = { outCost: "cost", outBox: "cost", outRate: "gain", outFinal: "final", pLab: "cost", pCost: "cost", pBox: "cost", pRate: "gain", pFinal: "final" };
+  function pad2(n) { return n < 10 ? "0" + n : String(n); }
+  function fmtDate(d, m, y) { return d + " " + MON3[m - 1] + " " + y; }
+  function todayText() { var n = new Date(); return fmtDate(n.getDate(), n.getMonth() + 1, n.getFullYear()); }
+  function todayIso() { var n = new Date(); return n.getFullYear() + "-" + pad2(n.getMonth() + 1) + "-" + pad2(n.getDate()); }
+  function stampName() { var n = new Date(); return todayIso() + " " + pad2(n.getHours()) + "-" + pad2(n.getMinutes()) + "-" + pad2(n.getSeconds()); }
+  /* پرانی تاریخوں کو بھی "23 OCT 2026" کی شکل میں دکھانا */
+  function dateDisp(t) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(t);
+    if (m) return fmtDate(+m[3], +m[2], +m[1]);
+    m = /^(\d{1,2}) (\S+) (\d{4})$/.exec(t);
+    if (m && MON_UR[m[2]]) return fmtDate(+m[1], MON_UR[m[2]], +m[3]);
+    return t;
+  }
+  function refreshDate() { $("sumDateShow").textContent = todayText(); }
+
+  /* سائز کی صرف دو لائنیں: (1) ڈبے یا اسٹفنر کا سائز، (2) ریل، میجر، مربع انچ اور پیس */
+  function sizeLines2(Z) {
+    var l1;
+    if (mode === "stiff") {
+      var parts = [];
+      for (var i = 0; i < segs - 1; i++) parts.push(segName(i, segs) + " " + $("S" + i).value.trim());
+      l1 = "اسٹفنر (" + UN[sunit] + "): " + parts.join(" + ") + " | آخری " + $("S" + (segs - 1)).value.trim();
+    } else {
+      l1 = "ڈبے کا سائز: " + $("L").value.trim() + " × " + $("W").value.trim() + " × " + $("H").value.trim() + " " + UN[unit];
+    }
+    var nbv = val("NB"); if (!(nbv > 0)) nbv = 1;
+    var l2 = "ریل " + r(Z.reel, 2) + " in" + (Z.mr > 0 ? " (اپنی)" : "") + " · میجر " + r(Z.lenIn, 2) + " in" + (Z.mm > 0 ? " (اپنا)" : "") +
+      " · کل مربع انچ " + r(Z.lenIn * Z.reel, 1) + " · " +
+      (Z.sInfo ? "پیس: میجر سے " + Z.sInfo.np + " × ریل سے " + Z.sInfo.across + " = کل " + Z.sInfo.nb : "ایک شیٹ سے " + r(nbv, 2) + " باکس");
+    return [l1, l2];
+  }
+  function setCtx(lines) {
+    CTXLINES = lines || [];
+    var h = CTXLINES.map(function (l) { return "<div>" + esc(l) + "</div>"; }).join("");
+    ["ctxPlant", "ctxProd", "ctxTrial"].forEach(function (id) { $(id).innerHTML = h; });
+  }
+  function cardData(id) {
+    var v = $(id), c = v.parentNode;
+    if (c.hidden) return null;
+    var ds = [];
+    c.querySelectorAll(".d").forEach(function (e) { if (e.textContent.trim()) ds.push(e.textContent.trim()); });
+    return { k: c.querySelector(".k").textContent.trim(), v: v.textContent.trim(), d: ds, c: CARDCLS[id] || "size" };
+  }
+  /* آخری اپلائی کا خلاصہ (کاسٹنگ) */
+  function snapshot(Z) {
+    if ($("outCost").textContent.trim() === "—") { LAST = null; $("sumSize").innerHTML = ""; return; }
+    var sizes = sizeLines2(Z);
+    var main = ["outCost", "outBox", "outRate", "outFinal"].map(cardData).filter(Boolean);
+    /* پلانٹ کی سطریں تب جب آپ نے پلانٹ کا خرچ، منافع یا GST لکھا ہو */
+    var plantUsed = ["PX", "PP", "PG"].some(function (id) { return $(id).value.trim() !== ""; });
+    var plant = (!plantUsed || $("pLab").textContent.trim() === "—") ? [] : ["pLab", "pCost", "pBox", "pRate", "pFinal"].map(cardData).filter(Boolean);
+    LAST = { sizes: sizes, table: $("brk").innerHTML, rows: LROWS, tot: LTOT, main: main, plant: plant };
+    $("sumSize").innerHTML = sizes.map(function (l) { return "<div>" + esc(l) + "</div>"; }).join("");
+  }
+
+  /* ---- دستاویز (doc): ایک ہی ڈھانچے سے HTML بھی اور تصویر بھی بنتی ہے ---- */
+  function coName(id) { return $(id).value.trim() || "بغیر نام"; }
+  function costDoc(co, rem) {
+    var blocks = [{ t: "lines", lines: LAST.sizes }];
+    blocks.push({
+      t: "table",
+      cols: [{ h: "پرت", k: "n0" }, { h: "قسم", k: "t" }, { h: "پیپر", k: "p" }, { h: "وزن شیٹ (g)", k: "n" }, { h: "لاگت شیٹ", k: "n" }],
+      rows: LAST.rows.map(function (x) { return { c: [String(x.n), x.type, x.paper, String(x.gm), String(x.cost)], hl: !!x.fl }; }),
+      total: LAST.tot ? { label: "کل", span: 3, vals: [String(LAST.tot.gm), String(LAST.tot.c)] } : null
+    });
+    blocks.push({ t: "cards", items: LAST.main });
+    if (LAST.plant.length) { blocks.push({ t: "h", text: "پلانٹ" }); blocks.push({ t: "cards", items: LAST.plant }); }
+    return { kind: "cost", title: co, rem: rem, date: todayText(), blocks: blocks };
+  }
+  function plantDoc(co, rem) {
+    var items = ["pLab", "pCost", "pBox", "pRate", "pFinal"].map(cardData).filter(Boolean);
+    return { kind: "plant", title: co, rem: rem, date: todayText(), blocks: [{ t: "lines", lines: CTXLINES.slice() }, { t: "cards", items: items }] };
+  }
+  function prodDoc(co, rem) {
+    var P = PLAST, blocks = [{ t: "lines", lines: CTXLINES.slice() }];
+    blocks.push({ t: "lines", lines: ["آرڈر: " + fmt(P.qty, 0) + " ڈبے → " + fmt(P.sheets, 0) + " شیٹ · کل پیپر وزن: " + fmt(P.tot, 1) + " کلو"].concat(P.rlen > 0 ? ["ہر رول کی لمبائی: " + fmt(P.rlen, 0) + " انچ"] : []) });
+    blocks.push({ t: "h", text: "ہر پرت کا وزن" });
+    blocks.push({
+      t: "table",
+      cols: [{ h: "پرت", k: "n0" }, { h: "قسم", k: "t" }, { h: "پیپر", k: "p" }, { h: "GSM", k: "n" }, { h: "وزن (کلو)", k: "n" }],
+      rows: P.rows.map(function (x) { return { c: [String(x.n), x.type, x.paper, x.g, x.kg], hl: !!x.fl }; }),
+      total: { label: "کل", span: 4, vals: [fmt(P.tot, 1)] }
+    });
+    blocks.push({ t: "h", text: "درکار رول" });
+    if (P.haveRolls) {
+      var rows = [];
+      for (var j = 0; j < P.npairs; j++) rows.push({ c: ["جوڑی " + (j + 1), String(P.whole) + " رول"], hl: true });
+      blocks.push({ t: "table", cols: [{ h: "جوڑی", k: "t" }, { h: "رول", k: "n" }], rows: rows, total: { label: "کل رول", span: 1, vals: [String(P.npairs * P.whole)] } });
+      if (P.left.length) blocks.push({ t: "lines", lines: ["پرت " + P.left.join("، ") + " (پلین) رول میں نہیں گنی گئی۔"] });
+    } else {
+      blocks.push({ t: "lines", lines: [P.rlen > 0 ? "کوئی نالی والی پرت نہیں چنی، اس لیے رول کی جوڑی نہیں بنی۔" : "رول کی لمبائی لکھیں تو رول کی تعداد نکلے گی۔"] });
+    }
+    return { kind: "prod", title: co, rem: rem, date: todayText(), blocks: blocks };
+  }
+  function recDoc(rec) {
+    if (rec.doc) return rec.doc;
+    return { kind: rec.kind || "cost", title: rec.company, rem: rec.rem || "", date: dateDisp(rec.date), blocks: [{ t: "lines", lines: String(rec.text || "").split("\n") }] };
+  }
+  function docToHTML(doc) {
+    var h = '<div class="sumdoc"><div class="sh"><b>' + esc(doc.title) + "</b> · " + esc(dateDisp(doc.date)) + ' <span class="sm">· ' + esc(KIND[doc.kind] || "") + "</span></div>";
+    if (doc.rem) h += '<div class="sr">ریمارکس: ' + esc(doc.rem) + "</div>";
+    doc.blocks.forEach(function (b) {
+      if (b.t === "lines") h += '<div class="ss">' + b.lines.map(function (l) { return "<div>" + esc(l) + "</div>"; }).join("") + "</div>";
+      else if (b.t === "h") h += '<div class="sh2">' + esc(b.text) + "</div>";
+      else if (b.t === "cards") {
+        h += '<div class="sc">' + b.items.map(function (c) {
+          return '<div class="cr"><span>' + esc(c.k) + "</span><b>" + esc(c.v) + "</b></div>" + c.d.map(function (t) { return '<div class="cd">' + esc(t) + "</div>"; }).join("");
+        }).join("") + "</div>";
+      } else if (b.t === "table") {
+        var t = '<div class="brk-wrap"><table class="brk"><tr>' + b.cols.map(function (c) { return "<th>" + esc(c.h) + "</th>"; }).join("") + "</tr>";
+        b.rows.forEach(function (rw) {
+          t += "<tr" + (rw.hl ? ' class="fl"' : "") + ">" + rw.c.map(function (x, i) { var k = b.cols[i].k; return '<td class="' + (k === "p" ? "pn" : (k === "t" ? "" : "n")) + '">' + esc(x) + "</td>"; }).join("") + "</tr>";
+        });
+        if (b.total) t += '<tr class="tot"><td colspan="' + b.total.span + '">' + esc(b.total.label) + "</td>" + b.total.vals.map(function (x) { return '<td class="n">' + esc(x) + "</td>"; }).join("") + "</tr>";
+        h += t + "</table></div>";
+      }
+    });
+    return h + "</div>";
+  }
+
+  /* ---- تصویر بنانا (canvas): کوئی بیرونی لائبریری نہیں، آف لائن بھی چلتا ہے ---- */
+  var IMG = { W: 900, S: 2, PAD: 28 };
+  function imgFonts() {
+    var body = getComputedStyle(document.body).fontFamily || "sans-serif";
+    var num = getComputedStyle($("outCost")).fontFamily || "monospace";
+    return { body: body + ', "Noto Naskh Arabic", "Noto Sans Arabic", Tahoma, sans-serif', num: num };
+  }
+  function drawDoc(c, doc, F, dry) {
+    var W = IMG.W, P = IMG.PAD, IN = W - 2 * P, y = 0;
+    var COL = { fg: "#17262b", mut: "#5b6b70", line: "#d5dde0", head: "#e9eef0", blue: "#0f5c8c", fl: "#fff1b8",
+      cost: ["#fbe4e0", "#b3261e"], gain: ["#e0f1e5", "#1b7a3a"], final: ["#e0f1e5", "#1b7a3a"], size: ["#e1edf6", "#0f5c8c"] };
+    function fnt(px, wt, fam) { return (wt || 400) + " " + px + "px " + fam; }
+    function ar(t) { return /[\u0600-\u06FF]/.test(t); }
+    function T(t, x, yb, f, col, al, dir) {
+      if (dry) return;
+      c.font = f; c.fillStyle = col; c.textAlign = al; c.direction = dir || (ar(t) ? "rtl" : "ltr"); c.fillText(t, x, yb);
+    }
+    function R(x, yy, w, h, col) { if (dry) return; c.fillStyle = col; c.fillRect(x, yy, w, h); }
+    function wrap(t, maxW, f) {
+      c.font = f;
+      var words = String(t).split(/\s+/), lines = [], cur = "";
+      words.forEach(function (w) {
+        var tt = cur ? cur + " " + w : w;
+        if (!cur || c.measureText(tt).width <= maxW) cur = tt; else { lines.push(cur); cur = w; }
+      });
+      if (cur) lines.push(cur);
+      return lines;
+    }
+    /* ہیڈر */
+    var HH = 80;
+    R(0, 0, W, HH, COL.blue);
+    T(doc.title, W - P, 38, fnt(28, 700, F.body), "#ffffff", "right");
+    T(KIND[doc.kind] || "", W - P, 64, fnt(16, 400, F.body), "#d6e6f0", "right");
+    T(dateDisp(doc.date), P, 40, fnt(22, 600, F.num), "#ffffff", "left", "ltr");
+    y = HH + 12;
+    if (doc.rem) {
+      var rl = wrap("ریمارکس: " + doc.rem, IN - 24, fnt(17, 400, F.body)), rh = rl.length * 26 + 14;
+      R(P, y, IN, rh, "#eef3f6");
+      rl.forEach(function (l, i) { T(l, W - P - 12, y + 25 + i * 26, fnt(17, 400, F.body), COL.fg, "right"); });
+      y += rh + 12;
+    } else y += 4;
+    doc.blocks.forEach(function (b) {
+      if (b.t === "lines") {
+        b.lines.forEach(function (l) {
+          wrap(l, IN, fnt(19, 400, F.body)).forEach(function (w) { T(w, W - P, y + 22, fnt(19, 400, F.body), COL.fg, "right"); y += 30; });
+        });
+        y += 8;
+      } else if (b.t === "h") {
+        T(b.text, W - P, y + 24, fnt(21, 700, F.body), COL.blue, "right"); y += 40;
+      } else if (b.t === "table") {
+        var wts = { n0: 0.8, t: 1.5, p: 2.6, n: 1.6 }, sum = 0;
+        b.cols.forEach(function (cc) { sum += wts[cc.k]; });
+        var cw = b.cols.map(function (cc) { return IN * wts[cc.k] / sum; });
+        var xr = [], acc = W - P;
+        cw.forEach(function (w) { xr.push(acc); acc -= w; });
+        function cell(i, txt, yb, isHead, bold) {
+          var k = b.cols[i].k, f = isHead ? fnt(16, 700, F.body) : (k === "n" || k === "n0" ? fnt(18, bold ? 700 : 400, F.num) : fnt(k === "p" ? 16 : 18, bold ? 700 : 400, F.body));
+          if (k === "n" || k === "n0") T(txt, xr[i] - cw[i] / 2, yb, f, COL.fg, "center", "ltr");
+          else T(txt, xr[i] - 8, yb, f, COL.fg, "right");
+        }
+        R(P, y, IN, 38, COL.head);
+        b.cols.forEach(function (cc, i) { cell(i, cc.h, y + 25, true); });
+        y += 38;
+        b.rows.forEach(function (rw) {
+          if (rw.hl) R(P, y, IN, 36, COL.fl);
+          R(P, y + 35, IN, 1, COL.line);
+          rw.c.forEach(function (x, i) { cell(i, x, y + 24, false); });
+          y += 36;
+        });
+        if (b.total) {
+          R(P, y, IN, 2, COL.fg);
+          var spanW = 0, i2;
+          for (i2 = 0; i2 < b.total.span; i2++) spanW += cw[i2];
+          T(b.total.label, W - P - 8, y + 26, fnt(18, 700, F.body), COL.fg, "right");
+          b.total.vals.forEach(function (x, k2) { cell(b.total.span + k2, x, y + 26, false, true); });
+          y += 38;
+        }
+        y += 14;
+      } else if (b.t === "cards") {
+        b.items.forEach(function (it) {
+          var cs = COL[it.c || "size"], big = it.c === "final", dl = [];
+          it.d.forEach(function (d) { wrap(d, IN - 44, fnt(15, 400, F.body)).forEach(function (x) { dl.push(x); }); });
+          var band = big ? 60 : 48, ch = 12 + band + dl.length * 22 + 10;
+          R(P, y, IN, ch, cs[0]); R(P + IN - 7, y, 7, ch, cs[1]);
+          T(it.k, W - P - 22, y + 12 + (big ? 32 : 28), fnt(17, 400, F.body), COL.mut, "right");
+          T(it.v, P + 20, y + 12 + (big ? 48 : 38), fnt(big ? 46 : 34, 700, F.num), cs[1], "left", "ltr");
+          dl.forEach(function (x, i) { T(x, W - P - 22, y + 12 + band + 18 + i * 22 - 4, fnt(15, 400, F.body), COL.mut, "right"); });
+          y += ch + 10;
+        });
+        y += 4;
+      }
+    });
+    y += 6;
+    T("کارٹن شیٹ کیلکولیٹر", W / 2, y + 14, fnt(13, 400, F.body), "#9aa8ad", "center");
+    return y + 34;
+  }
+  function renderDoc(doc) {
+    var F = imgFonts(), probe = document.createElement("canvas").getContext("2d");
+    var h = drawDoc(probe, doc, F, true);
+    var cv = document.createElement("canvas");
+    cv.width = IMG.W * IMG.S; cv.height = Math.ceil(h * IMG.S);
+    var c = cv.getContext("2d");
+    c.fillStyle = "#ffffff"; c.fillRect(0, 0, cv.width, cv.height);
+    c.scale(IMG.S, IMG.S);
+    drawDoc(c, doc, F, false);
+    return cv;
+  }
+
+  /* ---- تصویر کاپی، شیئر اور فولڈر ---- */
+  function flash(btn, txt) {
+    var old = btn.dataset.t || btn.textContent;
+    btn.dataset.t = old; btn.textContent = txt;
+    setTimeout(function () { btn.textContent = old; }, 1800);
+  }
+  function showImgBox(cv) {
+    var url = cv.toDataURL("image/png");
+    $("copyImg").src = url; $("copyDl").href = url; $("copyBox").hidden = false;
+  }
+  function copyDocImage(doc, btn) {
+    var cv = renderDoc(doc);
+    var blobP = new Promise(function (res) { cv.toBlob(res, "image/png"); });
+    function fallback() {
+      blobP.then(function (blob) {
+        var file = new File([blob], "costing.png", { type: "image/png" });
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], title: doc.title }).catch(function () { showImgBox(cv); });
+        } else showImgBox(cv);
+      });
+      flash(btn, "تصویر نیچے ہے");
+    }
+    if (navigator.clipboard && window.ClipboardItem) {
+      try {
+        navigator.clipboard.write([new ClipboardItem({ "image/png": blobP })]).then(function () { flash(btn, "تصویر کاپی ہو گئی ✓"); }, fallback);
+        return;
+      } catch (e) {}
+    }
+    fallback();
+  }
+  function shareDocImage(doc, btn) {
+    var cv = renderDoc(doc);
+    cv.toBlob(function (blob) {
+      var file = new File([blob], "costing.png", { type: "image/png" });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) navigator.share({ files: [file], title: doc.title }).catch(function () {});
+      else showImgBox(cv);
+    }, "image/png");
+  }
+  function canShareFiles() {
+    try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [new File([""], "a.png", { type: "image/png" })] })); } catch (e) { return false; }
+  }
+
+  /* ڈیسک ٹاپ کا بیک اپ فولڈر (Chrome اور Edge): فولڈر ایک بار چنیں، پھر ہر محفوظ پر تصویر وہاں بھی لکھی جاتی ہے */
+  var DIRH = null;
+  function idb(op, key, value) {
+    return new Promise(function (res) {
+      try {
+        var rq = indexedDB.open("carton-fs", 1);
+        rq.onupgradeneeded = function () { rq.result.createObjectStore("h"); };
+        rq.onerror = function () { res(null); };
+        rq.onsuccess = function () {
+          try {
+            var st = rq.result.transaction("h", op === "get" ? "readonly" : "readwrite").objectStore("h");
+            var q = op === "get" ? st.get(key) : st.put(value, key);
+            q.onsuccess = function () { res(q.result || null); };
+            q.onerror = function () { res(null); };
+          } catch (e) { res(null); }
+        };
+      } catch (e) { res(null); }
+    });
+  }
+  function fMsg(t, bad) { $("folderMsg").textContent = t; $("folderMsg").className = "rlmsg" + (bad ? " err" : ""); }
+  function folderUI() {
+    var ok = !!window.showDirectoryPicker;
+    $("folderBtn").hidden = !ok;
+    $("folderStatus").textContent = ok ? (DIRH ? "بیک اپ فولڈر: " + DIRH.name : "بیک اپ فولڈر: ابھی نہیں چنا") : "فولڈر میں بیک اپ کی سہولت صرف کمپیوٹر کے Chrome یا Edge میں ہے۔ یہاں محفوظ صرف براؤزر میں ہوتا ہے۔";
+    $("folderBtn").textContent = DIRH ? "فولڈر بدلیں" : "بیک اپ فولڈر چنیں";
+  }
+  function pickFolder() {
+    if (!window.showDirectoryPicker) return;
+    window.showDirectoryPicker({ mode: "readwrite" }).then(function (h) {
+      DIRH = h; idb("put", "dir", h); folderUI(); fMsg("فولڈر چن لیا: " + h.name + "۔ اب ہر محفوظ کی تصویر وہاں بھی لکھی جائے گی۔", false);
+    }).catch(function (e) {
+      if (e && e.name === "AbortError") return;
+      fMsg("فولڈر نہیں چنا جا سکا۔ اس صفحے میں یہ اجازت نہیں ملی؛ انسٹال کی ہوئی ایپ میں چل جائے گا۔", true);
+    });
+  }
+  function folderInit() {
+    folderUI();
+    if (window.showDirectoryPicker) idb("get", "dir").then(function (h) { if (h && h.kind === "directory") { DIRH = h; folderUI(); } });
+  }
+  function safeName(t) { return String(t).replace(/[\\/:*?"<>|\u0000-\u001f]/g, "-").replace(/\s+/g, " ").trim().slice(0, 120); }
+  function folderWrite(name, blob) {
+    if (!DIRH) return Promise.resolve("none");
+    return Promise.resolve().then(function () { return DIRH.queryPermission({ mode: "readwrite" }); }).then(function (p) {
+      return p === "granted" ? p : DIRH.requestPermission({ mode: "readwrite" });
+    }).then(function (p) {
+      if (p !== "granted") return "denied";
+      return DIRH.getFileHandle(name, { create: true }).then(function (fh) { return fh.createWritable(); }).then(function (w) {
+        return w.write(blob).then(function () { return w.close(); });
+      }).then(function () { return "ok"; });
+    }).catch(function () { return "error"; });
+  }
+
+  /* ---- محفوظ شدہ ریکارڈ ---- */
+  function loadHist() {
+    HL = [];
+    try {
+      var s = JSON.parse(localStorage.getItem(HKEY));
+      if (Array.isArray(s)) HL = s.filter(function (h) { return h && typeof h.company === "string" && (h.doc || typeof h.html === "string"); });
+    } catch (e) {}
+  }
+  function persistHist() { try { localStorage.setItem(HKEY, JSON.stringify(HL)); return true; } catch (e) { return false; } }
+  function sumMsg(t, bad) { $("sumMsg").textContent = t; $("sumMsg").className = "rlmsg" + (bad ? " err" : ""); }
+  function msgOf(id, t, bad) { var e = $(id); e.textContent = t; e.className = "rlmsg" + (bad ? " err" : ""); }
+  function renderHist() {
+    $("h-hist").textContent = "محفوظ شدہ ریکارڈ (" + HL.length + ")";
+    var f = $("histFilter").value, box = $("histList");
+    box.innerHTML = "";
+    HL.slice().reverse().forEach(function (h) {
+      var kind = h.kind || "cost";
+      if (f !== "all" && f !== kind) return;
+      var row = document.createElement("div");
+      row.className = "cmbitem";
+      var nm = document.createElement("button");
+      nm.type = "button"; nm.className = "nm";
+      nm.textContent = "[" + (KIND[kind] || "") + "] " + h.company + (h.rem ? " (" + h.rem + ")" : "") + " · " + dateDisp(h.date) + (h.final ? " · " + h.final : "");
+      nm.addEventListener("click", function () { openHist(h.id); });
+      var sm = document.createElement("span"); sm.className = "sm";
+      var del = document.createElement("button");
+      del.type = "button"; del.className = "del"; del.textContent = "حذف";
+      del.setAttribute("aria-label", h.company + " حذف کریں");
+      var timer = null;
+      del.addEventListener("click", function () {
+        if (!timer) {
+          del.textContent = "پکا؟"; del.classList.add("arm");
+          timer = setTimeout(function () { timer = null; del.textContent = "حذف"; del.classList.remove("arm"); }, 3000);
+          return;
+        }
+        clearTimeout(timer); timer = null;
+        HL = HL.filter(function (x) { return x.id !== h.id; });
+        persistHist(); renderHist(); $("histView").hidden = true;
+        fMsg("\"" + h.company + "\" حذف ہو گیا۔", false);
+      });
+      row.appendChild(nm); row.appendChild(sm); row.appendChild(del);
+      box.appendChild(row);
+    });
+    if (!box.children.length) box.innerHTML = '<p class="mnote">کوئی ریکارڈ نہیں۔</p>';
+  }
+  function openHist(id) {
+    var h = null;
+    for (var i = 0; i < HL.length; i++) if (HL[i].id === id) h = HL[i];
+    if (!h) return;
+    var v = $("histView"), doc = recDoc(h);
+    var body = h.doc ? docToHTML(h.doc) : h.html.split(h.date).join(dateDisp(h.date));
+    v.innerHTML = '<div class="hvbar"><button type="button" class="copybtn" id="hvCopy">تصویر کاپی کریں</button>' +
+      (canShareFiles() ? '<button type="button" class="copybtn" id="hvShare">شیئر</button>' : "") +
+      '<button type="button" class="copybtn" id="hvClose">بند کریں</button></div><div id="hvBody">' + body + "</div>";
+    v.hidden = false;
+    $("hvClose").addEventListener("click", function () { v.hidden = true; });
+    $("hvCopy").addEventListener("click", function () { copyDocImage(doc, $("hvCopy")); });
+    if ($("hvShare")) $("hvShare").addEventListener("click", function () { shareDocImage(doc, $("hvShare")); });
+    v.scrollIntoView({ block: "nearest" });
+  }
+  /* محفوظ: براؤزر میں بھی اور (اگر چنا ہو) فولڈر میں بھی */
+  function saveDoc(kind, doc, finalText, msgId) {
+    var rec = { id: Date.now(), kind: kind, company: doc.title, rem: doc.rem || "", date: doc.date, iso: todayIso(), final: finalText || "", doc: doc };
+    HL.push(rec);
+    if (!persistHist()) { HL.pop(); msgOf(msgId, "محفوظ نہیں ہو سکا (براؤزر میں جگہ نہیں یا اجازت نہیں)۔", true); return; }
+    renderHist();
+    var base = "\"" + doc.title + "\" (" + KIND[kind] + ") محفوظ ہو گیا";
+    if (!DIRH) { msgOf(msgId, base + " (صرف براؤزر میں؛ بیک اپ فولڈر نہیں چنا)۔ نیچے \"محفوظ شدہ ریکارڈ\" میں دیکھیں۔", false); return; }
+    /* فائل کا نام انگریزی قسم سے شروع؛ اردو نام نہ لکھا جا سکے تو صرف انگریزی حصے سے دوبارہ */
+    var cv = renderDoc(doc), name = safeName(KINDEN[kind] + " - " + doc.title + " - " + stampName()) + ".png";
+    var tA = doc.title.replace(/[^\x20-\x7e]/g, "").trim();
+    var plain = safeName(KINDEN[kind] + (tA ? " - " + tA : "") + " - " + stampName()) + ".png";
+    cv.toBlob(function (blob) {
+      folderWrite(name, blob).then(function (st) { return st === "error" && plain !== name ? folderWrite(plain, blob) : st; }).then(function (st) {
+        var tail = st === "ok" ? " (براؤزر اور فولڈر دونوں میں: " + DIRH.name + ")" : st === "denied" ? " (فولڈر کی اجازت نہیں ملی، صرف براؤزر میں)" : " (فولڈر میں نہیں لکھ سکا، صرف براؤزر میں)";
+        msgOf(msgId, base + tail + "۔", st !== "ok");
+      });
+    }, "image/png");
+  }
+  function lastCard(items) { var c = items[items.length - 1]; return c ? c.k.replace(/\s*\(.*\)/, "") + " " + c.v : ""; }
+  function costNow() {
+    if (!LAST) { sumMsg("پہلے پیپر کا کمبی نیشن ڈال کر نیچے اپلائی دبائیں۔", true); return null; }
+    sumMsg("", false); refreshDate();
+    return costDoc(coName("sumCo"), $("sumRem").value.trim());
+  }
+  function plantNow() {
+    if (!LAST || $("pLab").textContent.trim() === "—") { msgOf("plMsg", "پہلے پلانٹ میں اپلائی دبائیں۔", true); return null; }
+    msgOf("plMsg", "", false);
+    return plantDoc(coName("PlCo"), $("PlRem").value.trim());
+  }
+  function prodNow() {
+    if (!PLAST) { msgOf("prodMsg", "پہلے آرڈر کی تعداد لکھ کر اپلائی دبائیں۔", true); return null; }
+    msgOf("prodMsg", "", false);
+    return prodDoc(coName("PCo"), $("PRem").value.trim());
+  }
+  function wireDocs() {
+    COIDS.forEach(function (id) {
+      $(id).addEventListener("input", function () { COIDS.forEach(function (o) { if (o !== id) $(o).value = $(id).value; }); save(); });
+    });
+    $("PlRem").addEventListener("input", save);
+    $("PRem").addEventListener("input", save);
+    var sh = canShareFiles();
+    ["sumShareBtn", "plShareBtn", "prodShareBtn"].forEach(function (id) { $(id).hidden = !sh; });
+    $("sumCopyBtn").addEventListener("click", function () { var d = costNow(); if (d) copyDocImage(d, $("sumCopyBtn")); });
+    $("sumShareBtn").addEventListener("click", function () { var d = costNow(); if (d) shareDocImage(d, $("sumShareBtn")); });
+    $("sumSaveBtn").addEventListener("click", function () { var d = costNow(); if (d) saveDoc("cost", d, lastCard(LAST.main), "sumMsg"); });
+    $("plCopyBtn").addEventListener("click", function () { var d = plantNow(); if (d) copyDocImage(d, $("plCopyBtn")); });
+    $("plShareBtn").addEventListener("click", function () { var d = plantNow(); if (d) shareDocImage(d, $("plShareBtn")); });
+    $("plSaveBtn").addEventListener("click", function () { var d = plantNow(); if (d) saveDoc("plant", d, lastCard(d.blocks[1].items), "plMsg"); });
+    $("prodCopyBtn").addEventListener("click", function () { var d = prodNow(); if (d) copyDocImage(d, $("prodCopyBtn")); });
+    $("prodShareBtn").addEventListener("click", function () { var d = prodNow(); if (d) shareDocImage(d, $("prodShareBtn")); });
+    $("prodSaveBtn").addEventListener("click", function () { var d = prodNow(); if (d) saveDoc("prod", d, PLAST.haveRolls ? "کل رول " + (PLAST.npairs * PLAST.whole) : "", "prodMsg"); });
+    $("histFilter").addEventListener("change", function () { $("histView").hidden = true; renderHist(); });
+    $("folderBtn").addEventListener("click", pickFolder);
+    $("copyClose").addEventListener("click", function () { $("copyBox").hidden = true; });
+  }
+
+  function applyPlies() {
+    for (var i = 0; i < 7; i++) {
+      var on = i < plies;
+      $("row" + i).hidden = !on;
+      $("V" + i).parentNode.hidden = !on;
+    }
+    $("plyTitle").textContent = "پیپر (" + plies + " پلائی)";
+    $("plySel").value = String(plies);
+  }
+
+  function save() {
+    var o = { unit: unit, pe: pe, te: te, plies: plies, mode: mode, segs: segs, sunit: sunit, rt: rt, ps: [] };
+    for (var pi = 0; pi < 7; pi++) o.ps.push($("RS" + pi).value);
+    NUM.concat(SEL).forEach(function (id) { o[id] = $(id).value; });
+    AMTU.forEach(function (id) { o[id] = $(id).value; });
+    o.PRem = $("PRem").value;
+    o.CO = $("sumCo").value; o.PlRem = $("PlRem").value;
+    try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
+  }
+  function load() {
+    try {
+      var s = JSON.parse(localStorage.getItem(KEY));
+      if (!s || !F[s.unit]) return false;
+      unit = s.unit; pe = !!s.pe; te = !!s.te;
+      if (s.plies === 3 || s.plies === 5 || s.plies === 7) plies = s.plies;
+      if (s.mode === "box" || s.mode === "stiff") mode = s.mode;
+      if (s.segs >= 2 && s.segs <= SEGMAX) segs = s.segs;
+      if (F[s.sunit]) sunit = s.sunit;
+      if (s.rt === "credit" || s.rt === "cash") rt = s.rt;
+      if (Array.isArray(s.ps)) for (var qi = 0; qi < 7; qi++) { if (s.ps[qi]) $("RS" + qi).value = s.ps[qi]; }
+      /* پرانے ورژن کی پہلے سے بھری 40/15/11 اور 15/15/11 اب خالی */
+      if (s.EX === "40" && s.PR === "15" && s.GS === "11") { s.EX = ""; s.PR = ""; s.GS = ""; }
+      if (s.PX === "15" && s.PP === "15" && s.PG === "11") { s.PX = ""; s.PP = ""; s.PG = ""; }
+      NUM.concat(SEL).forEach(function (k) { if (s[k] !== undefined) $(k).value = s[k]; });
+      AMTU.forEach(function (k) { if (s[k] === "p" || s[k] === "r") $(k).value = s[k]; });
+      if (typeof s.PRem === "string") $("PRem").value = s.PRem;
+      if (typeof s.CO === "string") COIDS.forEach(function (k) { $(k).value = s.CO; });
+      if (typeof s.PlRem === "string") $("PlRem").value = s.PlRem;
+      $("pnote").hidden = pe;
+      $("tnote").hidden = te;
+      return true;
+    } catch (e) { return false; }
+  }
+  function syncUnits() {
+    $("unitSel").value = unit;
+  }
+
+  /* خرچ، منافع، GST: خانہ خالی ہو تو صفر (نہیں لگتا)۔ خرچ اور منافع فیصد (p) یا روپے فی باکس (r) میں */
+  var AMTU = ["EXU", "PRU", "PXU", "PPU"];
+  function mny(x) { return r(x, 2).toFixed(2); }
+  function esc(x) { return String(x).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function showCard(id, on) { $(id).parentNode.hidden = !on; }
+  function amt(id, uid) {
+    var raw = String($(id).value).trim(), v = raw === "" ? 0 : val(id);
+    return { v: v, u: uid ? $(uid).value : "p", ok: v >= 0 };
+  }
+  function amtAdd(a, base) { return a.u === "r" ? a.v : base * a.v / 100; }
+  function amtPart(a, add, name) {
+    if (!(a.v > 0)) return " (" + name + " نہیں لگایا)";
+    return " + " + name + " " + (a.u === "r" ? mny(a.v) + " روپے" : r(a.v, 2) + "% (" + mny(add) + " روپے)");
+  }
+
+  function plantClear() {
+    ["pLab", "pCost", "pBox", "pRate", "pFinal"].forEach(function (id) { $(id).textContent = "—"; showCard(id, true); });
+    ["dpLab", "dpCost", "dpBox", "dpRate", "dpFinal", "dpBoxSq", "dpRateSq"].forEach(function (id) { $(id).textContent = ""; });
+    $("plNote").textContent = "";
+  }
+  /* پلانٹ: پیپر کاسٹ + لیبر (ریٹ × مربع انچ) = پلانٹ کاسٹ؛ + خرچ = باکس کاسٹ؛ + منافع = ریٹ؛ + GST = آخری ریٹ */
+  function plantCalc(paper, areaSq, nb) {
+    var rate = val("R1"), pxo = amt("PX", "PXU"), ppo = amt("PP", "PPU"), pgo = amt("PG", null);
+    if (!(rate >= 0 && pxo.ok && ppo.ok && pgo.ok)) {
+      plantClear();
+      $("plNote").textContent = "پلانٹ لیبر ریٹ، خرچ، منافع اور GST کے خانوں میں درست عدد لکھیں۔";
+      return;
+    }
+    var lab = rate * areaSq / nb, pc = paper + lab;
+    var pxA = amtAdd(pxo, pc), box = pc + pxA, ppA = amtAdd(ppo, box), rt = box + ppA, pgA = amtAdd(pgo, rt), fin = rt + pgA;
+    $("pLab").textContent = r(lab, 2);
+    $("pCost").textContent = r(pc, 2);
+    $("pBox").textContent = r(box, 2);
+    $("pRate").textContent = r(rt, 2);
+    $("pFinal").textContent = r(fin, 2);
+    $("plNote").textContent = "";
+    var m2 = function (x) { return r(x, 2).toFixed(2); };
+    $("dpLab").textContent = "لیبر ریٹ " + rate + " × " + r(areaSq, 1) + " مربع انچ" + (nb !== 1 ? " ÷ " + nb + " پیس" : "") + " = " + m2(lab) + (nb !== 1 ? " فی ڈبہ" : "");
+    $("dpCost").textContent = "پیپر کاسٹ " + m2(paper) + " + لیبر " + m2(lab) + " = " + m2(pc);
+    showCard("pBox", pxo.v > 0); showCard("pRate", ppo.v > 0); showCard("pFinal", pgo.v > 0);
+    var bRate = pxo.v > 0 ? "باکس کاسٹ" : "پلانٹ کاسٹ", bFin = ppo.v > 0 ? "ریٹ" : bRate;
+    $("dpBox").textContent = "پلانٹ کاسٹ " + m2(pc) + amtPart(pxo, pxA, "خرچ") + " = " + m2(box);
+    $("dpRate").textContent = bRate + " " + m2(box) + amtPart(ppo, ppA, "منافع") + " = " + m2(rt);
+    var areaBox = areaSq / nb;
+    $("dpBoxSq").textContent = "(مربع انچ ریٹ: " + r(box / areaBox, 4).toFixed(4) + ")";
+    $("dpRateSq").textContent = "(مربع انچ ریٹ: " + r(rt / areaBox, 4).toFixed(4) + ")";
+    $("dpFinal").textContent = bFin + " " + m2(rt) + amtPart(pgo, pgA, "GST") + " = " + m2(fin);
+  }
+
+  var LNAMES = { p: "پلین", t: "موٹی نالی", n: "باریک نالی" };
+  function fmt(n, d) { return Number(r(n, d === undefined ? 1 : d)).toLocaleString("en-US", { maximumFractionDigits: 2 }); }
+  function prodClear() {
+    ["qSheets", "qTotal"].forEach(function (id) { $(id).textContent = "—"; });
+    $("qTbl").innerHTML = ""; $("qRolls").innerHTML = ""; $("qNote").textContent = "";
+    PLAST = null;
+  }
+  function trialClear() {
+    $("tTbl").innerHTML = ""; $("tNote").textContent = ""; $("tCost").innerHTML = ""; $("tCostNote").textContent = "";
+    ["tCostTot", "tCostSheet", "tCostBox"].forEach(function (id) { $(id).textContent = "—"; });
+  }
+  /* اصل GSM = وزن (گرام) ÷ (شیٹ × ایک شیٹ کا رقبہ m²)۔ نالی والی پرت میں نالی کا اضافہ ہٹا کر پیپر کا GSM بھی لکھتے ہیں */
+  function trialCalc(lay, areaSq, nb) {
+    var ts = val("TS");
+    if (!(ts > 0)) { trialClear(); $("tNote").textContent = "بنی ہوئی شیٹ کی درست تعداد لکھیں۔"; return; }
+    var areaM2 = areaSq * 0.00064516, rows = "", tot = 0, bad = false;
+    var crow = "", ctot = 0, plan = 0, okc = true;
+    lay.forEach(function (l, i) {
+      var kg = val("V" + i);
+      if (!(kg >= 0)) { bad = true; return; }
+      tot += kg;
+      var rate = val("P" + i);
+      if (rate >= 0) {
+        ctot += kg * rate; plan += l.gm / 1000 * rate;
+        crow += "<tr" + (l.t !== "p" ? ' class="fl"' : "") + "><td>" + (i + 1) + '</td><td class="n">' + fmt(kg, 1) + '</td><td class="n">' + r(rate, 2) + '</td><td class="n">' + fmt(kg * rate, 2) + "</td></tr>";
+      } else okc = false;
+      var eff = kg * 1000 / (ts * areaM2), paper = eff / l.m, flute = l.t !== "p";
+      rows += "<tr" + (flute ? ' class="fl"' : "") + "><td>" + (i + 1) + '</td><td class="n">' + fmt(kg, 1) + '</td><td class="n">' + r(eff, 1) +
+        '</td><td class="n"><b>' + r(paper, 1) + '</b></td><td class="n">' + fmt(l.g, 0) + "</td></tr>";
+    });
+    if (bad) { trialClear(); $("tNote").textContent = "تمام پرتوں کا وزن درست لکھیں۔"; return; }
+    $("tTbl").innerHTML = "<tr><th>پرت</th><th>وزن (کلو)</th><th>GSM (کنزمپشن)</th><th>پیپر GSM</th><th>منصوبہ GSM</th></tr>" + rows +
+      '<tr class="tot"><td>کل</td><td class="n">' + fmt(tot, 1) + '</td><td colspan="3"></td></tr>';
+    $("tNote").innerHTML = "کل وزن <b>" + fmt(tot, 1) + "</b> کلو، فی شیٹ <b>" + r(tot * 1000 / ts, 1) + "</b> گرام۔ ایک شیٹ کا رقبہ <b>" + r(areaM2, 4) +
+      "</b> مربع میٹر۔ نالی والی (پیلی) پرت کا کنزمپشن GSM نالی کے اضافے کی وجہ سے زیادہ آتا ہے۔ اس اضافے کو ہٹا کر پیپر کا اصل GSM الگ لکھا ہے۔";
+    if (!okc) {
+      $("tCost").innerHTML = ""; ["tCostTot", "tCostSheet", "tCostBox"].forEach(function (id) { $(id).textContent = "—"; });
+      $("tCostNote").textContent = "لاگت کے لیے اوپر پیپر والے حصے میں ہر پرت کا ریٹ فی کلو درست لکھیں۔";
+      return;
+    }
+    var per = ctot / ts, perBox = per / (nb > 0 ? nb : 1);
+    $("tCost").innerHTML = "<tr><th>پرت</th><th>وزن (کلو)</th><th>ریٹ فی کلو</th><th>لاگت</th></tr>" + crow +
+      '<tr class="tot"><td colspan="3">کل</td><td class="n">' + fmt(ctot, 2) + "</td></tr>";
+    $("tCostTot").textContent = fmt(ctot, 2);
+    $("tCostSheet").textContent = fmt(per, 2);
+    $("tCostBox").textContent = fmt(perBox, 2);
+    var diff = per - plan;
+    $("tCostNote").innerHTML = "لاگت = ہر پرت کا وزن × اوپر پیپر والے حصے میں لکھا اس کا ریٹ۔ منصوبے کے حساب سے فی شیٹ پیپر کاسٹ <b>" + r(plan, 2) +
+      "</b> تھی، اصل <b>" + r(per, 2) + "</b> آئی، فرق <b>" + (diff > 0 ? "+" : "") + r(diff, 2) + "</b> فی شیٹ۔";
+  }
+
+  /* پروڈکشن: شیٹ = آرڈر ÷ ایک شیٹ کے باکس؛ پرت کا وزن = ایک شیٹ میں اس کا وزن × شیٹ۔
+     رول: ہر نالی والی پرت اپنے ساتھ ایک پلین پرت کی جوڑی بناتی ہے اور ایک جوڑی کا ایک رول گنا جاتا ہے؛ رول = شیٹ × میجر ÷ رول کی لمبائی */
+  function prodCalc(lay, nb, reel, lenIn) {
+    var qty = val("QT"), rlen = val("RL");
+    if (!(qty > 0)) { prodClear(); $("qNote").textContent = "آرڈر میں ڈبوں کی درست تعداد لکھیں۔"; return; }
+    var sheets = Math.ceil(qty / nb - 1e-9);
+    var tot = 0, rows = "", prows = [];
+    lay.forEach(function (l, i) {
+      var kg = l.gm * sheets / 1000, cls = l.t !== "p" ? ' class="fl"' : "";
+      tot += kg;
+      rows += "<tr" + cls + "><td>" + (i + 1) + "</td><td>" + LNAMES[l.t] + '</td><td class="pn">' + esc(l.lab) + '</td><td class="n">' + fmt(l.g, 0) + '</td><td class="n">' + fmt(kg, 1) + "</td></tr>";
+      prows.push({ n: i + 1, type: LNAMES[l.t], paper: l.lab, g: fmt(l.g, 0), kg: fmt(kg, 1), fl: l.t !== "p" });
+    });
+    $("qTbl").innerHTML = "<tr><th>پرت</th><th>قسم</th><th>پیپر</th><th>GSM</th><th>وزن (کلو)</th></tr>" + rows +
+      '<tr class="tot"><td colspan="4">کل</td><td class="n">' + fmt(tot, 1) + "</td></tr>";
+
+    var used = [], pairs = [];
+    lay.forEach(function (l, i) {
+      if (l.t === "p") return;
+      var mate = -1;
+      if (i > 0 && lay[i - 1].t === "p" && !used[i - 1]) mate = i - 1;
+      else if (i < lay.length - 1 && lay[i + 1].t === "p" && !used[i + 1]) mate = i + 1;
+      if (mate >= 0) used[mate] = true;
+      used[i] = true;
+      pairs.push(mate < 0 ? [i] : [Math.min(i, mate), Math.max(i, mate)]);
+    });
+    var left = [];
+    lay.forEach(function (l, i) { if (!used[i]) left.push(i + 1); });
+
+    var length = sheets * lenIn, rl = rlen > 0 ? length / rlen : 0, whole = Math.ceil(rl - 1e-9);
+    if (!(rlen > 0)) {
+      $("qRolls").innerHTML = "<tr><td>رول کی لمبائی لکھیں تو رول کی تعداد نکلے گی۔</td></tr>";
+    } else if (!pairs.length) {
+      $("qRolls").innerHTML = "<tr><td>کوئی نالی والی پرت نہیں چنی، اس لیے رول کی جوڑی نہیں بنی۔</td></tr>";
+    } else {
+      var rr = "";
+      pairs.forEach(function (pr, j) {
+        rr += '<tr class="fl"><td>' + (j + 1) + '</td><td class="n">' + fmt(length, 0) + '</td><td class="n">' + r(rl, 2) + '</td><td class="n"><b>' + whole + "</b></td></tr>";
+      });
+      $("qRolls").innerHTML = "<tr><th>جوڑی</th><th>لمبائی (انچ)</th><th>حساب</th><th>رول</th></tr>" + rr +
+        '<tr class="tot"><td colspan="3">کل رول (' + pairs.length + " × " + whole + ')</td><td class="n">' + (pairs.length * whole) + "</td></tr>" +
+        (left.length ? '<tr><td colspan="4"><small>پرت ' + left.join("، ") + " (پلین) رول میں نہیں گنی گئی۔</small></td></tr>" : "");
+    }
+    PLAST = { qty: qty, sheets: sheets, tot: tot, rlen: rlen, rows: prows, whole: whole, npairs: pairs.length, haveRolls: rlen > 0 && pairs.length > 0, left: left };
+    $("qSheets").textContent = fmt(sheets, 0);
+    $("qTotal").textContent = fmt(tot, 1);
+    $("qNote").innerHTML = "<b>" + fmt(qty, 0) + "</b> ڈبے ÷ <b>" + r(nb, 2) + "</b> باکس فی شیٹ = <b>" + fmt(sheets, 0) +
+      "</b> شیٹ۔ شیٹ کا سائز <b>" + r(reel, 2) + " × " + r(lenIn, 2) + "</b> انچ۔ ہر جوڑی کی کل لمبائی = <b>" + fmt(sheets, 0) + " × " + r(lenIn, 2) + "</b> انچ۔";
+  }
+
+  /* پیپر کاسٹ: ہر پرت کا وزن = رقبہ (m²) × GSM × (1 + نالی کا اضافہ)، لاگت = وزن × ریٹ فی کلو */
+  function paperCost(lenIn, reel, widIn) {
+    var x = { t: val("X1"), n: val("X2") };
+    var nb = mode === "stiff" ? stiffNB : val("NB");
+    var ok = x.t >= 0 && x.n >= 0 && nb > 0;
+    var names = { p: "پلین", t: "موٹی نالی", n: "باریک نالی" };
+    var aR = lenIn * reel * 0.00064516, aS = lenIn * widIn * 0.00064516;
+    var rows = "", tot = 0, totG = 0, totS = 0, lay = [], rowsD = [];
+    for (var i = 0; i < plies; i++) {
+      var g = val("G" + i), p = val("P" + i), t = $("T" + i).value;
+      if (!(g > 0) || !(p >= 0)) { ok = false; break; }
+      var m = 1 + (t === "t" ? x.t : t === "n" ? x.n : 0) / 100;
+      var gm = aR * g * m, c = gm / 1000 * p;
+      var rsx = rlFind($("RS" + i).value), plab = rsx ? rlLabel(rsx) : "GSM " + g;
+      lay.push({ t: t, g: g, gm: gm, m: m, lab: plab });
+      rowsD.push({ n: i + 1, type: names[t], paper: plab, gm: r(gm, 1), cost: r(c, 2), fl: t !== "p" });
+      tot += c; totG += gm; totS += aS * g * m / 1000 * p;
+      rows += '<tr' + (t !== "p" ? ' class="fl"' : '') + '><td>' + (i + 1) + '</td><td>' + names[t] + '</td><td class="pn">' + esc(plab) + '</td><td class="n">' + r(gm, 1) + '</td><td class="n">' + r(c, 2) + '</td></tr>';
+    }
+    if (!ok) {
+      ["outCost", "outBox", "outRate", "outFinal"].forEach(function (id) { $(id).textContent = "—"; showCard(id, true); });
+      ["dCost", "dBox", "dRate", "dFinal", "dBoxSq", "dRateSq"].forEach(function (id) { $(id).textContent = ""; });
+      $("brk").innerHTML = "";
+      LROWS = []; LTOT = null;
+      plantClear();
+      prodClear();
+      trialClear();
+      return "<br>پیپر کاسٹ کے لیے ہر پرت کا GSM، ریٹ، نالی کا اضافہ اور باکس کی تعداد درست لکھیں۔";
+    }
+    LROWS = rowsD; LTOT = { gm: r(totG, 1), c: r(tot, 2) };
+    var per = tot / nb;
+    var m2 = function (x) { return r(x, 2).toFixed(2); };
+    $("outCost").textContent = r(per, 2);
+    $("dCost").textContent = nb !== 1 ? "پوری شیٹ " + m2(tot) + " ÷ " + nb + " پیس = " + m2(per) + " فی ڈبہ" : "ایک شیٹ سے ایک ڈبہ";
+    /* پیپر کاسٹ + خرچ = باکس کاسٹ؛ + منافع = ریٹ؛ + GST = آخری ریٹ */
+    plantCalc(per, lenIn * reel, nb);
+    prodCalc(lay, nb, reel, lenIn);
+    trialCalc(lay, lenIn * reel, nb);
+    var exo = amt("EX", "EXU"), pro = amt("PR", "PRU"), gso = amt("GS", null), tail = "";
+    if (exo.ok && pro.ok && gso.ok) {
+      var exA = amtAdd(exo, per), box = per + exA, prA = amtAdd(pro, box), rate = box + prA, gsA = amtAdd(gso, rate), fin = rate + gsA;
+      $("outBox").textContent = r(box, 2);
+      $("dBox").textContent = "پیپر کاسٹ " + m2(per) + amtPart(exo, exA, "خرچ") + " = " + m2(box);
+      showCard("outBox", exo.v > 0); showCard("outRate", pro.v > 0); showCard("outFinal", gso.v > 0);
+      var baseRate = exo.v > 0 ? "باکس کاسٹ" : "پیپر کاسٹ", baseFin = pro.v > 0 ? "ریٹ" : baseRate;
+      $("dRate").textContent = baseRate + " " + m2(box) + amtPart(pro, prA, "منافع") + " = " + m2(rate);
+      /* فی مربع انچ ریٹ: ایک باکس کے حصے کے رقبے پر (شیٹ کا رقبہ ÷ ایک شیٹ سے باکس) */
+      var areaBox = lenIn * reel / nb;
+      $("dBoxSq").textContent = "(مربع انچ ریٹ: " + r(box / areaBox, 4).toFixed(4) + ")";
+      $("dRateSq").textContent = "(مربع انچ ریٹ: " + r(rate / areaBox, 4).toFixed(4) + ")";
+      $("dFinal").textContent = baseFin + " " + m2(rate) + amtPart(gso, gsA, "GST") + " = " + m2(fin);
+      $("outRate").textContent = r(rate, 2);
+      $("outFinal").textContent = r(fin, 2);
+    } else {
+      ["outBox", "outRate", "outFinal"].forEach(function (id) { $(id).textContent = "—"; showCard(id, true); });
+      ["dBox", "dRate", "dFinal", "dBoxSq", "dRateSq"].forEach(function (id) { $(id).textContent = ""; });
+      tail = "<br>خرچ، منافع اور GST کے خانوں میں درست عدد لکھیں۔";
+    }
+    $("brk").innerHTML = '<tr><th>پرت</th><th>قسم</th><th>پیپر</th><th>وزن شیٹ (g)</th><th>لاگت شیٹ</th></tr>' + rows +
+      '<tr class="tot"><td colspan="3">کل</td><td class="n">' + r(totG, 1) + '</td><td class="n">' + r(tot, 2) + '</td></tr>';
+    return "<br>پوری شیٹ کی پیپر کاسٹ <b>" + r(tot, 2) + "</b>" + (nb !== 1 ? " ÷ <b>" + nb + "</b> باکس" : "") + tail;
+  }
+
+  /* پس منظر کی حدیں (اسٹفنر): اضافہ صفر، میجر کی حد 55، کم سے کم ریل 22، ریل میں زیادہ سے زیادہ 2 پیس، میجر میں زیادہ سے زیادہ 10 پیس */
+  var STIFF = { RA: 0, MG: 0, ML: 55, MN: 22, MA: 2, MP: 10 };
+
+  function stiffText(sInfo) {
+    return "آخری کے علاوہ سائز <b>" + sInfo.parts.join(" + ") + " = " + r(sInfo.wSum, 2) + " " + UN[sunit] + "</b> یعنی <b>" + r(sInfo.wIn, 2) + " in</b>" + (sInfo.across > 1 ? " × <b>" + sInfo.across + "</b> = <b>" + r(sInfo.wIn * sInfo.across, 2) + " in</b>" : "") + (val("MR") > 0 ? "، ریل آپ کی لکھی <b>" + r(val("MR"), 2) + "</b>" : "") + "<br>آخری سائز <b>" + r(sInfo.lastV, 2) + " " + UN[sunit] + "</b> یعنی <b>" + r(sInfo.lastIn, 2) + " in</b> × <b>" + sInfo.np + "</b> پیس" + (val("MM") > 0 ? "، میجر آپ کا لکھا <b>" + r(val("MM"), 2) + "</b>" : "") + (!(val("MR") > 0) && sInfo.wIn * sInfo.across < sInfo.mn - 1e-9 ? "<br><b>مشین کی حد (ریل میں " + sInfo.ma + " پیس) کی وجہ سے ریل کم سے کم ریل سے چھوٹی رہی۔</b>" : "") + (sInfo.lastIn * sInfo.np > sInfo.cap + 1e-9 ? "<br><b>ایک پیس بھی میجر کی حد (یا آپ کے لکھے میجر) سے بڑا ہے، اسے بڑھا کر دیکھیں۔</b>" : "") + (val("MR") > 0 && sInfo.wIn * sInfo.across + sInfo.ra > val("MR") + 1e-9 ? "<br><b>آپ کی لکھی ہوئی ریل ایک پیس کے لیے بھی چھوٹی ہے۔</b>" : "") + "<br>";
+  }
+
+  /* پہلا مرحلہ: ریل اور میجر (اور اسٹفنر میں پیس) */
+  function computeSize() {
+    var f = F[unit];
+    var L = 0, W = 0, H = 0, sInfo = null, bad;
+    if (mode === "stiff") {
+      /* آخری سائز = میجر؛ اس سے پہلے کے سب سائز جمع = ریل کی بنیاد */
+      var sf = F[sunit], okS = true, wParts = [], wSum = 0;
+      for (var si = 0; si < segs - 1; si++) { var sv = val("S" + si); if (!(sv > 0)) okS = false; wParts.push(sv); wSum += sv; }
+      var lastV = val("S" + (segs - 1)), ra = STIFF.RA, mg = STIFF.MG, ml = STIFF.ML, mn = STIFF.MN, ma = STIFF.MA, mp = STIFF.MP;
+      if (!(lastV > 0)) okS = false;
+      bad = !okS;
+      if (!bad) {
+        var wIn = wSum * sf / 25.4, across = 1;
+        var mrv = val("MR"), mmv = val("MM");
+        if (mrv > 0) {
+          /* ریل آپ نے خود لکھی ہو تو چوڑائی میں پیس اسی ریل کے حساب سے */
+          across = Math.max(1, Math.min(ma, Math.floor((mrv - ra) / wIn + 1e-9)));
+        } else {
+          /* ریل کم سے کم (22 انچ) سے چھوٹی ہو تو اسے بڑھا کر (دگنا) پورا کیا جاتا ہے */
+          while (wIn * across < mn - 1e-9 && across < ma) across++;
+        }
+        var lastIn = lastV * sf / 25.4;
+        /* میجر آپ نے خود لکھا ہو تو میجر میں پیس اسی میجر کے حساب سے، ورنہ میجر کی حد کے حساب سے */
+        var capIn = mmv > 0 ? mmv : ml;
+        var np = Math.max(1, Math.min(mp, Math.floor(capIn / lastIn + 1e-9)));
+        sInfo = { parts: wParts, wSum: wSum, wIn: wIn, across: across, lastV: lastV, lastIn: lastIn, np: np, ra: ra, mg: mg, ml: ml, mn: mn, ma: ma, mp: mp, cap: capIn, nb: across * np };
+        stiffNB = sInfo.nb;
+      }
+    } else {
+      L = val("L") * f; W = val("W") * f; H = val("H") * f;
+      bad = ![L, W, H].every(function (x) { return isFinite(x) && x > 0; });
+    }
+    if (bad) return null;
+
+    /* میجر = (لمبائی + چوڑائی) × 2 + 2 انچ۔ L اور W ملی میٹر میں ہیں، اس لیے پہلے انچ میں بدلتے ہیں */
+    var lenIn, widIn;
+    if (mode === "stiff") { lenIn = sInfo.lastIn * sInfo.np + sInfo.mg; widIn = sInfo.wIn * sInfo.across; }
+    else { lenIn = 2 * (L + W) / 25.4 + MAJOR_ADD; widIn = (H + W + 2 * CREASE) / 25.4; }
+    var widAdd = mode === "stiff" ? sInfo.ra : 0;
+    /* ریل ہمیشہ اگلے جفت (even) عدد پر جاتی ہے: 16.1 → 18، 17.2 → 18، 18.2 → 20 */
+    var reelAuto = Math.ceil(r(widIn + widAdd, 2) / 2 - 1e-9) * 2, lenAuto = lenIn;
+    /* اگر آپ نے ریل یا میجر خود لکھا ہو تو وہی استعمال ہوگا (اسٹفنر میں پیس بھی انہی کے حساب سے نکلتے ہیں) */
+    var mr = val("MR"), mm = val("MM");
+    return { L: L, W: W, H: H, sInfo: sInfo, widIn: widIn, reelAuto: reelAuto, lenAuto: lenAuto, mr: mr, mm: mm,
+             reel: mr > 0 ? mr : reelAuto, lenIn: mm > 0 ? mm : lenAuto };
+  }
+
+  /* اوپر کا اپلائی: صرف ریل، میجر اور پیس دکھاتا ہے */
+  /* اوپر کا اپلائی: ہاتھ سے لکھی ریل اور میجر صاف کر کے پہلے خودکار دکھاتا ہے */
+  function sizeApply() { $("MR").value = ""; $("MM").value = ""; showSize(); save(); }
+  function showSize() {
+    var Z = computeSize();
+    $("szStiff").hidden = mode !== "stiff";
+    if (!Z) {
+      ["szReel", "szMaj", "szArea", "szNP", "szAcross", "szTot"].forEach(function (id) { $(id).textContent = "—"; });
+      $("szNote").textContent = mode === "stiff" ? "اسٹفنر کے تمام سائز درست لکھیں۔" : "تینوں ناپ درست لکھیں۔";
+      return;
+    }
+    $("MR").placeholder = "خودکار: " + Z.reelAuto;
+    $("MM").placeholder = "خودکار: " + r(Z.lenAuto, 2);
+    $("szReel").innerHTML = r(Z.reel, 2) + "<small>in" + (Z.mr > 0 ? " · اپنا" : "") + "</small>";
+    $("szMaj").innerHTML = r(Z.lenIn, 2) + "<small>in" + (Z.mm > 0 ? " · اپنا" : "") + "</small>";
+    $("szArea").innerHTML = r(Z.lenIn * Z.reel, 1) + "<small>sq in</small>";
+    if (Z.sInfo) {
+      $("szNP").textContent = Z.sInfo.np;
+      $("szAcross").textContent = Z.sInfo.across;
+      $("szTot").textContent = Z.sInfo.nb;
+    }
+    $("szNote").innerHTML = (mode === "stiff" ? stiffText(Z.sInfo) : "") + "اصل ریل سائز <b>" + r(Z.widIn, 2) + " in</b>، ضیاع <b>" + r(Z.reel - Z.widIn, 2) + " in</b>" +
+      (Z.reel < Z.widIn - 1e-9 ? "<br><b>ریل اصل چوڑائی سے چھوٹی ہے، شیٹ پوری نہیں نکلے گی۔</b>" : "");
+  }
+
+  function apply(scroll) {
+    showSize();
+    var Z = computeSize();
+    if (!Z) {
+      ["outReel", "outLen", "outArea", "outCost", "outBox", "outRate", "outFinal"].forEach(function (id) { $(id).textContent = "—"; });
+      ["dCost", "dBox", "dRate", "dFinal", "dBoxSq", "dRateSq"].forEach(function (id) { $(id).textContent = ""; });
+      plantClear();
+      prodClear();
+      trialClear();
+      $("brk").innerHTML = "";
+      ["sOrigReel", "sOrigMaj", "sNP", "sAcross", "sTot"].forEach(function (id) { $(id).textContent = "—"; });
+      $("outOrig").textContent = mode === "stiff" ? "اسٹفنر کے تمام سائز درست لکھیں۔" : "تینوں ناپ درست لکھیں۔";
+      LAST = null; $("sumSize").innerHTML = ""; setCtx(null);
+      return;
+    }
+    applied = true;
+    $("navStale").classList.remove("show");
+    $("stale").hidden = true;
+    $("pstale").hidden = true;
+    $("qstale").hidden = true;
+    $("tstale").hidden = true;
+
+    var sInfo = Z.sInfo, widIn = Z.widIn, reel = Z.reel, lenIn = Z.lenIn, mr = Z.mr, mm = Z.mm, reelAuto = Z.reelAuto, lenAuto = Z.lenAuto;
+    setCtx(sizeLines2(Z)); refreshDate();
+    $("MR").placeholder = "خودکار: " + reelAuto;
+    $("MM").placeholder = "خودکار: " + r(lenAuto, 2);
+
+    $("outLen").innerHTML = r(lenIn, 2) + "<small>in" + (mm > 0 ? " · اپنا" : "") + "</small>";
+    $("outReel").innerHTML = r(reel, 2) + "<small>in" + (mr > 0 ? " · اپنا" : "") + "</small>";
+    $("outArea").innerHTML = r(lenIn * reel, 1) + "<small>sq in</small>";
+    $("stiffOut").hidden = mode !== "stiff";
+    $("stiffOrig").hidden = mode !== "stiff";
+    if (mode === "stiff") {
+      $("sOrigReel").innerHTML = r(widIn, 2) + "<small>in</small>";
+      $("sOrigMaj").innerHTML = r(sInfo.lastIn * sInfo.np, 2) + "<small>in</small>";
+      $("sNP").textContent = sInfo.np;
+      $("sAcross").textContent = sInfo.across;
+      $("sTot").textContent = sInfo.nb;
+    }
+    $("outOrig").innerHTML = paperCost(lenIn, reel, widIn);
+    snapshot(Z);
+    if (scroll === true) {
+      nudge("resultPanel", { behavior: "smooth", block: "nearest" });
+    }
+  }
+
+  function onEdit() { save(); if (applied) $("navStale").classList.add("show"); }
+  function markRows() {
+    for (var i = 0; i < 7; i++) {
+      var row = $("T" + i).parentNode;
+      row.classList.toggle("fl", $("T" + i).value !== "p");
+    }
+  }
+  function onTrialEdit() { te = true; onEdit(); }
+  function onPaperEdit() { markRows(); pe = true; onEdit(); }
+
+  /* خانے پر کلک کرتے ہی پرانا لکھا ہوا سارا چن لیا جاتا ہے، تاکہ نیا لکھتے ہی بدل جائے */
+  function selectAll(el) { setTimeout(function () { try { el.select(); } catch (e) {} }, 0); }
+  NUM.concat(SEL).forEach(function (id) {
+    var el = $(id);
+    el.addEventListener("focus", function () { selectAll(el); });
+    el.addEventListener("click", function () { selectAll(el); });
+  });
+
+  NUM.forEach(function (id) { $(id).addEventListener("input", TR.indexOf(id) >= 0 ? onTrialEdit : (isPaper(id) ? onPaperEdit : onEdit)); });
+  SEL.forEach(function (id) { $(id).addEventListener("change", onPaperEdit); });
+  AMTU.forEach(function (id) { $(id).addEventListener("change", onEdit); });
+  $("applyBtn4").addEventListener("click", function () {
+    apply();
+    nudge("tTbl", { behavior: "smooth", block: "center" });
+  });
+  $("applyBtn3").addEventListener("click", function () {
+    apply();
+    nudge("qTbl", { behavior: "smooth", block: "start" });
+  });
+  $("applyBtn2").addEventListener("click", function () {
+    apply();
+    nudge("pLab", { behavior: "smooth", block: "center" });
+  });
+  NUM.forEach(function (id) {
+    if (["L", "W", "H"].concat(SEGIDS).indexOf(id) >= 0) return;
+    $(id).addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); apply(); $(id).blur(); }
+    });
+  });
+
+  /* اسٹفنر: Enter دبانے پر اگلے نظر آنے والے خانے میں، آخری خانے پر اپلائی */
+  var SEQ = SEGIDS.slice();
+  SEQ.forEach(function (id, k) {
+    $(id).addEventListener("keydown", function (e) {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      for (var j = k + 1; j < SEQ.length; j++) {
+        if (SEQ[j].charAt(0) !== "S" || +SEQ[j].slice(1) < segs) { $(SEQ[j]).focus(); return; }
+      }
+      sizeApply(); $(id).blur();
+    });
+  });
+
+  /* Enter دبانے پر اگلے خانے میں، آخری خانے پر اپلائی */
+  $("L").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); $("W").focus(); } });
+  $("W").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); $("H").focus(); } });
+  $("H").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); sizeApply(); $("H").blur(); }
+  });
+
+  $("unitSel").addEventListener("change", function () {
+    var next = $("unitSel").value;
+    if (next === unit) return;
+    /* پچھلی بار کا ملی میٹر یاد رکھتے ہیں تاکہ اکائی بدل کر واپس آنے پر 400 کی جگہ 400.05 نہ بن جائے */
+    ["L", "W", "H"].forEach(function (id) {
+      var mm, b0 = bBase[id];
+      if (b0 && b0.txt === $(id).value) mm = b0.mm; else mm = val(id) * F[unit];
+      if (!isFinite(mm)) return;
+      var txt = String(r(mm / F[next], 4));
+      $(id).value = txt;
+      bBase[id] = { txt: txt, mm: mm };
+    });
+    unit = next;
+    syncUnits(); save(); apply();
+  });
+
+  $("plySel").addEventListener("change", function () {
+    var n = +$("plySel").value;
+    if (n === plies) return;
+    plies = n; applyPlies(); $("cmbSel").value = ""; onEdit();
+  });
+
+  $("modeSel").addEventListener("change", function () {
+    if ($("modeSel").value === mode) return;
+    mode = $("modeSel").value; applyMode(); save(); apply();
+  });
+  /* سائز بڑھانا اور گھٹانا: آخری سائز (میجر) ہمیشہ آخری خانے میں رہتا ہے */
+  $("segAdd").addEventListener("click", function () {
+    if (segs >= SEGMAX) return;
+    $("S" + segs).value = $("S" + (segs - 1)).value;
+    $("S" + (segs - 1)).value = "";
+    segs++; applyMode(); save(); onEdit();
+    $("S" + (segs - 2)).focus();
+  });
+  $("segDel").addEventListener("click", function () {
+    if (segs <= 2) return;
+    $("S" + (segs - 2)).value = $("S" + (segs - 1)).value;
+    $("S" + (segs - 1)).value = "";
+    segs--; applyMode(); save(); onEdit();
+  });
+
+  $("sUnitSel").addEventListener("change", function () {
+      var next = $("sUnitSel").value;
+      if (next === sunit) return;
+      /* پچھلی بار کا ملی میٹر یاد رکھتے ہیں تاکہ بار بار اکائی بدلنے سے 2.5 کی جگہ 2.49999 نہ بن جائے */
+      SEGIDS.forEach(function (id) {
+        var mm, b = sBase[id];
+        if (b && b.txt === $(id).value) mm = b.mm; else mm = val(id) * F[sunit];
+        if (!isFinite(mm)) return;
+        var txt = String(r(mm / F[next], 5));
+        $(id).value = txt;
+        sBase[id] = { txt: txt, mm: mm };
+      });
+      sunit = next; applyMode(); save(); apply();
+  });
+
+  /* ریٹ لسٹ کے بٹن */
+  for (var rsI = 0; rsI < 7; rsI++) {
+    (function (i) {
+      $("RS" + i).addEventListener("change", function () { applyPick(i); onPaperEdit(); $("cmbSel").value = ""; });
+      ["T", "G", "P"].forEach(function (pp) {
+        $(pp + i).addEventListener(pp === "T" ? "change" : "input", function () { $("cmbSel").value = ""; });
+      });
+      /* GSM یا ریٹ خود لکھیں تو لسٹ کا انتخاب ہٹ جاتا ہے */
+      ["G", "P"].forEach(function (p) {
+        $(p + i).addEventListener("input", function () { $("RS" + i).value = ""; $("RS" + i).classList.remove("on"); });
+      });
+    })(rsI);
+  }
+  $("rtSel").addEventListener("change", function () {
+    if ($("rtSel").value === rt) return;
+    rt = $("rtSel").value; syncRt(); refreshPicks(); onPaperEdit();
+  });
+  /* ریٹ لسٹ اور نالی کی فیصد: اوپر کی قطار کے بٹن سے کھلتے اور بند ہوتے ہیں */
+  [["rlBtn", "rlDetails", "ریٹ لسٹ"], ["flBtn", "flDetails", "نالی فیصد"]].forEach(function (a) {
+    $(a[0]).addEventListener("click", function () {
+      var panel = $(a[1]), open = panel.hidden;
+      panel.hidden = !open;
+      $(a[0]).setAttribute("aria-expanded", String(open));
+      $(a[0]).textContent = a[2] + (open ? " ▴" : " ▾");
+    });
+  });
+  $("rlAdd").addEventListener("click", function () {
+    var row = rlRow(null);
+    $("rlBox").appendChild(row);
+    rlMsg("نئی قطار شامل ہو گئی۔ بھر کر \"محفوظ کریں\" دبائیں۔", false);
+    row.querySelector(".b").focus();
+  });
+  $("rlSave").addEventListener("click", saveRatesFromEditor);
+  $("rlReset").addEventListener("click", function () {
+    if (rlTimer) { clearTimeout(rlTimer); rlTimer = null; $("rlReset").textContent = "اصل لسٹ بحال"; resetRates(); return; }
+    $("rlReset").textContent = "پکا؟ دوبارہ دبائیں";
+    rlTimer = setTimeout(function () { rlTimer = null; $("rlReset").textContent = "اصل لسٹ بحال"; }, 4000);
+  });
+
+  $("cmbSel").addEventListener("change", function () { if ($("cmbSel").value) applyCombo($("cmbSel").value); });
+  $("cmbSave").addEventListener("click", saveCombo);
+  $("cmbName").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); saveCombo(); } });
+
+  wireDocs();
+  $("sizeBtn").addEventListener("click", sizeApply);
+  /* ہاتھ سے ریل یا میجر لکھیں تو اوپر کا نتیجہ فوراً بدلے */
+  ["MR", "MM"].forEach(function (id) { $(id).addEventListener("input", showSize); });
+  $("applyBtn").addEventListener("click", function () { apply(true); });
+
+  /* اوپر کی پٹی: بٹن دبائیں تو اسی سیکشن پر پہنچ جائیں */
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll("#topnav a"));
+  navLinks.forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var t = $(a.dataset.t);
+      if (!t) return;
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      try { t.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (err) { t.scrollIntoView(true); }
+    });
+  });
+  function markNav() {
+    var cur = navLinks[0];
+    navLinks.forEach(function (a) {
+      var t = $(a.dataset.t);
+      if (t && t.getBoundingClientRect().top <= 90) cur = a;
+    });
+    navLinks.forEach(function (a) { a.classList.toggle("on", a === cur); });
+  }
+  window.addEventListener("scroll", markNav, { passive: true });
+  markNav();
+
+  loadRates(); fillRS(); renderRateEditor();
+  loadCombos(); fillCombos(); renderComboList();
+  loadHist(); renderHist(); refreshDate(); folderInit();
+  if (load()) $("example").hidden = true;
+  for (var oi = 0; oi < 7; oi++) $("RS" + oi).classList.toggle("on", $("RS" + oi).value !== "");
+  markRows();
+  applyMode();
+  applyPlies();
+  syncRt();
+  syncUnits();
+  apply();
+})();
+</script>
+
+
+</body></html>
