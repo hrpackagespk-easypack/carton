@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: carton-calculator-easypack
+    runtime: node
+    region: singapore
+    plan: free
+    rootDir: render-app
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
