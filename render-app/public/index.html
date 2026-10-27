@@ -7,9 +7,9 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
+<title>PACKSOL — کارٹن شیٹ کیلکولیٹر</title>
 </head>
 <body>
-<title>کارٹن شیٹ کیلکولیٹر</title>
 
 <style>
 /* Layout: ایک سادہ کالم۔ اوپر جلدی ناپ اور تین خانے، پھر اپلائی۔ نیچے انچ میں نتیجہ: ریل، میجر، مربع انچ۔ */
@@ -80,6 +80,7 @@ body {
   padding-block: 20px 40px;
 }
 .wrap { max-width: 520px; margin-inline: auto; display: flex; flex-direction: column; gap: 16px; }
+.apphead { display: contents; }
 h1 { font-family: var(--font-display); font-weight: 500; font-size: 1.9rem; line-height: 2.1; margin: 0; text-wrap: balance; }
 h2 { font-size: 1.05rem; font-weight: 600; margin: 0 0 10px; }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
@@ -256,7 +257,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 .topnav a:active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .topnav a.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .topnav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-#inPanel, #plantPanel, #h-prod, #h-trial, #histPanel { scroll-margin-top: 64px; }
+#inPanel, #plantPanel, #h-prod, #h-trial, #histPanel { scroll-margin-top: 84px; }
 .kb-space { height: 55vh; }
 /* ---------- ڈیسک ٹاپ: سب کچھ ایک ہی کھڑکی میں، کالموں میں ---------- */
 #stiffOut, #stiffOrig { display: none !important; }
@@ -264,8 +265,9 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 @media (min-width: 1000px) {
   body { padding-inline: 12px; padding-block: 4px 12px; font-size: 14.5px; line-height: 1.55; }
   .wrap { max-width: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: start; }
-  .wrap > h1 { grid-column: 1; align-self: center; }
-  .wrap > .topnav { grid-column: 2 / -1; align-self: center; position: static; border-bottom: 0; }
+  .apphead { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: center; position: sticky; top: 0; z-index: 50; padding-block: 4px; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .apphead h1 { grid-column: 1; }
+  .apphead .topnav { grid-column: 2 / -1; align-self: center; position: static; border-bottom: 0; }
   h1 { font-size: 1.35rem; line-height: 1.7; }
   .topnav { width: 100%; max-width: 780px; margin-inline: 0 auto; padding-block: 0; }
   .topnav a { padding: 5px 2px; font-size: .85rem; }
@@ -349,16 +351,17 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 </style>
 
 <div class="wrap" dir="rtl" lang="ur">
-  <h1>کارٹن شیٹ کیلکولیٹر</h1>
-
-  <nav class="topnav" id="topnav" aria-label="سیکشن">
-    <a href="file:///C:/Users/Lap_Tech/Desktop/%DA%A9%D8%A7%D8%B1%D9%B9%D9%86%20%D8%B4%DB%8C%D9%B9%20%DA%A9%DB%8C%D9%84%DA%A9%D9%88%D9%84%DB%8C%D9%B9%D8%B1%20(%D9%BE%D8%B1%DB%8C%20%D9%88%DB%8C%D9%88).html#inPanel" data-t="inPanel" class="on">ڈبے کا ناپ</a>
-    <a href="file:///C:/Users/Lap_Tech/Desktop/%DA%A9%D8%A7%D8%B1%D9%B9%D9%86%20%D8%B4%DB%8C%D9%B9%20%DA%A9%DB%8C%D9%84%DA%A9%D9%88%D9%84%DB%8C%D9%B9%D8%B1%20(%D9%BE%D8%B1%DB%8C%20%D9%88%DB%8C%D9%88).html#plantPanel" data-t="plantPanel">پلانٹ</a>
-    <a href="file:///C:/Users/Lap_Tech/Desktop/%DA%A9%D8%A7%D8%B1%D9%B9%D9%86%20%D8%B4%DB%8C%D9%B9%20%DA%A9%DB%8C%D9%84%DA%A9%D9%88%D9%84%DB%8C%D9%B9%D8%B1%20(%D9%BE%D8%B1%DB%8C%20%D9%88%DB%8C%D9%88).html#h-prod" data-t="h-prod">پروڈکشن پلان</a>
-    <a href="file:///C:/Users/Lap_Tech/Desktop/%DA%A9%D8%A7%D8%B1%D9%B9%D9%86%20%D8%B4%DB%8C%D9%B9%20%DA%A9%DB%8C%D9%84%DA%A9%D9%88%D9%84%DB%8C%D9%B9%D8%B1%20(%D9%BE%D8%B1%DB%8C%20%D9%88%DB%8C%D9%88).html#h-trial" data-t="h-trial">پلانٹ رن</a>
-    <a href="file:///C:/Users/Lap_Tech/Desktop/%DA%A9%D8%A7%D8%B1%D9%B9%D9%86%20%D8%B4%DB%8C%D9%B9%20%DA%A9%DB%8C%D9%84%DA%A9%D9%88%D9%84%DB%8C%D9%B9%D8%B1%20(%D9%BE%D8%B1%DB%8C%20%D9%88%DB%8C%D9%88).html#histPanel" data-t="histPanel">محفوظ شدہ</a>
-    <div class="navstale" id="navStale" aria-live="polite">کچھ بدل گیا ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</div>
-  </nav>
+  <header class="apphead">
+    <h1>PACKSOL — کارٹن شیٹ کیلکولیٹر</h1>
+    <nav class="topnav" id="topnav" aria-label="سیکشن">
+      <a href="#inPanel" data-t="inPanel" class="on">ڈبے کا ناپ</a>
+      <a href="#plantPanel" data-t="plantPanel">پلانٹ</a>
+      <a href="#h-prod" data-t="h-prod">پروڈکشن پلان</a>
+      <a href="#h-trial" data-t="h-trial">پلانٹ رن</a>
+      <a href="#histPanel" data-t="histPanel">محفوظ شدہ</a>
+      <div class="navstale" id="navStale" aria-live="polite">کچھ بدل گیا ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</div>
+    </nav>
+  </header>
 
   <section class="panel" id="inPanel" aria-labelledby="h-in">
     <h2 id="h-in">ڈبے کا ناپ</h2>
@@ -499,7 +502,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     </div>
     <p class="orig" id="outOrig"></p>
     <h3 class="sub">خلاصہ</h3>
-    <div class="sumsize" id="sumSize"></div><div>ریل 24 in · میجر 65.78 in · کل مربع انچ 1578.7 · ایک شیٹ سے 1 باکس</div></div>
+    <div class="sumsize" id="sumSize"></div>
     <div class="brk-wrap"><table class="brk" id="brk"></table></div>
     <div class="sumsave">
       <div class="field"><label for="sumCo">کمپنی کا نام</label><input id="sumCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
@@ -1222,9 +1225,15 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   function shareDocImage(doc, btn) {
     var cv = renderDoc(doc);
     cv.toBlob(function (blob) {
+      if (!blob) { showImgBox(cv); flash(btn, "تصویر نیچے دکھا دی ہے۔"); return; }
       var file = new File([blob], "costing.png", { type: "image/png" });
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) navigator.share({ files: [file], title: doc.title }).catch(function () {});
-      else showImgBox(cv);
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: doc.title }).catch(function () {
+          showImgBox(cv); flash(btn, "شیئر نہیں ہو سکا؛ تصویر نیچے سے محفوظ کریں۔");
+        });
+      } else {
+        showImgBox(cv); flash(btn, "اس براؤزر میں براہ راست شیئر نہیں؛ تصویر نیچے سے محفوظ کریں۔");
+      }
     }, "image/png");
   }
   function canShareFiles() {
@@ -1363,20 +1372,43 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     }, "image/png");
   }
   function lastCard(items) { var c = items[items.length - 1]; return c ? c.k.replace(/\s*\(.*\)/, "") + " " + c.v : ""; }
+  function docAfterApply(msgId, message, build) {
+    function make() {
+      if (!LAST) { msgOf(msgId, $("qNote").textContent.trim() || message, true); return null; }
+      return build();
+    }
+    if (LAST && !$("navStale").classList.contains("show")) return make();
+    return apply(false).then(function (ok) {
+      if (!ok) { msgOf(msgId, $("qNote").textContent.trim() || message, true); return null; }
+      return make();
+    });
+  }
   function costNow() {
-    if (!LAST) { sumMsg("پہلے پیپر کا کمبی نیشن ڈال کر نیچے اپلائی دبائیں۔", true); return null; }
-    sumMsg("", false); refreshDate();
-    return costDoc(coName("sumCo"), $("sumRem").value.trim());
+    return docAfterApply("sumMsg", "حساب مکمل نہیں ہو سکا۔ انٹرنیٹ کنکشن دیکھ کر دوبارہ کوشش کریں۔", function () {
+      sumMsg("", false); refreshDate();
+      return costDoc(coName("sumCo"), $("sumRem").value.trim());
+    });
   }
   function plantNow() {
-    if (!LAST || $("pLab").textContent.trim() === "—") { msgOf("plMsg", "پہلے پلانٹ میں اپلائی دبائیں۔", true); return null; }
-    msgOf("plMsg", "", false);
-    return plantDoc(coName("PlCo"), $("PlRem").value.trim());
+    return docAfterApply("plMsg", "پلانٹ کا حساب مکمل نہیں ہو سکا۔ دوبارہ اپلائی کریں۔", function () {
+      if ($("pLab").textContent.trim() === "—") { msgOf("plMsg", "پہلے پلانٹ کا خرچ درج کریں۔", true); return null; }
+      msgOf("plMsg", "", false);
+      return plantDoc(coName("PlCo"), $("PlRem").value.trim());
+    });
   }
   function prodNow() {
-    if (!PLAST) { msgOf("prodMsg", "پہلے آرڈر کی تعداد لکھ کر اپلائی دبائیں۔", true); return null; }
-    msgOf("prodMsg", "", false);
-    return prodDoc(coName("PCo"), $("PRem").value.trim());
+    return docAfterApply("prodMsg", "پروڈکشن کا حساب مکمل نہیں ہو سکا۔ دوبارہ اپلائی کریں۔", function () {
+      if (!PLAST) { msgOf("prodMsg", "پہلے آرڈر کی تعداد لکھیں۔", true); return null; }
+      msgOf("prodMsg", "", false);
+      return prodDoc(coName("PCo"), $("PRem").value.trim());
+    });
+  }
+  function useDoc(result, callback) {
+    if (result && typeof result.then === "function") {
+      result.then(function (doc) { if (doc) callback(doc); }).catch(function () {
+        sumMsg($("qNote").textContent.trim() || "حساب مکمل نہیں ہو سکا۔ دوبارہ کوشش کریں۔", true);
+      });
+    } else if (result) callback(result);
   }
   function wireDocs() {
     COIDS.forEach(function (id) {
@@ -1384,17 +1416,15 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     });
     $("PlRem").addEventListener("input", save);
     $("PRem").addEventListener("input", save);
-    var sh = canShareFiles();
-    ["sumShareBtn", "plShareBtn", "prodShareBtn"].forEach(function (id) { $(id).hidden = !sh; });
-    $("sumCopyBtn").addEventListener("click", function () { var d = costNow(); if (d) copyDocImage(d, $("sumCopyBtn")); });
-    $("sumShareBtn").addEventListener("click", function () { var d = costNow(); if (d) shareDocImage(d, $("sumShareBtn")); });
-    $("sumSaveBtn").addEventListener("click", function () { var d = costNow(); if (d) saveDoc("cost", d, lastCard(LAST.main), "sumMsg"); });
-    $("plCopyBtn").addEventListener("click", function () { var d = plantNow(); if (d) copyDocImage(d, $("plCopyBtn")); });
-    $("plShareBtn").addEventListener("click", function () { var d = plantNow(); if (d) shareDocImage(d, $("plShareBtn")); });
-    $("plSaveBtn").addEventListener("click", function () { var d = plantNow(); if (d) saveDoc("plant", d, lastCard(d.blocks[1].items), "plMsg"); });
-    $("prodCopyBtn").addEventListener("click", function () { var d = prodNow(); if (d) copyDocImage(d, $("prodCopyBtn")); });
-    $("prodShareBtn").addEventListener("click", function () { var d = prodNow(); if (d) shareDocImage(d, $("prodShareBtn")); });
-    $("prodSaveBtn").addEventListener("click", function () { var d = prodNow(); if (d) saveDoc("prod", d, PLAST.haveRolls ? "کل رول " + (PLAST.npairs * PLAST.whole) : "", "prodMsg"); });
+    $("sumCopyBtn").addEventListener("click", function () { useDoc(costNow(), function (d) { copyDocImage(d, $("sumCopyBtn")); }); });
+    $("sumShareBtn").addEventListener("click", function () { useDoc(costNow(), function (d) { shareDocImage(d, $("sumShareBtn")); }); });
+    $("sumSaveBtn").addEventListener("click", function () { useDoc(costNow(), function (d) { saveDoc("cost", d, lastCard(LAST.main), "sumMsg"); }); });
+    $("plCopyBtn").addEventListener("click", function () { useDoc(plantNow(), function (d) { copyDocImage(d, $("plCopyBtn")); }); });
+    $("plShareBtn").addEventListener("click", function () { useDoc(plantNow(), function (d) { shareDocImage(d, $("plShareBtn")); }); });
+    $("plSaveBtn").addEventListener("click", function () { useDoc(plantNow(), function (d) { saveDoc("plant", d, lastCard(d.blocks[1].items), "plMsg"); }); });
+    $("prodCopyBtn").addEventListener("click", function () { useDoc(prodNow(), function (d) { copyDocImage(d, $("prodCopyBtn")); }); });
+    $("prodShareBtn").addEventListener("click", function () { useDoc(prodNow(), function (d) { shareDocImage(d, $("prodShareBtn")); }); });
+    $("prodSaveBtn").addEventListener("click", function () { useDoc(prodNow(), function (d) { saveDoc("prod", d, PLAST.haveRolls ? "کل رول " + (PLAST.npairs * PLAST.whole) : "", "prodMsg"); }); });
     $("histFilter").addEventListener("change", function () { $("histView").hidden = true; renderHist(); });
     $("folderBtn").addEventListener("click", pickFolder);
     $("copyClose").addEventListener("click", function () { $("copyBox").hidden = true; });
@@ -1494,14 +1524,14 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   function sizeApply() { $("MR").value = ""; $("MM").value = ""; showSize(); save(); }
   async function apply(scroll) {
     var data = await requestCalculation();
-    if (!data) return;
+    if (!data) return false;
     renderCalculation(data);
     LROWS = data.LROWS || []; LTOT = data.LTOT || null; PLAST = data.PLAST || null;
     if (!data.ok) {
       ["sOrigReel","sOrigMaj","sNP","sAcross","sTot"].forEach(function (id) { $(id).textContent = "—"; });
       $("outOrig").innerHTML = "";
       LAST = null; $("sumSize").innerHTML = ""; setCtx(null);
-      return;
+      return false;
     }
     applied = true;
     $("navStale").classList.remove("show");
@@ -1511,6 +1541,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     setCtx(sizeLines2(data.Z)); refreshDate();
     snapshot(data.Z);
     if (scroll === true) nudge("resultPanel", { behavior:"smooth", block:"nearest" });
+    return !!LAST;
   }
   function onEdit() { save(); if (applied) $("navStale").classList.add("show"); }
   function markRows() {

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="PACKSOL">
+  <rect width="1024" height="1024" fill="#000000"/>
+  <g fill="#F2B600">
+    <path d="M160 280 400 157 508 216 274 336Z"/>
+    <path d="M514 216 621 157 860 280 747 336Z"/>
+    <path d="M162 393 273 337 506 453 395 509Z"/>
+    <path d="M518 453 747 337 858 393 626 509Z"/>
+    <path d="M262 455 395 522 505 461 505 706 262 580Z"/>
+    <path d="M519 461 627 522 760 455 760 580 519 706Z"/>
+  </g>
+  <text x="132" y="855" font-family="Arial, Helvetica, sans-serif" font-size="150" font-weight="800" letter-spacing="3" textLength="760" lengthAdjust="spacingAndGlyphs"><tspan fill="#FFFFFF">PACK</tspan><tspan fill="#F2B600">SOL</tspan></text>
+</svg>
