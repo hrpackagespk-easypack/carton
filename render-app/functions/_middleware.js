@@ -21,6 +21,10 @@ const LOGOUT_BUTTON =
   'padding:6px 12px;border-radius:16px;font:13px Tahoma,sans-serif;text-decoration:none;opacity:.85">' +
   "لاگ آؤٹ</a>";
 
+// The calculator page uses a small text-escaping helper that went missing from index.html
+// when the maths moved to the server. This puts it back so Save / Copy / Share work.
+const ESC_SCRIPT = `<script>function esc(x){return String(x).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}</script>`;
+
 export async function onRequest(context) {
   const { request, env, next } = context;
   const url = new URL(request.url);
@@ -66,6 +70,11 @@ export async function onRequest(context) {
   const type = out.headers.get("Content-Type") || "";
   if (type.includes("text/html") && typeof HTMLRewriter !== "undefined") {
     return new HTMLRewriter()
+      .on("head", {
+        element(el) {
+          el.append(ESC_SCRIPT, { html: true });
+        }
+      })
       .on("body", {
         element(el) {
           el.append(LOGOUT_BUTTON, { html: true });
