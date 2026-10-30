@@ -5,9 +5,11 @@ import {
   clearCookie,
   clearFails,
   configured,
+  deviceLimit,
   hashPassword,
   isAdmin,
   json,
+  liveSessions,
   setCookie,
   signToken,
   tooManyFails
@@ -24,7 +26,10 @@ function publicRow(name, rec) {
     username: name,
     expires: rec.expires,
     disabled: !!rec.disabled,
-    created: rec.created || 0
+    created: rec.created || 0,
+    devices: liveSessions(rec).length,
+    maxDevices: deviceLimit(rec),
+    lastLogin: rec.lastLogin || 0
   };
 }
 
@@ -104,6 +109,20 @@ export async function onRequestPost({ request, env }) {
 
   if (action === "disable") {
     rec.disabled = !!body.disabled;
+    await env.USERS.put(key, JSON.stringify(rec));
+    return json(200, { ok: true, user: publicRow(name, rec) });
+  }
+
+  if (action === "devices") {
+    const max = Math.floor(Number(body.max));
+    if (!(max >= 1 && max <= 5)) return json(400, { error: "BAD_DEVICES" });
+    rec.maxDevices = max;
+    await env.USERS.put(key, JSON.stringify(rec));
+    return json(200, { ok: true, user: publicRow(name, rec) });
+  }
+
+  if (action === "kick") {
+    rec.sessions = []; // frees every device place
     await env.USERS.put(key, JSON.stringify(rec));
     return json(200, { ok: true, user: publicRow(name, rec) });
   }

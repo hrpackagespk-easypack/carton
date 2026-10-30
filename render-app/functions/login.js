@@ -42,6 +42,7 @@ const PAGE = `<!doctype html>
   var e = new URLSearchParams(location.search).get("e");
   if (e === "expired") show("آپ کی استعمال کی مدت ختم ہو گئی ہے۔ مدت بڑھوانے کے لیے رابطہ کریں۔", "warn");
   if (e === "disabled") show("آپ کا اکاؤنٹ بند کر دیا گیا ہے۔ رابطہ کریں۔", "warn");
+  if (e === "kicked") show("آپ کا لاگ اِن ختم ہو گیا ہے۔ دوبارہ لاگ اِن کریں۔", "warn");
 
   function submit() {
     var u = document.getElementById("u").value.trim();
@@ -59,6 +60,7 @@ const PAGE = `<!doctype html>
       if (x.status === 200) { location.href = "/"; return; }
       var code = x.data && x.data.error;
       if (code === "WRONG") show("ID یا پاسورڈ غلط ہے۔", "err");
+      else if (code === "DEVICE_LIMIT") show("یہ ID پہلے سے " + (x.data.limit || 2) + " ڈیوائسز پر لاگ اِن ہے۔ کسی ایک ڈیوائس سے لاگ آؤٹ کریں، پھر یہاں لاگ اِن کریں۔", "warn");
       else if (code === "TOO_MANY") show("بہت زیادہ غلط کوششیں۔ 15 منٹ بعد دوبارہ کوشش کریں۔", "err");
       else if (code === "expired") show("آپ کی استعمال کی مدت ختم ہو گئی ہے۔ رابطہ کریں۔", "warn");
       else if (code === "disabled") show("آپ کا اکاؤنٹ بند کر دیا گیا ہے۔ رابطہ کریں۔", "warn");

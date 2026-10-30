@@ -119,13 +119,31 @@ export async function hashPassword(password, saltB64u) {
   return { salt: toB64u(salt), hash: toB64u(bits) };
 }
 
+export function newSid() {
+  return toB64u(crypto.getRandomValues(new Uint8Array(12)));
+}
+
+export const DEFAULT_DEVICES = 2;
+
+export function deviceLimit(rec) {
+  const n = Math.floor(Number(rec && rec.maxDevices));
+  return n >= 1 && n <= 5 ? n : DEFAULT_DEVICES;
+}
+
+// Logins still holding a place (a place frees on logout, or after the session lifetime).
+export function liveSessions(rec, now = Date.now()) {
+  return (rec.sessions || []).filter((s) => now - s.at < SESSION_DAYS * DAY_MS);
+}
+
 // Is this user allowed in right now? Checked on every request.
-export async function userStatus(env, username, ver) {
+// "sid" identifies this device's login.
+export async function userStatus(env, username, ver, sid) {
   const rec = await env.USERS.get("user:" + username, "json");
   if (!rec) return { ok: false, reason: "gone" };
   if ((rec.ver || 0) !== (ver || 0)) return { ok: false, reason: "relogin" };
   if (rec.disabled) return { ok: false, reason: "disabled" };
   if (Date.now() > rec.expires) return { ok: false, reason: "expired" };
+  if (!sid || !(rec.sessions || []).some((s) => s.sid === sid)) return { ok: false, reason: "kicked" };
   return { ok: true, rec };
 }
 

@@ -4,12 +4,17 @@ import {
   addFail,
   clearFails,
   configured,
+  deviceLimit,
+  getCookie,
   hashPassword,
   json,
+  liveSessions,
+  newSid,
   safeEqual,
   setCookie,
   signToken,
-  tooManyFails
+  tooManyFails,
+  verifyToken
 } from "../../src/auth.js";
 
 export async function onRequestPost({ request, env }) {
@@ -49,10 +54,32 @@ export async function onRequestPost({ request, env }) {
   if (Date.now() > rec.expires) return json(403, { error: "expired" });
 
   await clearFails(env, failKey);
+
+  // A device that already holds a place (same browser logging in again) keeps its place.
+  const now = Date.now();
+  const limit = deviceLimit(rec);
+  const live = liveSessions(rec, now);
+  const old = await verifyToken(env, getCookie(request, "sess"));
+  let sid = old && old.u === username && live.some((s) => s.sid === old.s) ? old.s : null;
+
+  if (!sid) {
+    // New device: only allowed if a place is free. The existing devices are never kicked out.
+    if (live.length >= limit) return json(403, { error: "DEVICE_LIMIT", limit });
+    sid = newSid();
+    live.push({ sid, at: now });
+  } else {
+    for (const s of live) if (s.sid === sid) s.at = now;
+  }
+
+  rec.sessions = live;
+  rec.lastLogin = now;
+  await env.USERS.put("user:" + username, JSON.stringify(rec));
+
   const token = await signToken(env, {
     u: username,
     v: rec.ver || 0,
-    exp: Date.now() + SESSION_DAYS * DAY_MS
+    s: sid,
+    exp: now + SESSION_DAYS * DAY_MS
   });
   return json(200, { ok: true }, { "Set-Cookie": setCookie("sess", token, SESSION_DAYS * 86400) });
 }

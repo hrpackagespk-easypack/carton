@@ -94,7 +94,8 @@ const PAGE = `<!doctype html>
     TOO_MANY: "بہت زیادہ غلط کوششیں۔ 15 منٹ بعد کوشش کریں۔",
     WRONG: "پاسورڈ غلط ہے۔",
     NOT_CONFIGURED: "سیٹنگ مکمل نہیں (KV یا سیکریٹ نہیں لگے)۔",
-    NOT_FOUND: "یوزر نہیں ملا۔"
+    NOT_FOUND: "یوزر نہیں ملا۔",
+    BAD_DEVICES: "ڈیوائسز 1 سے 5 کے درمیان ہوں۔"
   };
   function errOf(x) { return errText[x.data && x.data.error] || "کچھ خرابی ہوئی۔"; }
 
@@ -122,7 +123,9 @@ const PAGE = `<!doctype html>
         else { bd.className += " ok"; bd.textContent = left + " دن باقی"; }
         var dt = document.createElement("div"); dt.className = "muted"; dt.style.direction = "ltr"; dt.style.textAlign = "right";
         dt.textContent = "ends " + fmtDate(u.expires);
-        info.appendChild(nm); info.appendChild(bd); info.appendChild(dt);
+        var dv = document.createElement("div"); dv.className = "muted"; dv.style.direction = "ltr"; dv.style.textAlign = "right";
+        dv.textContent = "devices " + u.devices + "/" + u.maxDevices + (u.lastLogin ? " · last login " + fmtDate(u.lastLogin) : " · never logged in");
+        info.appendChild(nm); info.appendChild(bd); info.appendChild(dt); info.appendChild(dv);
 
         var acts = document.createElement("div"); acts.className = "acts";
         function btn(text, cls, fn) {
@@ -132,6 +135,13 @@ const PAGE = `<!doctype html>
         btn("+30 دن", "", function () { act({ action: "extend", username: u.username, days: 30 }); });
         btn(u.disabled ? "چالو کریں" : "بند کریں", u.disabled ? "green" : "gray", function () {
           act({ action: "disable", username: u.username, disabled: !u.disabled });
+        });
+        btn("سب کو نکالیں", "gray", function () {
+          if (confirm(u.username + " کی سب ڈیوائسز لاگ آؤٹ کریں؟ (ڈیوائس کی جگہیں خالی ہو جائیں گی)")) act({ action: "kick", username: u.username });
+        });
+        btn("ڈیوائسز", "gray", function () {
+          var n = prompt("اس ID پر کتنی ڈیوائسز ایک وقت میں چلیں؟ (1 سے 5)", String(u.maxDevices));
+          if (n) act({ action: "devices", username: u.username, max: Number(n) });
         });
         btn("پاسورڈ بدلیں", "gray", function () {
           var p = prompt("نیا پاسورڈ لکھیں (کم از کم 6 حروف):");
