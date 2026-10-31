@@ -1540,6 +1540,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     var labelsByRS = {};
     for (var i = 0; i < 7; i++) {
       var rs = $("RS" + i).value, item = rs ? rlFind(rs) : null;
+      values["RS" + i] = rs;   /* سرور کو معلوم ہو کہ ہر پرت میں لسٹ سے کون سا پیپر چنا ہے */
       if (item) labelsByRS[rs] = rlLabel(item);
     }
     return { mode:mode, unit:unit, sunit:sunit, segs:segs, plies:plies, values:values, labelsByRS:labelsByRS };
