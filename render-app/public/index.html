@@ -331,9 +331,9 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 .toprow { grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: end; margin-bottom: 12px; }
 .toprow .apply { font-size: 1rem; padding: 7px 2px; min-height: 38px; }
 .tbar5 { grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: end; }
-.tbar5 > :nth-child(-n+3) { grid-column: span 2; }
-.tbar5 > :nth-child(n+4) { grid-column: span 3; }
-@media (min-width: 1000px) { .tbar5 { grid-template-columns: repeat(5, minmax(0, 1fr)); } .tbar5 > * { grid-column: auto !important; } }
+.tbar5 > :nth-child(-n+2) { grid-column: span 3; }
+.tbar5 > :nth-child(n+3) { grid-column: span 2; }
+@media (min-width: 1000px) { .tbar5 { grid-template-columns: 1.7fr 1fr 1fr 1fr .8fr; } .tbar5 > * { grid-column: auto !important; } }
 .seg2 { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
 .seg2 button { font: inherit; font-size: .95rem; padding: 7px; border: 0; background: transparent; color: var(--fg); cursor: pointer; }
 .seg2 button + button { border-inline-start: 1px solid var(--line); }
@@ -469,10 +469,10 @@ body > a[href="/logout"] { display: none !important; }
     <div class="paper">
       <h3 id="plyTitle">پیپر (5 پلائی)</h3>
       <div class="tbar tbar5">
+        <div class="field"><label for="cmbSel">محفوظ کمبی نیشن</label><select id="cmbSel"><option value="">— کمبی نیشن چنیں —</option><option value="SADAQAT  STF">SADAQAT  STF (5)</option><option value="SADAQAT BOX">SADAQAT BOX (5)</option><option value="MODERN APROVED COMB">MODERN APROVED COMB (5)</option><option value="COMMONDER SAMPLE">COMMONDER SAMPLE (5)</option><option value="DIOMOND STF">DIOMOND STF (5)</option><option value="DIOMOND BOX">DIOMOND BOX (5)</option><option value="DIOMOND BOX 7 PLY">DIOMOND BOX 7 PLY (7)</option><option value="DIOMOND STF WITH SF">DIOMOND STF WITH SF (5)</option></select></div>
         <select id="rtSel" aria-label="ریٹ کی قسم"><option value="credit">کریڈٹ ریٹ</option><option value="cash">کیش ریٹ</option></select>
         <button type="button" id="rlBtn" aria-expanded="false" aria-controls="rlDetails">ریٹ لسٹ ▾</button>
         <button type="button" id="flBtn" aria-expanded="false" aria-controls="flDetails">نالی فیصد ▾</button>
-        <div class="field"><label for="cmbSel">محفوظ کمبی نیشن</label><select id="cmbSel"><option value="">— کمبی نیشن چنیں —</option><option value="SADAQAT  STF">SADAQAT  STF (5)</option><option value="SADAQAT BOX">SADAQAT BOX (5)</option><option value="MODERN APROVED COMB">MODERN APROVED COMB (5)</option><option value="COMMONDER SAMPLE">COMMONDER SAMPLE (5)</option><option value="DIOMOND STF">DIOMOND STF (5)</option><option value="DIOMOND BOX">DIOMOND BOX (5)</option><option value="DIOMOND BOX 7 PLY">DIOMOND BOX 7 PLY (7)</option><option value="DIOMOND STF WITH SF">DIOMOND STF WITH SF (5)</option></select></div>
         <div class="field" id="nbField"><label for="NB" title="ایک شیٹ میں سے کتنے باکس نکلتے ہیں">فی شیٹ باکس</label><input id="NB" type="text" inputmode="decimal" autocomplete="off" value="1"></div>
       </div>
       <div class="ratelist box" id="rlDetails" hidden="">
@@ -554,9 +554,8 @@ body > a[href="/logout"] { display: none !important; }
       <div class="big mini"><span class="k">اوریجنل میجر (پیس × آخری سائز)</span><span class="v" id="sOrigMaj">—</span></div>
     </div>
     <p class="orig" id="outOrig"></p>
-    <h3 class="sub">خلاصہ</h3>
-    <div class="sumsize" id="sumSize"></div>
-    <div class="brk-wrap"><table class="brk" id="brk"></table></div>
+    <div class="sumsize" id="sumSize" hidden=""></div>
+    <div class="brk-wrap" hidden=""><table class="brk" id="brk"></table></div>
     <div class="sumsave">
       <div class="field"><label for="sumCo">کمپنی کا نام</label><input id="sumCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
       <div class="field"><label>تاریخ</label><div class="datecell" id="sumDateShow">26 OCT 2026</div></div>
@@ -1035,7 +1034,7 @@ body > a[href="/logout"] { display: none !important; }
     var sizes = sizeLines2(Z);
     var pl = costMode === "plant";
     var main = (pl ? ["outCost"] : ["outCost", "outBox", "outRate", "outFinal"]).map(cardData).filter(Boolean);
-    var plant = (!pl || $("pLab").textContent.trim() === "—") ? [] : ["pLab", "pCost", "pBox", "pRate", "pFinal"].map(cardData).filter(Boolean);
+    var plant = (!pl || $("pLab").textContent.trim() === "—") ? [] : ["pLab", "pBox", "pRate", "pFinal"].map(cardData).filter(Boolean);
     LAST = { sizes: sizes, table: $("brk").innerHTML, rows: LROWS, tot: LTOT, main: main, plant: plant };
     $("sumSize").innerHTML = sizes.map(function (l) { return "<div>" + esc(l) + "</div>"; }).join("");
   }
@@ -1770,7 +1769,7 @@ body > a[href="/logout"] { display: none !important; }
     $("manualGrp").hidden = pl; $("plantGrp").hidden = !pl; $("plantCards").hidden = !pl;
     $("cmManual").setAttribute("aria-pressed", String(!pl));
     $("cmPlant").setAttribute("aria-pressed", String(pl));
-    if (pl) ["outBox", "outRate", "outFinal"].forEach(function (id) { $(id).parentNode.hidden = true; });
+    if (pl) { ["outBox", "outRate", "outFinal", "pCost"].forEach(function (id) { $(id).parentNode.hidden = true; }); }
   }
   ["cmManual", "cmPlant"].forEach(function (id) {
     $(id).addEventListener("click", function () {
