@@ -252,7 +252,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 #sizeBtn { margin-top: 6px; }
 .navstale { position: absolute; top: calc(100% + 4px); inset-inline: 0; padding: 6px 10px; border-radius: 8px; background: var(--accent-soft); color: var(--fg); border: 1px solid var(--accent); font-size: .85rem; line-height: 1.6; text-align: center; pointer-events: none; opacity: 0; transition: opacity .15s; }
 .navstale.show { opacity: 1; }
-.topnav { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding-block: 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding-block: 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
 .topnav a { display: block; text-align: center; text-decoration: none; font-size: .88rem; font-weight: 600; line-height: 1.5; padding: 8px 2px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
 .topnav a:active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .topnav a.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
@@ -327,6 +327,30 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   .wrap { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   #grpProd, #grpTrial { grid-column: span 2; }
 }
+/* نیا لے آؤٹ */
+.toprow { grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: end; margin-bottom: 12px; }
+.toprow .apply { font-size: 1rem; padding: 7px 2px; min-height: 38px; }
+.tbar5 { grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: end; }
+.tbar5 > :nth-child(-n+3) { grid-column: span 2; }
+.tbar5 > :nth-child(n+4) { grid-column: span 3; }
+@media (min-width: 1000px) { .tbar5 { grid-template-columns: repeat(5, minmax(0, 1fr)); } .tbar5 > * { grid-column: auto !important; } }
+.seg2 { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+.seg2 button { font: inherit; font-size: .95rem; padding: 7px; border: 0; background: transparent; color: var(--fg); cursor: pointer; }
+.seg2 button + button { border-inline-start: 1px solid var(--line); }
+.seg2 button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); font-weight: 600; }
+#applyBtn { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); width: auto; min-width: 150px; padding: 9px 34px; z-index: 40; box-shadow: 0 4px 16px rgb(0 0 0 / .3); border-radius: 24px; }
+.dd { position: relative; grid-column: 1 / -1; }
+.dd summary { list-style: none; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; font-weight: 600; font-size: .95rem; background: var(--accent); color: var(--accent-fg); border-radius: 8px; padding: 9px; min-height: 40px; }
+.dd summary::-webkit-details-marker { display: none; }
+.mn { position: absolute; bottom: calc(100% + 4px); inset-inline: 0; background: var(--surface); border: 1px solid var(--accent); border-radius: 10px; box-shadow: 0 6px 18px rgb(0 0 0 / .25); overflow: hidden; z-index: 60; }
+.mn button { display: block; width: 100%; text-align: start; font: inherit; font-size: .95rem; padding: 11px 14px; border: 0; border-top: 1px solid var(--line); background: var(--surface); color: var(--fg); min-height: 44px; cursor: pointer; }
+.mn button:first-child { border-top: 0; }
+.mn button.hl { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.screen { position: fixed; inset: 0; z-index: 80; overflow: auto; background: var(--bg); padding: 12px 16px 80px; }
+.screen > * { max-width: 560px; margin-inline: auto; margin-bottom: 12px; }
+.scrtop { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.sec2 { font-family: var(--font-display); font-weight: 500; font-size: 1.4rem; line-height: 2; margin: 0; }
+#toast { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); background: #17262B; color: #fff; padding: 8px 16px; border-radius: 20px; z-index: 90; font-size: .9rem; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
 /* جو چنا ہو وہ نیلے رنگ میں */
@@ -354,9 +378,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   <header class="apphead">
     <h1>PACKSOL — کارٹن شیٹ کیلکولیٹر</h1>
     <nav class="topnav" id="topnav" aria-label="سیکشن">
-      <a href="#inPanel" data-t="inPanel" class="on">ڈبے کا ناپ</a>
-      <a href="#plantPanel" data-t="plantPanel">پلانٹ</a>
-      <a href="#h-prod" data-t="h-prod">پروڈکشن پلان</a>
+      <a href="#inPanel" data-t="inPanel" class="on">حساب</a>
       <a href="#h-trial" data-t="h-trial">پلانٹ رن</a>
       <a href="#histPanel" data-t="histPanel">محفوظ شدہ</a>
       <div class="navstale" id="navStale" aria-live="polite">کچھ بدل گیا ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</div>
@@ -367,14 +389,19 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     <h2 id="h-in">ڈبے کا ناپ</h2>
     <div class="example" id="example" hidden="">یہ مثال کے ناپ ہیں۔ اپنے ڈبے کا ناپ لکھیں۔</div>
 
-    <div class="tbar2">
+    <div class="tbar2 toprow">
       <div class="field"><label for="modeSel">قسم</label>
         <select id="modeSel"><option value="box">ڈبہ</option><option value="stiff">اسٹفنر</option></select></div>
-      <div class="field" id="unitField"><label for="unitSel">سائز کی اکائی</label>
+      <div class="field" id="unitField"><label for="unitSel">اکائی</label>
         <select id="unitSel"><option value="mm">ملی میٹر</option><option value="cm">سینٹی میٹر</option><option value="in">انچ</option></select></div>
-      <div class="field" id="sUnitField" hidden=""><label for="sUnitSel">سائز کی اکائی</label>
+      <div class="field" id="sUnitField" hidden=""><label for="sUnitSel">اکائی</label>
         <select id="sUnitSel"><option value="mm">ملی میٹر</option><option value="cm">سینٹی میٹر</option><option value="in">انچ</option></select></div>
+      <div class="field"><label for="plySel">پلائی</label>
+        <select id="plySel" aria-label="پلائی کی تعداد"><option value="3">3</option><option value="5">5</option><option value="7">7</option></select></div>
+      <div class="field"><label for="QT">مقدار</label><input id="QT" type="text" inputmode="decimal" autocomplete="off" value="10000"></div>
+      <button class="apply" id="sizeBtn" type="button">اپلائی</button>
     </div>
+    <input id="RL" type="hidden" value="2400">
 
     <div class="dims" id="boxDims">
       <div class="field"><label for="L">لمبائی</label><input id="L" type="text" inputmode="decimal" autocomplete="off" value="400"></div>
@@ -410,11 +437,12 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
       <p class="mnote">اوپر کا اپلائی دبانے پر یہ خانے صاف ہو کر خودکار ریل اور میجر آتے ہیں۔ بدلنا ہو تو اس کے بعد یہاں لکھیں، نتیجہ فوراً بدل جاتا ہے اور سارا حساب آپ کے لکھے پر ہوگا۔</p>
     </div>
 
-    <button class="apply" id="sizeBtn" type="button">اپلائی: ریل اور میجر دیکھیں</button>
     <div class="sizeout" id="sizeOut" aria-live="polite">
       <div class="big size"><span class="k">ریل سائز</span><span class="v" id="szReel">—</span></div>
       <div class="big size"><span class="k">میجر سائز</span><span class="v" id="szMaj">—</span></div>
       <div class="big size"><span class="k">کل مربع انچ</span><span class="v" id="szArea">—</span></div>
+      <div class="big gain"><span class="k">درکار شیٹ</span><span class="v" id="szSheets">—</span></div>
+      <div class="big gain"><span class="k">کل رول</span><span class="v" id="szRolls">—</span><span class="d" id="dszRolls"></span></div>
       <div id="szStiff" hidden="">
         <div class="big size"><span class="k">میجر سے پیس</span><span class="v" id="szNP">—</span></div>
         <div class="big size"><span class="k">ریل سے پیس</span><span class="v" id="szAcross">—</span></div>
@@ -430,11 +458,12 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 
     <div class="paper">
       <h3 id="plyTitle">پیپر (5 پلائی)</h3>
-      <div class="tbar">
-        <select id="plySel" aria-label="پلائی کی تعداد"><option value="3">3 پلائی</option><option value="5">5 پلائی</option><option value="7">7 پلائی</option></select>
+      <div class="tbar tbar5">
         <select id="rtSel" aria-label="ریٹ کی قسم"><option value="credit">کریڈٹ ریٹ</option><option value="cash">کیش ریٹ</option></select>
         <button type="button" id="rlBtn" aria-expanded="false" aria-controls="rlDetails">ریٹ لسٹ ▾</button>
         <button type="button" id="flBtn" aria-expanded="false" aria-controls="flDetails">نالی فیصد ▾</button>
+        <div class="field"><label for="cmbSel">محفوظ کمبی نیشن</label><select id="cmbSel"><option value="">— کمبی نیشن چنیں —</option><option value="SADAQAT  STF">SADAQAT  STF (5)</option><option value="SADAQAT BOX">SADAQAT BOX (5)</option><option value="MODERN APROVED COMB">MODERN APROVED COMB (5)</option><option value="COMMONDER SAMPLE">COMMONDER SAMPLE (5)</option><option value="DIOMOND STF">DIOMOND STF (5)</option><option value="DIOMOND BOX">DIOMOND BOX (5)</option><option value="DIOMOND BOX 7 PLY">DIOMOND BOX 7 PLY (7)</option><option value="DIOMOND STF WITH SF">DIOMOND STF WITH SF (5)</option></select></div>
+        <div class="field" id="nbField"><label for="NB" title="ایک شیٹ میں سے کتنے باکس نکلتے ہیں">فی شیٹ باکس</label><input id="NB" type="text" inputmode="decimal" autocomplete="off" value="1"></div>
       </div>
       <div class="ratelist box" id="rlDetails" hidden="">
         <p class="mnote">ہر پرت کے نیچے "لسٹ سے پیپر چنیں" میں سے پیپر چنیں تو GSM اور ریٹ خود بھر جاتے ہیں (اوپر کریڈٹ یا کیش جو چنا ہو)۔ ریٹ بدلیں تو یہاں لکھ کر "محفوظ کریں" دبائیں۔</p>
@@ -452,10 +481,6 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
           <div class="field"><label for="X2">باریک نالی میں اضافہ (%)</label><input id="X2" type="text" inputmode="decimal" autocomplete="off" value="43"></div>
         </div>
       </div>
-      <div class="cmbrow">
-        <div class="field"><label for="cmbSel">محفوظ کمبی نیشن</label><select id="cmbSel"><option value="">— کمبی نیشن چنیں —</option><option value="SADAQAT  STF">SADAQAT  STF (5)</option><option value="SADAQAT BOX">SADAQAT BOX (5)</option><option value="MODERN APROVED COMB">MODERN APROVED COMB (5)</option><option value="COMMONDER SAMPLE">COMMONDER SAMPLE (5)</option><option value="DIOMOND STF">DIOMOND STF (5)</option><option value="DIOMOND BOX">DIOMOND BOX (5)</option><option value="DIOMOND BOX 7 PLY">DIOMOND BOX 7 PLY (7)</option><option value="DIOMOND STF WITH SF">DIOMOND STF WITH SF (5)</option></select></div>
-        <div class="field" id="nbField"><label for="NB" title="ایک شیٹ میں سے کتنے باکس نکلتے ہیں">فی شیٹ باکس</label><input id="NB" type="text" inputmode="decimal" autocomplete="off" value="1"></div>
-      </div>
       <p class="example" id="pnote" hidden="">یہ مثال کے GSM اور ریٹ ہیں۔ اپنے پیپر کے لکھیں۔</p>
       <div id="paperRows"><div class="prow head"><span>پرت</span><span>قسم</span><span class="hg">GSM</span><span class="hp">ریٹ فی کلو</span><span class="hs">ریٹ لسٹ سے پیپر</span></div><div class="prow" id="row0"><span>1</span><select id="T0" aria-label="پرت 1 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G0" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 1 کا GSM" value="150"><input id="P0" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 1 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS0" aria-label="پرت 1 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row1"><span>2</span><select id="T1" aria-label="پرت 2 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G1" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 2 کا GSM" value="120"><input id="P1" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 2 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS1" aria-label="پرت 2 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row2"><span>3</span><select id="T2" aria-label="پرت 3 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G2" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 3 کا GSM" value="100"><input id="P2" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 3 کا ریٹ فی کلو" value="90"><select class="rs on" id="RS2" aria-label="پرت 3 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row3"><span>4</span><select id="T3" aria-label="پرت 4 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G3" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 4 کا GSM" value="120"><input id="P3" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 4 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS3" aria-label="پرت 4 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row4"><span>5</span><select id="T4" aria-label="پرت 5 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G4" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 5 کا GSM" value="150"><input id="P4" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 5 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS4" aria-label="پرت 5 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row5" hidden=""><span>6</span><select id="T5" aria-label="پرت 6 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G5" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 6 کا GSM" value="120"><input id="P5" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 6 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS5" aria-label="پرت 6 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row6" hidden=""><span>7</span><select id="T6" aria-label="پرت 7 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G6" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 7 کا GSM" value="150"><input id="P6" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 7 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS6" aria-label="پرت 7 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div></div>
       <details class="ratelist" id="cmbDetails">
@@ -470,13 +495,23 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
       </details>
     </div>
     <div class="paper">
-      <h3>خرچ، منافع اور GST</h3>
+      <div class="seg2" role="group" aria-label="حساب کا طریقہ"><button type="button" id="cmManual" aria-pressed="true">مینول</button><button type="button" id="cmPlant" aria-pressed="false">پلانٹ</button></div>
+      <div id="manualGrp">
       <div class="tri">
         <div class="field cost"><label for="EX">خرچ</label><div class="amt"><input id="EX" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""><select id="EXU" aria-label="خرچ کی قسم"><option value="p">%</option><option value="r">روپے</option></select></div></div>
         <div class="field gain"><label for="PR">منافع</label><div class="amt"><input id="PR" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""><select id="PRU" aria-label="منافع کی قسم"><option value="p">%</option><option value="r">روپے</option></select></div></div>
         <div class="field gain"><label for="GS">GST</label><input id="GS" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""></div>
       </div>
       <p class="mnote">خرچ پیپر کاسٹ پر لگتا ہے، منافع باکس کاسٹ پر، اور GST سب سے آخر میں منافع والے ریٹ پر۔ تینوں آپ بدل سکتے ہیں۔</p>
+      </div>
+      <div id="plantGrp" hidden="">
+    <div class="field gap cost"><label for="R1">پلانٹ لیبر ریٹ (فی مربع انچ)</label><input id="R1" type="text" inputmode="decimal" autocomplete="off" value="0.0125"></div>
+    <div class="tri">
+      <div class="field cost"><label for="PX">خرچ</label><div class="amt"><input id="PX" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""><select id="PXU" aria-label="خرچ کی قسم"><option value="p">%</option><option value="r">روپے</option></select></div></div>
+      <div class="field gain"><label for="PP">منافع</label><div class="amt"><input id="PP" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""><select id="PPU" aria-label="منافع کی قسم"><option value="p">%</option><option value="r">روپے</option></select></div></div>
+      <div class="field gain"><label for="PG">GST (%)</label><input id="PG" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""></div>
+    </div>
+      </div>
     </div>
     <button class="apply" id="applyBtn" type="button">اپلائی</button>
   </section>
@@ -496,6 +531,14 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     <div class="big cost"><span class="k">باکس کاسٹ (خرچ کے ساتھ)</span><span class="v" id="outBox">—</span><span class="d" id="dBox"></span><span class="d" id="dBoxSq"></span></div>
     <div class="big gain" hidden=""><span class="k">ریٹ (منافع کے ساتھ)</span><span class="v" id="outRate">—</span><span class="d" id="dRate"></span><span class="d" id="dRateSq"></span></div>
     <div class="big gain final" hidden=""><span class="k">آخری ریٹ (GST کے ساتھ)</span><span class="v" id="outFinal">—</span><span class="d" id="dFinal"></span></div>
+    <div id="plantCards" hidden="">
+    <div class="big cost"><span class="k">پلانٹ کا فی ڈبہ خرچ (لیبر)</span><span class="v" id="pLab">—</span><span class="d" id="dpLab"></span></div>
+    <p class="mnote" id="plNote"></p>
+    <div class="big cost"><span class="k">پلانٹ کاسٹ (پیپر کاسٹ + لیبر)</span><span class="v" id="pCost">—</span><span class="d" id="dpCost"></span></div>
+    <div class="big cost" hidden=""><span class="k">باکس کاسٹ (خرچ کے ساتھ)</span><span class="v" id="pBox">—</span><span class="d" id="dpBox"></span><span class="d" id="dpBoxSq"></span></div>
+    <div class="big gain" hidden=""><span class="k">ریٹ (منافع کے ساتھ)</span><span class="v" id="pRate">—</span><span class="d" id="dpRate"></span><span class="d" id="dpRateSq"></span></div>
+    <div class="big gain final" hidden=""><span class="k">آخری ریٹ (GST کے ساتھ)</span><span class="v" id="pFinal">—</span><span class="d" id="dpFinal"></span></div>
+    </div>
     <div id="stiffOrig" hidden="">
       <div class="big mini"><span class="k">اوریجنل ریل (جفت کرنے سے پہلے)</span><span class="v" id="sOrigReel">—</span></div>
       <div class="big mini"><span class="k">اوریجنل میجر (پیس × آخری سائز)</span><span class="v" id="sOrigMaj">—</span></div>
@@ -508,58 +551,23 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
       <div class="field"><label for="sumCo">کمپنی کا نام</label><input id="sumCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
       <div class="field"><label>تاریخ</label><div class="datecell" id="sumDateShow">26 OCT 2026</div></div>
       <div class="field full"><label for="sumRem">ریمارکس (پہچان کے لیے)</label><input id="sumRem" type="text" autocomplete="off" maxlength="120" placeholder="مثلاً PO نمبر، حوالہ، شہر"></div>
-      <button type="button" id="sumCopyBtn" class="sec">تصویر کاپی کریں</button>
-      <button type="button" id="sumSaveBtn">خلاصہ محفوظ کریں</button>
-      <button type="button" id="sumShareBtn" class="sec full">شیئر (واٹس ایپ وغیرہ)</button>
+      <details class="dd"><summary>عمل ▾</summary>
+        <div class="mn"><button type="button" id="sumSaveBtn">خلاصہ محفوظ کریں</button><button type="button" id="sumCopyBtn">تصویر کاپی کریں</button><button type="button" id="sumShareBtn">شیئر (واٹس ایپ وغیرہ)</button><button type="button" id="prodOpenBtn" class="hl">پروڈکشن پلان کھولیں ←</button></div></details>
     </div>
     <p class="rlmsg" id="sumMsg" aria-live="polite"></p>
   </section>
-  <section class="panel" id="plantPanel" aria-labelledby="h-plant" aria-live="polite">
-    <h2 id="h-plant">پلانٹ</h2>
-    <div class="example ctx" id="ctxPlant"><div>ڈبے کا سائز: 50 × 31 × 27 سینٹی میٹر</div><div>ریل 24 in · میجر 65.78 in · کل مربع انچ 1578.7 · ایک شیٹ سے 1 باکس</div></div>
-    <p class="mnote">پیپر کاسٹ وہی رہتی ہے۔ اس میں پلانٹ کی لیبر (ریٹ × شیٹ کے کل مربع انچ) جمع ہوتی ہے۔ پھر آپ کا خرچ، منافع اور GST لگتا ہے۔</p>
-    <div class="field gap cost"><label for="R1">پلانٹ لیبر ریٹ (فی مربع انچ)</label><input id="R1" type="text" inputmode="decimal" autocomplete="off" value="0.0125"></div>
-    <div class="tri">
-      <div class="field cost"><label for="PX">خرچ</label><div class="amt"><input id="PX" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""><select id="PXU" aria-label="خرچ کی قسم"><option value="p">%</option><option value="r">روپے</option></select></div></div>
-      <div class="field gain"><label for="PP">منافع</label><div class="amt"><input id="PP" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""><select id="PPU" aria-label="منافع کی قسم"><option value="p">%</option><option value="r">روپے</option></select></div></div>
-      <div class="field gain"><label for="PG">GST (%)</label><input id="PG" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""></div>
-    </div>
-    <button class="apply" id="applyBtn2" type="button">اپلائی</button>
-    <p class="stale" id="pstale" hidden="">ناپ یا ریٹ بدل گیا ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</p>
-    <div class="big cost"><span class="k">پلانٹ کا فی ڈبہ خرچ (لیبر)</span><span class="v" id="pLab">—</span><span class="d" id="dpLab"></span></div>
-    <p class="mnote" id="plNote"></p>
-    <div class="big cost"><span class="k">پلانٹ کاسٹ (پیپر کاسٹ + لیبر)</span><span class="v" id="pCost">—</span><span class="d" id="dpCost"></span></div>
-    <div class="big cost" hidden=""><span class="k">باکس کاسٹ (خرچ کے ساتھ)</span><span class="v" id="pBox">—</span><span class="d" id="dpBox"></span><span class="d" id="dpBoxSq"></span></div>
-    <div class="big gain" hidden=""><span class="k">ریٹ (منافع کے ساتھ)</span><span class="v" id="pRate">—</span><span class="d" id="dpRate"></span><span class="d" id="dpRateSq"></span></div>
-    <div class="big gain final" hidden=""><span class="k">آخری ریٹ (GST کے ساتھ)</span><span class="v" id="pFinal">—</span><span class="d" id="dpFinal"></span></div>
-      <div class="sumsave" style="margin-top:12px">
-      <div class="field"><label for="PlCo">کمپنی کا نام</label><input id="PlCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
-      <div class="field"><label for="PlRem">ریمارکس</label><input id="PlRem" type="text" autocomplete="off" maxlength="120" placeholder="اختیاری"></div>
-      <button type="button" id="plCopyBtn" class="sec">تصویر کاپی کریں</button>
-      <button type="button" id="plSaveBtn">پلانٹ محفوظ کریں</button>
-      <button type="button" id="plShareBtn" class="sec full">شیئر (واٹس ایپ وغیرہ)</button>
-    </div>
-    <p class="rlmsg" id="plMsg" aria-live="polite"></p>
-  </section>
-  <div class="grp" id="grpProd">
-  <h2 class="sec" id="h-prod">پروڈکشن پلان</h2>
+  <div class="screen" id="grpProd" hidden="">
+  <div class="scrtop"><h2 class="sec2" id="h-prod">پروڈکشن پلان</h2><button type="button" id="prodBack" class="copybtn">واپس حساب پر</button></div>
   <section class="panel" id="prodPanel" aria-labelledby="h-prod" aria-live="polite">
     <div class="example ctx" id="ctxProd"><div>ڈبے کا سائز: 50 × 31 × 27 سینٹی میٹر</div><div>ریل 24 in · میجر 65.78 in · کل مربع انچ 1578.7 · ایک شیٹ سے 1 باکس</div></div>
-    <div class="manual">
-      <div class="field"><label for="QT">آرڈر (کتنے ڈبے)</label><input id="QT" type="text" inputmode="decimal" autocomplete="off" value="10000"></div>
-      <div class="field"><label for="RL">ایک رول کی لمبائی (انچ)</label><input id="RL" type="text" inputmode="decimal" autocomplete="off" value="2400"></div>
-      <p class="mnote">رول = شیٹ × میجر ÷ رول کی لمبائی۔ 2400 انچ یعنی 200 فٹ کا رول۔ ایک رول میں ایک پلین اور ایک نالی والی پرت ساتھ چلتی ہیں، اس لیے رول جوڑی کے حساب سے گنے جاتے ہیں۔ بچ جانے والی پلین پرت نہیں گنی جاتی۔</p>
-    </div>
-    <button class="apply" id="applyBtn3" type="button">اپلائی</button>
     <p class="stale" id="qstale" hidden="">ناپ یا تعداد بدل گئی ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</p>
 
     <h3 class="sub">1) ہر پرت کا وزن</h3>
     <div class="brk-wrap"><table class="brk" id="qTbl"></table></div>
 
-    <h3 class="sub">2) مینول: درکار رول</h3>
-    <div class="brk-wrap"><table class="brk" id="qRolls"></table></div>
+    <div class="brk-wrap" hidden=""><table class="brk" id="qRolls"></table></div>
 
-    <h3 class="sub">3) پلانٹ: درکار شیٹ اور وزن</h3>
+    <h3 class="sub">کل شیٹ، وزن اور رقم</h3>
     <div class="big size"><span class="k">درکار شیٹ</span><span class="v" id="qSheets">—</span></div>
     <div class="big size"><span class="k">کل پیپر وزن (کلو)</span><span class="v" id="qTotal">—</span></div>
     <div class="big cost"><span class="k">پیپر کی کل رقم (کتنے کا مال چاہیے)</span><span class="v" id="qAmt">—</span><span class="d" id="dqAmt"></span></div>
@@ -567,9 +575,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     <div class="sumsave">
       <div class="field"><label for="PCo">کمپنی کا نام</label><input id="PCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
       <div class="field"><label for="PRem">ریمارکس (PO نمبر، حوالہ، تاریخ، مدت)</label><input id="PRem" type="text" autocomplete="off" maxlength="200" placeholder="اختیاری"></div>
-      <button type="button" id="prodCopyBtn" class="sec">تصویر کاپی کریں</button>
-      <button type="button" id="prodSaveBtn">پروڈکشن پلان محفوظ کریں</button>
-      <button type="button" id="prodShareBtn" class="sec full">شیئر (واٹس ایپ وغیرہ)</button>
+      <details class="dd"><summary>عمل ▾</summary>
+        <div class="mn"><button type="button" id="prodSaveBtn">پروڈکشن پلان محفوظ کریں</button><button type="button" id="prodCopyBtn">تصویر کاپی کریں</button><button type="button" id="prodShareBtn">شیئر (واٹس ایپ وغیرہ)</button></div></details>
     </div>
     <p class="rlmsg" id="prodMsg" aria-live="polite"></p>
   </section>
@@ -620,6 +627,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     <a id="copyDl" class="copybtn" download="costing.png">ڈاؤن لوڈ</a>
     <button type="button" id="copyClose" class="copybtn">بند کریں</button>
   </div>
+  <p class="stale" id="pstale" hidden=""></p>
+  <div id="toast" role="status" aria-live="polite" hidden=""></div>
   <div class="kb-space" aria-hidden="true"></div>
 </div>
 
@@ -627,7 +636,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 (function () {
   var F = { mm: 1, cm: 10, "in": 25.4 };
 
-  var bBase = {}, sBase = {}, unit = "mm", sunit = "cm", stiffNB = 1, mode = "box", segs = 2, plies = 5, applied = false, pe = false, te = false, KEY = "carton-simple-v2";
+  var bBase = {}, sBase = {}, unit = "mm", sunit = "cm", stiffNB = 1, mode = "box", segs = 2, plies = 5, costMode = "manual", applied = false, pe = false, te = false, KEY = "carton-simple-v2";
   /* مثال کے ابتدائی GSM اور ریٹ: اوپر پلین، پھر موٹی نالی، پلین، باریک نالی، نیچے پلین */
   var DEF = { T: ["p", "t", "p", "n", "p", "t", "p"], G: [150, 120, 100, 120, 150, 120, 150], P: [95, 100, 90, 100, 95, 100, 95] };
   var NUM = ["L", "W", "H", "MR", "MM", "NB", "QT", "RL", "EX", "PR", "GS", "R1", "PX", "PP", "PG", "X1", "X2"], SEL = [];
@@ -690,6 +699,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     $("NB").parentNode.hidden = st;
     $("stiffOut").hidden = !st;
     $("stiffOrig").hidden = !st;
+    $("szStiff").hidden = !st;   /* اسٹفنر: میجر سے پیس، ریل سے پیس، ٹوٹل پیس */
     for (var i = 0; i < SEGMAX; i++) {
       $("S" + i).parentNode.hidden = i >= segs;
       $("SL" + i).textContent = segName(i, segs);
@@ -959,7 +969,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 
   /* ---------- خلاصہ، تصویر کی کاپی، محفوظ شدہ ریکارڈ اور فولڈر بیک اپ ---------- */
   var HKEY = "carton-history-v1", HL = [], LAST = null, LROWS = [], LTOT = null, CTXLINES = [], PLAST = null;
-  var COIDS = ["sumCo", "PlCo", "PCo"];
+  var COIDS = ["sumCo", "PCo"];
   var KIND = { cost: "کاسٹنگ خلاصہ", plant: "پلانٹ", prod: "پروڈکشن پلان" };
   var KINDEN = { cost: "Costing", plant: "Plant", prod: "Production" };
   var MON3 = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
@@ -999,7 +1009,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   function setCtx(lines) {
     CTXLINES = lines || [];
     var h = CTXLINES.map(function (l) { return "<div>" + esc(l) + "</div>"; }).join("");
-    ["ctxPlant", "ctxProd", "ctxTrial"].forEach(function (id) { $(id).innerHTML = h; });
+    ["ctxProd", "ctxTrial"].forEach(function (id) { $(id).innerHTML = h; });
   }
   function cardData(id) {
     var v = $(id), c = v.parentNode;
@@ -1012,10 +1022,9 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   function snapshot(Z) {
     if ($("outCost").textContent.trim() === "—") { LAST = null; $("sumSize").innerHTML = ""; return; }
     var sizes = sizeLines2(Z);
-    var main = ["outCost", "outBox", "outRate", "outFinal"].map(cardData).filter(Boolean);
-    /* پلانٹ کی سطریں تب جب آپ نے پلانٹ کا خرچ، منافع یا GST لکھا ہو */
-    var plantUsed = ["PX", "PP", "PG"].some(function (id) { return $(id).value.trim() !== ""; });
-    var plant = (!plantUsed || $("pLab").textContent.trim() === "—") ? [] : ["pLab", "pCost", "pBox", "pRate", "pFinal"].map(cardData).filter(Boolean);
+    var pl = costMode === "plant";
+    var main = (pl ? ["outCost"] : ["outCost", "outBox", "outRate", "outFinal"]).map(cardData).filter(Boolean);
+    var plant = (!pl || $("pLab").textContent.trim() === "—") ? [] : ["pLab", "pCost", "pBox", "pRate", "pFinal"].map(cardData).filter(Boolean);
     LAST = { sizes: sizes, table: $("brk").innerHTML, rows: LROWS, tot: LTOT, main: main, plant: plant };
     $("sumSize").innerHTML = sizes.map(function (l) { return "<div>" + esc(l) + "</div>"; }).join("");
   }
@@ -1206,6 +1215,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 
   /* ---- تصویر کاپی، شیئر اور فولڈر ---- */
   function flash(btn, txt) {
+    toast(txt);
     var old = btn.dataset.t || btn.textContent;
     btn.dataset.t = old; btn.textContent = txt;
     setTimeout(function () { btn.textContent = old; }, 1800);
@@ -1401,13 +1411,6 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
       return costDoc(coName("sumCo"), $("sumRem").value.trim());
     });
   }
-  function plantNow() {
-    return docAfterApply("plMsg", "پلانٹ کا حساب مکمل نہیں ہو سکا۔ دوبارہ اپلائی کریں۔", function () {
-      if ($("pLab").textContent.trim() === "—") { msgOf("plMsg", "پہلے پلانٹ کا خرچ درج کریں۔", true); return null; }
-      msgOf("plMsg", "", false);
-      return plantDoc(coName("PlCo"), $("PlRem").value.trim());
-    });
-  }
   function prodNow() {
     return docAfterApply("prodMsg", "پروڈکشن کا حساب مکمل نہیں ہو سکا۔ دوبارہ اپلائی کریں۔", function () {
       if (!PLAST) { msgOf("prodMsg", "پہلے آرڈر کی تعداد لکھیں۔", true); return null; }
@@ -1426,14 +1429,10 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     COIDS.forEach(function (id) {
       $(id).addEventListener("input", function () { COIDS.forEach(function (o) { if (o !== id) $(o).value = $(id).value; }); save(); });
     });
-    $("PlRem").addEventListener("input", save);
     $("PRem").addEventListener("input", save);
     $("sumCopyBtn").addEventListener("click", function () { useDoc(costNow(), function (d) { copyDocImage(d, $("sumCopyBtn")); }); });
     $("sumShareBtn").addEventListener("click", function () { useDoc(costNow(), function (d) { shareDocImage(d, $("sumShareBtn")); }); });
-    $("sumSaveBtn").addEventListener("click", function () { useDoc(costNow(), function (d) { saveDoc("cost", d, lastCard(LAST.main), "sumMsg"); }); });
-    $("plCopyBtn").addEventListener("click", function () { useDoc(plantNow(), function (d) { copyDocImage(d, $("plCopyBtn")); }); });
-    $("plShareBtn").addEventListener("click", function () { useDoc(plantNow(), function (d) { shareDocImage(d, $("plShareBtn")); }); });
-    $("plSaveBtn").addEventListener("click", function () { useDoc(plantNow(), function (d) { saveDoc("plant", d, lastCard(d.blocks[1].items), "plMsg"); }); });
+    $("sumSaveBtn").addEventListener("click", function () { useDoc(costNow(), function (d) { saveDoc("cost", d, lastCard(LAST.plant.length ? LAST.plant : LAST.main), "sumMsg"); }); });
     $("prodCopyBtn").addEventListener("click", function () { useDoc(prodNow(), function (d) { copyDocImage(d, $("prodCopyBtn")); }); });
     $("prodShareBtn").addEventListener("click", function () { useDoc(prodNow(), function (d) { shareDocImage(d, $("prodShareBtn")); }); });
     $("prodSaveBtn").addEventListener("click", function () { useDoc(prodNow(), function (d) { saveDoc("prod", d, PLAST.haveRolls ? "کل رول " + (PLAST.npairs * PLAST.whole) : "", "prodMsg"); }); });
@@ -1458,7 +1457,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     NUM.concat(SEL).forEach(function (id) { o[id] = $(id).value; });
     AMTU.forEach(function (id) { o[id] = $(id).value; });
     o.PRem = $("PRem").value;
-    o.CO = $("sumCo").value; o.PlRem = $("PlRem").value;
+    o.CO = $("sumCo").value; o.cm = costMode;
     try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
   }
   function load() {
@@ -1479,7 +1478,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
       AMTU.forEach(function (k) { if (s[k] === "p" || s[k] === "r") $(k).value = s[k]; });
       if (typeof s.PRem === "string") $("PRem").value = s.PRem;
       if (typeof s.CO === "string") COIDS.forEach(function (k) { $(k).value = s.CO; });
-      if (typeof s.PlRem === "string") $("PlRem").value = s.PlRem;
+      if (s.cm === "manual" || s.cm === "plant") costMode = s.cm;
       $("pnote").hidden = pe;
       $("tnote").hidden = te;
       return true;
@@ -1516,7 +1515,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
       $("brk").innerHTML = h;
     }
     var P = PLAST;
-    if (!P) { $("qAmt").textContent = "—"; $("dqAmt").textContent = ""; return; }
+    if (!P) { $("qAmt").textContent = "—"; $("dqAmt").textContent = ""; $("szSheets").textContent = "—"; $("szRolls").textContent = "—"; $("dszRolls").textContent = ""; return; }
     var q = "<tr><th>پرت</th><th>قسم</th><th>پیپر</th><th>ریٹ فی کلو</th><th>وزن (کلو)</th><th>رقم</th></tr>";
     P.rows.forEach(function (x) {
       q += "<tr" + (x.fl ? ' class="fl"' : "") + "><td>" + x.n + "</td><td>" + esc(x.type) + '</td><td class="pn">' + esc(x.paper) + '</td><td class="n">' + rateTxt(x.rate) + '</td><td class="n">' + esc(x.kg) + '</td><td class="n">' + (isFinite(x.amt) ? fmt(x.amt, 0) : "—") + "</td></tr>";
@@ -1532,6 +1531,9 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     }
     $("qAmt").textContent = isFinite(P.amt) ? fmt(P.amt, 0) : "—";
     $("dqAmt").textContent = isFinite(P.amt) ? "ہر پرت کا وزن × اس کا ریٹ فی کلو، سب کا جمع" : "رقم کے لیے ہر پرت کا ریٹ درست لکھیں۔";
+    $("szSheets").textContent = fmt(P.sheets, 0);
+    $("szRolls").textContent = P.haveRolls ? String(P.npairs * P.whole) : "—";
+    $("dszRolls").textContent = P.haveRolls ? P.npairs + " جوڑی × " + P.whole + " رول" + (P.left.length ? " · پرت " + P.left.join("، ") + " (پلین) رول میں نہیں" : "") : (P.rlen > 0 ? "کوئی نالی والی پرت نہیں چنی" : "");
   }
   var calcSerial = 0;
   function calcPayload() {
@@ -1564,6 +1566,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     }
   }
   function renderPreview(data) {
+    $("szStiff").hidden = mode !== "stiff";
     ["szReel","szMaj","szArea","szNP","szAcross","szTot","szNote"].forEach(function (id) { $(id).innerHTML = data.display[id] || ""; });
     $("MR").placeholder = data.placeholders.MR || "";
     $("MM").placeholder = data.placeholders.MM || "";
@@ -1575,11 +1578,12 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     $("MM").placeholder = data.placeholders.MM || "";
   }
   async function showSize() { var data = await requestCalculation(); if (data) renderPreview(data); }
-  function sizeApply() { $("MR").value = ""; $("MM").value = ""; showSize(); save(); }
+  function sizeApply() { $("MR").value = ""; $("MM").value = ""; save(); apply(); }
   async function apply(scroll) {
     var data = await requestCalculation();
     if (!data) return false;
     renderCalculation(data);
+    applyCostMode();
     LROWS = data.LROWS || []; LTOT = data.LTOT || null; PLAST = data.PLAST || null;
     enrichRows(); rebuildTables();
     if (!data.ok) {
@@ -1622,14 +1626,6 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   $("applyBtn4").addEventListener("click", function () {
     apply();
     nudge("tTbl", { behavior: "smooth", block: "center" });
-  });
-  $("applyBtn3").addEventListener("click", function () {
-    apply();
-    nudge("qTbl", { behavior: "smooth", block: "start" });
-  });
-  $("applyBtn2").addEventListener("click", function () {
-    apply();
-    nudge("pLab", { behavior: "smooth", block: "center" });
   });
   NUM.forEach(function (id) {
     if (["L", "W", "H"].concat(SEGIDS).indexOf(id) >= 0) return;
@@ -1757,6 +1753,36 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   $("cmbSave").addEventListener("click", saveCombo);
   $("cmbName").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); saveCombo(); } });
 
+  /* ---------- نیا لے آؤٹ: مینول/پلانٹ، عمل کا مینو، پروڈکشن پلان کی الگ اسکرین ---------- */
+  function applyCostMode() {
+    var pl = costMode === "plant";
+    $("manualGrp").hidden = pl; $("plantGrp").hidden = !pl; $("plantCards").hidden = !pl;
+    $("cmManual").setAttribute("aria-pressed", String(!pl));
+    $("cmPlant").setAttribute("aria-pressed", String(pl));
+    if (pl) ["outBox", "outRate", "outFinal"].forEach(function (id) { $(id).parentNode.hidden = true; });
+  }
+  ["cmManual", "cmPlant"].forEach(function (id) {
+    $(id).addEventListener("click", function () {
+      var m = id === "cmPlant" ? "plant" : "manual";
+      if (m === costMode) return;
+      costMode = m; applyCostMode(); save(); apply();
+    });
+  });
+  var toastT = null;
+  function toast(t) {
+    var e = $("toast"); e.textContent = t; e.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(function () { e.hidden = true; }, 2200);
+  }
+  function openProd() { apply(false).then(function () { var g = $("grpProd"); g.hidden = false; g.scrollTop = 0; }); }
+  $("prodOpenBtn").addEventListener("click", openProd);
+  $("prodBack").addEventListener("click", function () { $("grpProd").hidden = true; });
+  Array.prototype.forEach.call(document.querySelectorAll(".dd .mn button"), function (b) {
+    b.addEventListener("click", function () { var d = b.closest("details"); if (d) d.open = false; });
+  });
+  document.addEventListener("click", function (e) {
+    Array.prototype.forEach.call(document.querySelectorAll(".dd[open]"), function (d) { if (!d.contains(e.target)) d.open = false; });
+  });
+
   wireDocs();
   $("sizeBtn").addEventListener("click", sizeApply);
   /* ہاتھ سے ریل یا میجر لکھیں تو اوپر کا نتیجہ فوراً بدلے */
@@ -1795,6 +1821,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   applyPlies();
   syncRt();
   syncUnits();
+  applyCostMode();
   apply();
 })();
 </script>
