@@ -252,7 +252,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 #sizeBtn { margin-top: 6px; }
 .navstale { position: absolute; top: calc(100% + 4px); inset-inline: 0; padding: 6px 10px; border-radius: 8px; background: var(--accent-soft); color: var(--fg); border: 1px solid var(--accent); font-size: .85rem; line-height: 1.6; text-align: center; pointer-events: none; opacity: 0; transition: opacity .15s; }
 .navstale.show { opacity: 1; }
-.topnav { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding-block: 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav { position: sticky; top: 0; z-index: 35; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding-block: 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
 .topnav a { display: block; text-align: center; text-decoration: none; font-size: .88rem; font-weight: 600; line-height: 1.5; padding: 8px 2px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
 .topnav a:active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .topnav a.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
@@ -305,7 +305,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   .prow input, .prow select { font-size: .95rem; padding: 5px 3px; }
   .paper h3 { margin: 4px 0 4px; font-size: .95rem; }
   #plyTitle { display: none; }
-  .navstale { position: fixed; top: auto; bottom: 12px; inset-inline: auto; left: 50%; transform: translateX(-50%); width: min(520px, 90vw); z-index: 40; box-shadow: 0 2px 10px rgb(0 0 0 / .18); }
+  .navstale { position: fixed; top: auto; bottom: 66px; inset-inline: auto; left: 50%; transform: translateX(-50%); width: min(520px, 90vw); z-index: 40; box-shadow: 0 2px 10px rgb(0 0 0 / .18); }
   #inPanel .mnote:not(#szNote) { display: none; }
   .paper .mnote { display: none; }
   .ratelist .mnote { display: block; }
@@ -346,7 +346,14 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 .mn button { display: block; width: 100%; text-align: start; font: inherit; font-size: .95rem; padding: 11px 14px; border: 0; border-top: 1px solid var(--line); background: var(--surface); color: var(--fg); min-height: 44px; cursor: pointer; }
 .mn button:first-child { border-top: 0; }
 .mn button.hl { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-.screen { position: fixed; inset: 0; z-index: 80; overflow: auto; background: var(--bg); padding: 12px 16px 80px; }
+.screen { position: fixed; left: 0; right: 0; bottom: 0; top: var(--scr-top, 0px); z-index: 30; overflow: auto; background: var(--bg); padding: 12px 16px 80px; }
+.scrtop.end { justify-content: flex-end; }
+.scr-open #applyBtn, .scr-open .navstale { display: none; }
+body > a[href="/logout"] { display: none !important; }
+.prodbtn { width: 100%; font: inherit; font-size: 1rem; font-weight: 600; padding: 10px; margin-top: 4px; border: 1px solid var(--accent); border-radius: 8px; background: var(--surface); color: var(--accent); cursor: pointer; }
+.btn3 { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.btn3 button { padding: 9px 2px; font-size: .9rem; }
+.topnav button { display: block; text-align: center; font: inherit; font-size: .88rem; font-weight: 600; line-height: 1.5; padding: 8px 2px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--cost); cursor: pointer; }
 .screen > * { max-width: 560px; margin-inline: auto; margin-bottom: 12px; }
 .scrtop { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .sec2 { font-family: var(--font-display); font-weight: 500; font-size: 1.4rem; line-height: 2; margin: 0; }
@@ -371,7 +378,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 #copyImg { display: block; max-width: 100%; max-height: 62vh; margin: 8px auto; border: 1px solid var(--line); }
 #copyDl { display: inline-block; text-decoration: none; margin-inline-end: 6px; }
 .sumdoc .sh .sm { color: var(--muted); font-size: .8rem; }
-@media (max-width: 520px) { .topnav a { font-size: .78rem; padding-inline: 1px; } }
+@media (max-width: 520px) { .topnav a, .topnav button { font-size: .74rem; padding-inline: 1px; } }
 </style>
 
 <div class="wrap" dir="rtl" lang="ur">
@@ -381,6 +388,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
       <a href="#inPanel" data-t="inPanel" class="on">حساب</a>
       <a href="#h-trial" data-t="h-trial">پلانٹ رن</a>
       <a href="#histPanel" data-t="histPanel">محفوظ شدہ</a>
+      <button type="button" id="clearBtn">فارم صاف</button>
+      <a href="/logout" id="logoutLink">لاگ آؤٹ</a>
       <div class="navstale" id="navStale" aria-live="polite">کچھ بدل گیا ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</div>
     </nav>
   </header>
@@ -450,6 +459,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
       </div>
       <p class="mnote" id="szNote"></p>
     </div>
+    <button type="button" class="prodbtn" id="prodOpenBtn">پروڈکشن پلان کھولیں ←</button>
 
   </section>
 
@@ -551,8 +561,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
       <div class="field"><label for="sumCo">کمپنی کا نام</label><input id="sumCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
       <div class="field"><label>تاریخ</label><div class="datecell" id="sumDateShow">26 OCT 2026</div></div>
       <div class="field full"><label for="sumRem">ریمارکس (پہچان کے لیے)</label><input id="sumRem" type="text" autocomplete="off" maxlength="120" placeholder="مثلاً PO نمبر، حوالہ، شہر"></div>
-      <details class="dd"><summary>عمل ▾</summary>
-        <div class="mn"><button type="button" id="sumSaveBtn">خلاصہ محفوظ کریں</button><button type="button" id="sumCopyBtn">تصویر کاپی کریں</button><button type="button" id="sumShareBtn">شیئر (واٹس ایپ وغیرہ)</button><button type="button" id="prodOpenBtn" class="hl">پروڈکشن پلان کھولیں ←</button></div></details>
+      <div class="btn3"><button type="button" id="sumSaveBtn">خلاصہ محفوظ</button><button type="button" id="sumCopyBtn" class="sec">تصویر کاپی</button><button type="button" id="sumShareBtn" class="sec">شیئر</button></div>
     </div>
     <p class="rlmsg" id="sumMsg" aria-live="polite"></p>
   </section>
@@ -575,15 +584,14 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     <div class="sumsave">
       <div class="field"><label for="PCo">کمپنی کا نام</label><input id="PCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
       <div class="field"><label for="PRem">ریمارکس (PO نمبر، حوالہ، تاریخ، مدت)</label><input id="PRem" type="text" autocomplete="off" maxlength="200" placeholder="اختیاری"></div>
-      <details class="dd"><summary>عمل ▾</summary>
-        <div class="mn"><button type="button" id="prodSaveBtn">پروڈکشن پلان محفوظ کریں</button><button type="button" id="prodCopyBtn">تصویر کاپی کریں</button><button type="button" id="prodShareBtn">شیئر (واٹس ایپ وغیرہ)</button></div></details>
+      <div class="btn3"><button type="button" id="prodSaveBtn">محفوظ</button><button type="button" id="prodCopyBtn" class="sec">تصویر کاپی</button><button type="button" id="prodShareBtn" class="sec">شیئر</button></div>
     </div>
     <p class="rlmsg" id="prodMsg" aria-live="polite"></p>
   </section>
   </div>
 
-  <div class="grp" id="grpTrial">
-  <h2 class="sec" id="h-trial">پلانٹ رن: اصل GSM</h2>
+  <div class="screen" id="grpTrial" hidden="">
+  <div class="scrtop"><h2 class="sec2" id="h-trial">پلانٹ رن: اصل GSM</h2><button type="button" id="trialBack" class="copybtn">واپس حساب پر</button></div>
   <section class="panel" id="trialPanel" aria-labelledby="h-trial" aria-live="polite">
     <div class="example ctx" id="ctxTrial"><div>ڈبے کا سائز: 50 × 31 × 27 سینٹی میٹر</div><div>ریل 24 in · میجر 65.78 in · کل مربع انچ 1578.7 · ایک شیٹ سے 1 باکس</div></div>
     <p class="mnote">پلانٹ پر چلانے کے بعد بنی ہوئی شیٹ اور ہر پرت کا اصل وزن لکھیں۔ GSM = وزن ÷ (شیٹ × ایک شیٹ کا رقبہ)۔ رقبہ اوپر والے ریل سائز اور میجر سے لیا جاتا ہے۔</p>
@@ -610,6 +618,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     <p class="mnote" id="tCostNote"></p>
   </section>
   </div>
+  <div class="screen" id="histScreen" hidden="">
+  <div class="scrtop end"><button type="button" id="histBack" class="copybtn">واپس حساب پر</button></div>
   <section class="panel" id="histPanel" aria-labelledby="h-hist">
     <h2 id="h-hist">محفوظ شدہ ریکارڈ (0)</h2>
     <div class="folderbox">
@@ -621,6 +631,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
       <select id="histFilter"><option value="all">سب</option><option value="cost">کاسٹنگ خلاصہ</option><option value="plant">پلانٹ</option><option value="prod">پروڈکشن پلان</option></select></div></div>
     <div id="histList"></div><div id="histView" hidden=""></div>
   </section>
+  </div>
   <div id="copyBox" hidden="">
     <p class="mnote">تصویر خود کاپی نہیں ہو سکی۔ تصویر پر دایاں کلک (موبائل پر دیر تک دبانا) کر کے کاپی یا محفوظ کریں، یا ڈاؤن لوڈ کریں:</p>
     <img id="copyImg" alt="تصویر">
@@ -1773,15 +1784,29 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     var e = $("toast"); e.textContent = t; e.hidden = false;
     clearTimeout(toastT); toastT = setTimeout(function () { e.hidden = true; }, 2200);
   }
-  function openProd() { apply(false).then(function () { var g = $("grpProd"); g.hidden = false; g.scrollTop = 0; }); }
+  function openProd() { apply(false).then(function () { openScreen("grpProd"); }); }
   $("prodOpenBtn").addEventListener("click", openProd);
-  $("prodBack").addEventListener("click", function () { $("grpProd").hidden = true; });
-  Array.prototype.forEach.call(document.querySelectorAll(".dd .mn button"), function (b) {
-    b.addEventListener("click", function () { var d = b.closest("details"); if (d) d.open = false; });
-  });
-  document.addEventListener("click", function (e) {
-    Array.prototype.forEach.call(document.querySelectorAll(".dd[open]"), function (d) { if (!d.contains(e.target)) d.open = false; });
-  });
+  ["prodBack", "trialBack", "histBack"].forEach(function (id) { $(id).addEventListener("click", function () { closeScreens(); }); });
+  /* فارم صاف: سائز، کمبی نیشن، خرچ/منافع/GST اور نام صاف۔ ریٹ لسٹ، نالی فیصد اور پلائی جیسی ترتیبات رہتی ہیں */
+  function clearForm() {
+    if (!confirm("سارا فارم صاف کریں؟ (سائز، کمبی نیشن، خرچ، منافع، GST اور نام صاف ہو جائیں گے)")) return;
+    var i;
+    ["L", "W", "H", "MR", "MM", "QT", "EX", "PR", "GS", "PX", "PP", "PG", "TS", "sumCo", "PCo", "sumRem", "PRem", "cmbName"].forEach(function (id) { $(id).value = ""; });
+    SEGIDS.forEach(function (id) { $(id).value = ""; });
+    $("NB").value = "1";
+    for (i = 0; i < 7; i++) {
+      $("G" + i).value = ""; $("P" + i).value = ""; $("V" + i).value = "";
+      $("T" + i).value = DEF.T[i];
+      $("RS" + i).value = ""; $("RS" + i).classList.remove("on");
+    }
+    $("cmbSel").value = "";
+    ["example", "pnote", "tnote"].forEach(function (id) { $(id).hidden = true; });
+    pe = true; te = true; markRows(); closeScreens(); save();
+    apply().then(function () { applied = false; $("navStale").classList.remove("show"); toast("فارم صاف ہو گیا"); });
+    window.scrollTo(0, 0);
+  }
+  $("clearBtn").addEventListener("click", clearForm);
+  $("logoutLink").addEventListener("click", function (e) { if (!confirm("لاگ آؤٹ کریں؟")) e.preventDefault(); });
 
   wireDocs();
   $("sizeBtn").addEventListener("click", sizeApply);
@@ -1790,25 +1815,39 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   $("applyBtn").addEventListener("click", function () { apply(true); });
 
   /* اوپر کی پٹی: بٹن دبائیں تو اسی سیکشن پر پہنچ جائیں */
-  var navLinks = Array.prototype.slice.call(document.querySelectorAll("#topnav a"));
+  var SCREENS = ["grpProd", "grpTrial", "histScreen"];
+  var NAVSCR = { "h-trial": "grpTrial", "histPanel": "histScreen" };
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll("#topnav a[data-t]"));
+  function setScreenTop() {
+    document.documentElement.style.setProperty("--scr-top", Math.ceil($("topnav").getBoundingClientRect().bottom) + "px");
+  }
+  function markNav() {
+    var open = SCREENS.filter(function (x) { return !$(x).hidden; })[0] || "";
+    document.body.classList.toggle("scr-open", !!open);
+    navLinks.forEach(function (a) {
+      var t = a.dataset.t;
+      a.classList.toggle("on", t === "inPanel" ? (!open || open === "grpProd") : NAVSCR[t] === open);
+    });
+  }
+  /* پلانٹ رن، محفوظ شدہ اور پروڈکشن پلان نئی اسکرین میں کھلتے ہیں؛ ایک وقت میں ایک ہی کھڑکی سامنے */
+  function openScreen(id) {
+    window.scrollTo(0, 0);
+    SCREENS.forEach(function (x) { $(x).hidden = x !== id; });
+    setScreenTop(); markNav();
+    $(id).scrollTop = 0;
+  }
+  function closeScreens() { SCREENS.forEach(function (x) { $(x).hidden = true; }); markNav(); }
   navLinks.forEach(function (a) {
     a.addEventListener("click", function (e) {
       e.preventDefault();
-      var t = $(a.dataset.t);
-      if (!t) return;
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-      try { t.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (err) { t.scrollIntoView(true); }
+      var t = a.dataset.t;
+      if (t === "inPanel") { closeScreens(); window.scrollTo(0, 0); }
+      else if (t === "h-trial") apply(false).then(function () { openScreen("grpTrial"); });
+      else openScreen("histScreen");
     });
   });
-  function markNav() {
-    var cur = navLinks[0];
-    navLinks.forEach(function (a) {
-      var t = $(a.dataset.t);
-      if (t && t.getBoundingClientRect().top <= 90) cur = a;
-    });
-    navLinks.forEach(function (a) { a.classList.toggle("on", a === cur); });
-  }
-  window.addEventListener("scroll", markNav, { passive: true });
+  window.addEventListener("resize", setScreenTop);
   markNav();
 
   loadRates(); fillRS(); renderRateEditor();
