@@ -293,18 +293,19 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   .big .d { font-size: .8rem; line-height: 1.5; }
   .sizeout { margin: 8px 0 10px; }
   /* پیپر کی قطار ایک ہی لائن میں: پرت | قسم | لسٹ سے پیپر | GSM | ریٹ */
-  .prow { grid-template-columns: 1.3rem 5.4rem minmax(0, 1.3fr) minmax(0, .8fr) 3.7rem 3.9rem; gap: 4px; margin-bottom: 4px; }
-  .prow .hs, .prow .hn { display: block; }
+  .prow { grid-template-columns: 1.3rem 5.4rem minmax(0, 1fr) 3.7rem 3.9rem 4.4rem; gap: 4px; margin-bottom: 4px; }
+  .prow .hs, .prow .hc { display: block; }
   .prow.head { font-size: .72rem; margin-bottom: 1px; }
   .prow.head .hs { order: 3; }
-  .prow.head .hn { order: 4; }
-  .prow.head .hg { order: 5; }
-  .prow.head .hp { order: 6; }
-  .prow input.nm { order: 4; grid-column: auto; }
+  .prow.head .hg { order: 4; }
+  .prow.head .hp { order: 5; }
+  .prow.head .hc { order: 6; }
+  .prow .lc { order: 6; grid-column: auto; }
+  .prow .lc::before { content: none; }
   .prow select:not(.rs) { order: 2; }
   .prow select.rs { order: 3; grid-column: auto; font-size: .82rem; padding: 6px 3px; }
-  .prow input[id^="G"] { order: 5; }
-  .prow input[id^="P"] { order: 6; }
+  .prow input[id^="G"] { order: 4; }
+  .prow input[id^="P"] { order: 5; }
   .prow input, .prow select { font-size: .95rem; padding: 5px 3px; }
   .paper h3 { margin: 4px 0 4px; font-size: .95rem; }
   #plyTitle { display: none; }
@@ -337,8 +338,14 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 .toprow select, .tbar5 select, .tbar5 button { font-size: .82rem; padding: 6px 2px; text-align: center; text-align-last: center; }
 .toprow select, .toprow input, .toprow .apply, .tbar5 select, .tbar5 button, .tbar5 input { height: 38px; min-height: 38px; }
 .toprow input, .tbar5 input { font-size: 1rem; padding: 6px 3px; }
-.prow input.nm { grid-column: 4; font-family: var(--font-body); direction: rtl; unicode-bidi: plaintext; text-align: start; font-size: .8rem; }
-.prow .hn { display: none; }
+.prow .lc { align-self: center; text-align: center; direction: ltr; font-family: var(--font-num); font-weight: 600; font-size: .9rem; color: var(--cost); }
+@media (max-width: 999.98px) {
+  .prow .lc { grid-column: 4; }
+  .prow .lc::before { content: "لاگت "; font-family: var(--font-body); font-weight: 400; font-size: .7rem; color: var(--muted); }
+  .prow .hc { display: none; }
+}
+.rd { color: var(--cost); font-weight: 700; }
+@media (min-width: 1000px) { .topnav button { padding: 5px 2px; font-size: .85rem; } }
 .big .d, .orig, #szNote, #qNote, #tNote, #tCostNote, #plNote { color: var(--fg); font-weight: 600; }
 .field input#EXN { font-family: var(--font-body); font-size: 1rem; direction: rtl; unicode-bidi: plaintext; text-align: start; }
 .toprow { grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: end; margin-bottom: 12px; }
@@ -690,7 +697,7 @@ body > a[href="/logout"] { display: none !important; }
     try { $(id).scrollIntoView(opts); } catch (e) {}
   }
   function buildRows() {
-    var h = '<div class="prow head"><span>پرت</span><span>قسم</span><span class="hg">GSM</span><span class="hp">ریٹ فی کلو</span><span class="hs">ریٹ لسٹ سے پیپر</span><span class="hn">یا اپنا نام</span></div>';
+    var h = '<div class="prow head"><span>پرت</span><span>قسم</span><span class="hg">GSM</span><span class="hp">ریٹ فی کلو</span><span class="hs">ریٹ لسٹ سے پیپر</span><span class="hc">لاگت</span></div>';
     for (var i = 0; i < 7; i++) {
       h += '<div class="prow" id="row' + i + '"><span>' + (i + 1) + '</span>' +
         '<select id="T' + i + '" aria-label="پرت ' + (i + 1) + ' کی قسم">' +
@@ -698,7 +705,7 @@ body > a[href="/logout"] { display: none !important; }
         '<input id="G' + i + '" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت ' + (i + 1) + ' کا GSM" value="' + DEF.G[i] + '">' +
         '<input id="P' + i + '" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت ' + (i + 1) + ' کا ریٹ فی کلو" value="' + DEF.P[i] + '">' +
         '<select class="rs" id="RS' + i + '" aria-label="پرت ' + (i + 1) + ' کے لیے لسٹ سے پیپر چنیں"></select>' +
-        '<input class="nm" id="NM' + i + '" type="text" autocomplete="off" maxlength="30" placeholder="یا اپنا نام" aria-label="پرت ' + (i + 1) + ' کے پیپر کا اپنا نام"></div>';
+        '<span class="lc" id="LC' + i + '">—</span></div>';
     }
     $("paperRows").innerHTML = h;
     for (var j = 0; j < 7; j++) $("T" + j).value = DEF.T[j];
@@ -963,7 +970,7 @@ body > a[href="/logout"] { display: none !important; }
     for (var i = 0; i < plies; i++) {
       var g = val("G" + i), p = val("P" + i);
       if (!(g > 0) || !(p > 0)) { cmbMsg("پرت " + (i + 1) + " کا GSM اور ریٹ درست لکھیں۔", true); return; }
-      layers.push({ t: $("T" + i).value, g: g, p: p, rs: $("RS" + i).value, nm: $("NM" + i).value.trim() });
+      layers.push({ t: $("T" + i).value, g: g, p: p, rs: $("RS" + i).value });
     }
     var item = { name: name, plies: plies, layers: layers }, idx = cmbFind(name), again = idx >= 0;
     if (again) CL[idx] = item; else CL.push(item);
@@ -985,7 +992,6 @@ body > a[href="/logout"] { display: none !important; }
       $("P" + i).value = String(L.p);
       var x = L.rs ? rlFind(L.rs) : null;
       $("RS" + i).value = x ? String(x.id) : "";
-      $("NM" + i).value = L.nm || "";
       applyPick(i);   /* ریٹ لسٹ والا پیپر ہو تو GSM اور ریٹ لسٹ کے موجودہ (کریڈٹ یا کیش) ریٹ سے */
     }
     onPaperEdit();
@@ -1479,7 +1485,7 @@ body > a[href="/logout"] { display: none !important; }
 
   function save() {
     var o = { unit: unit, pe: pe, te: te, plies: plies, mode: mode, segs: segs, sunit: sunit, rt: rt, ps: [] };
-    o.pn = []; for (var pi = 0; pi < 7; pi++) { o.ps.push($("RS" + pi).value); o.pn.push($("NM" + pi).value); }
+    for (var pi = 0; pi < 7; pi++) o.ps.push($("RS" + pi).value);
     NUM.concat(SEL).forEach(function (id) { o[id] = $(id).value; });
     AMTU.forEach(function (id) { o[id] = $(id).value; });
     o.PRem = $("PRem").value; o.EXN = $("EXN").value;
@@ -1497,7 +1503,6 @@ body > a[href="/logout"] { display: none !important; }
       if (F[s.sunit]) sunit = s.sunit;
       if (s.rt === "credit" || s.rt === "cash") rt = s.rt;
       if (Array.isArray(s.ps)) for (var qi = 0; qi < 7; qi++) { if (s.ps[qi]) $("RS" + qi).value = s.ps[qi]; }
-      if (Array.isArray(s.pn)) for (var qj = 0; qj < 7; qj++) { if (typeof s.pn[qj] === "string") $("NM" + qj).value = s.pn[qj]; }
       /* پرانے ورژن کی پہلے سے بھری 40/15/11 اور 15/15/11 اب خالی */
       if (s.EX === "40" && s.PR === "15" && s.GS === "11") { s.EX = ""; s.PR = ""; s.GS = ""; }
       if (s.PX === "15" && s.PP === "15" && s.PG === "11") { s.PX = ""; s.PP = ""; s.PG = ""; }
@@ -1534,6 +1539,8 @@ body > a[href="/logout"] { display: none !important; }
     PLAST.amt = ok ? tot : NaN;
   }
   function rebuildTables() {
+    for (var li = 0; li < 7; li++) $("LC" + li).textContent = "—";
+    LROWS.forEach(function (x) { $("LC" + (x.n - 1)).textContent = Number(x.cost).toFixed(2); });
     if (LROWS.length) {
       var h = "<tr><th>پرت</th><th>قسم</th><th>پیپر</th><th>ریٹ فی کلو</th><th>وزن شیٹ (g)</th><th>لاگت شیٹ</th></tr>";
       LROWS.forEach(function (x) {
@@ -1569,8 +1576,7 @@ body > a[href="/logout"] { display: none !important; }
     NUM.concat(SEL, AMTU).forEach(function (id) { values[id] = $(id).value; });
     var labelsByRS = {};
     for (var i = 0; i < 7; i++) {
-      var nm = $("NM" + i).value.trim(), rs = $("RS" + i).value, item = rs ? rlFind(rs) : null;
-      if (nm) { values["RS" + i] = "c" + i; labelsByRS["c" + i] = nm + " · " + String($("G" + i).value).trim(); continue; }
+      var rs = $("RS" + i).value, item = rs ? rlFind(rs) : null;
       values["RS" + i] = rs;   /* سرور کو معلوم ہو کہ ہر پرت میں لسٹ سے کون سا پیپر چنا ہے */
       if (item) labelsByRS[rs] = rlLabel(item);
     }
@@ -1616,6 +1622,7 @@ body > a[href="/logout"] { display: none !important; }
     applyCostMode();
     if (data.Z) $("szNote").innerHTML += majorNote(data.Z);
     appendExpenseNote();
+    colorAddons();
     LROWS = data.LROWS || []; LTOT = data.LTOT || null; PLAST = data.PLAST || null;
     enrichRows(); rebuildTables();
     if (!data.ok) {
@@ -1642,7 +1649,7 @@ body > a[href="/logout"] { display: none !important; }
     }
   }
   function onTrialEdit() { te = true; onEdit(); }
-  function onPaperEdit() { markRows(); pe = true; onEdit(); }
+  function onPaperEdit() { markRows(); pe = true; for (var ci = 0; ci < 7; ci++) $("LC" + ci).textContent = "—"; onEdit(); }
 
   /* خانے پر کلک کرتے ہی پرانا لکھا ہوا سارا چن لیا جاتا ہے، تاکہ نیا لکھتے ہی بدل جائے */
   function selectAll(el) { setTimeout(function () { try { el.select(); } catch (e) {} }, 0); }
@@ -1745,11 +1752,7 @@ body > a[href="/logout"] { display: none !important; }
   /* ریٹ لسٹ کے بٹن */
   for (var rsI = 0; rsI < 7; rsI++) {
     (function (i) {
-      $("RS" + i).addEventListener("change", function () { applyPick(i); onPaperEdit(); $("cmbSel").value = ""; if ($("RS" + i).value) $("NM" + i).value = ""; });
-      $("NM" + i).addEventListener("input", function () {
-        if ($("NM" + i).value.trim()) { $("RS" + i).value = ""; $("RS" + i).classList.remove("on"); }
-        $("cmbSel").value = ""; onPaperEdit();
-      });
+      $("RS" + i).addEventListener("change", function () { applyPick(i); onPaperEdit(); $("cmbSel").value = ""; });
       ["T", "G", "P"].forEach(function (pp) {
         $(pp + i).addEventListener(pp === "T" ? "change" : "input", function () { $("cmbSel").value = ""; });
       });
@@ -1798,6 +1801,14 @@ body > a[href="/logout"] { display: none !important; }
     return "";
   }
   /* خرچ میں کیا شامل ہے: خرچ والے کارڈ کی وضاحت کے ساتھ */
+  /* خرچ، منافع اور GST کے جو روپے جمع ہوئے وہ سرخ رنگ میں */
+  function colorAddons() {
+    ["dBox", "dRate", "dFinal", "dpBox", "dpRate", "dpFinal"].forEach(function (id) {
+      var el = $(id), h = el.innerHTML;
+      if (!h) return;
+      el.innerHTML = h.replace(/(\+ (?:خرچ|منافع|GST) )(.*?)( = )/g, '$1<span class="rd">$2</span>$3');
+    });
+  }
   function appendExpenseNote() {
     var n = $("EXN").value.trim();
     if (!n) return;
@@ -1859,7 +1870,6 @@ body > a[href="/logout"] { display: none !important; }
       $("G" + i).value = ""; $("P" + i).value = ""; $("V" + i).value = "";
       $("T" + i).value = DEF.T[i];
       $("RS" + i).value = ""; $("RS" + i).classList.remove("on");
-      $("NM" + i).value = "";
     }
     $("cmbSel").value = "";
     ["example", "pnote", "tnote"].forEach(function (id) { $(id).hidden = true; });
