@@ -8,6 +8,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <title>PACKSOL — کارٹن شیٹ کیلکولیٹر</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -155,7 +156,7 @@ input::placeholder { color: var(--muted); opacity: .85; font-family: var(--font-
 }
 .prow select { font-family: var(--font-body); }
 .prow input { font-family: var(--font-num); direction: ltr; text-align: center; }
-.prow select.rs { grid-column: 1 / -1; font-size: .85rem; padding: 6px 4px; color: var(--muted); }
+.prow select.rs { grid-column: 1 / 4; font-size: .85rem; padding: 6px 4px; color: var(--muted); }
 .prow select.rs.on { color: var(--fg); }
 .ratelist { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; padding: 0 10px 10px; }
 .ratelist summary { cursor: pointer; padding: 10px 0; font-weight: 600; font-size: .95rem; }
@@ -252,7 +253,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 #sizeBtn { margin-top: 6px; }
 .navstale { position: absolute; top: calc(100% + 4px); inset-inline: 0; padding: 6px 10px; border-radius: 8px; background: var(--accent-soft); color: var(--fg); border: 1px solid var(--accent); font-size: .85rem; line-height: 1.6; text-align: center; pointer-events: none; opacity: 0; transition: opacity .15s; }
 .navstale.show { opacity: 1; }
-.topnav { position: sticky; top: 0; z-index: 35; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding-block: 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav { position: sticky; top: 0; z-index: 35; display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding-block: 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
 .topnav a { display: block; text-align: center; text-decoration: none; font-size: .88rem; font-weight: 600; line-height: 1.5; padding: 8px 2px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
 .topnav a:active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .topnav a.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
@@ -292,16 +293,18 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   .big .d { font-size: .8rem; line-height: 1.5; }
   .sizeout { margin: 8px 0 10px; }
   /* پیپر کی قطار ایک ہی لائن میں: پرت | قسم | لسٹ سے پیپر | GSM | ریٹ */
-  .prow { grid-template-columns: 1.3rem 5.4rem minmax(0, 1fr) 3.7rem 3.9rem; gap: 4px; margin-bottom: 4px; }
-  .prow .hs { display: block; }
+  .prow { grid-template-columns: 1.3rem 5.4rem minmax(0, 1.3fr) minmax(0, .8fr) 3.7rem 3.9rem; gap: 4px; margin-bottom: 4px; }
+  .prow .hs, .prow .hn { display: block; }
   .prow.head { font-size: .72rem; margin-bottom: 1px; }
   .prow.head .hs { order: 3; }
-  .prow.head .hg { order: 4; }
-  .prow.head .hp { order: 5; }
+  .prow.head .hn { order: 4; }
+  .prow.head .hg { order: 5; }
+  .prow.head .hp { order: 6; }
+  .prow input.nm { order: 4; grid-column: auto; }
   .prow select:not(.rs) { order: 2; }
   .prow select.rs { order: 3; grid-column: auto; font-size: .82rem; padding: 6px 3px; }
-  .prow input[id^="G"] { order: 4; }
-  .prow input[id^="P"] { order: 5; }
+  .prow input[id^="G"] { order: 5; }
+  .prow input[id^="P"] { order: 6; }
   .prow input, .prow select { font-size: .95rem; padding: 5px 3px; }
   .paper h3 { margin: 4px 0 4px; font-size: .95rem; }
   #plyTitle { display: none; }
@@ -328,6 +331,16 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   #grpProd, #grpTrial { grid-column: span 2; }
 }
 /* نیا لے آؤٹ */
+.bism { display: block; font-family: "Amiri", "Noto Naskh Arabic", "Noto Nastaliq Urdu", serif; font-weight: 700; font-size: 1.3rem; line-height: 1.7; color: var(--accent); }
+.brand { display: block; font-family: var(--font-num); font-weight: 700; letter-spacing: .2em; font-size: 1.5rem; line-height: 1.2; }
+.apphead h1 { line-height: 1.3; }
+.toprow select, .tbar5 select, .tbar5 button { font-size: .82rem; padding: 6px 2px; text-align: center; text-align-last: center; }
+.toprow select, .toprow input, .toprow .apply, .tbar5 select, .tbar5 button, .tbar5 input { height: 38px; min-height: 38px; }
+.toprow input, .tbar5 input { font-size: 1rem; padding: 6px 3px; }
+.prow input.nm { grid-column: 4; font-family: var(--font-body); direction: rtl; unicode-bidi: plaintext; text-align: start; font-size: .8rem; }
+.prow .hn { display: none; }
+.big .d, .orig, #szNote, #qNote, #tNote, #tCostNote, #plNote { color: var(--fg); font-weight: 600; }
+.field input#EXN { font-family: var(--font-body); font-size: 1rem; direction: rtl; unicode-bidi: plaintext; text-align: start; }
 .toprow { grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: end; margin-bottom: 12px; }
 .toprow .apply { font-size: 1rem; padding: 7px 2px; min-height: 38px; }
 .tbar5 { grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: end; }
@@ -378,14 +391,15 @@ body > a[href="/logout"] { display: none !important; }
 #copyImg { display: block; max-width: 100%; max-height: 62vh; margin: 8px auto; border: 1px solid var(--line); }
 #copyDl { display: inline-block; text-decoration: none; margin-inline-end: 6px; }
 .sumdoc .sh .sm { color: var(--muted); font-size: .8rem; }
-@media (max-width: 520px) { .topnav a, .topnav button { font-size: .74rem; padding-inline: 1px; } }
+@media (max-width: 520px) { .topnav a, .topnav button { font-size: .68rem; padding-inline: 1px; } }
 </style>
 
 <div class="wrap" dir="rtl" lang="ur">
   <header class="apphead">
-    <h1>PACKSOL — کارٹن شیٹ کیلکولیٹر</h1>
+    <h1><span class="bism">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</span><span class="brand">PACKSOL</span></h1>
     <nav class="topnav" id="topnav" aria-label="سیکشن">
       <a href="#inPanel" data-t="inPanel" class="on">حساب</a>
+      <a href="#grpProd" data-t="grpProd">پروڈکشن</a>
       <a href="#h-trial" data-t="h-trial">پلانٹ رن</a>
       <a href="#histPanel" data-t="histPanel">محفوظ شدہ</a>
       <button type="button" id="clearBtn">فارم صاف</button>
@@ -459,7 +473,6 @@ body > a[href="/logout"] { display: none !important; }
       </div>
       <p class="mnote" id="szNote"></p>
     </div>
-    <button type="button" class="prodbtn" id="prodOpenBtn">پروڈکشن پلان کھولیں ←</button>
 
   </section>
 
@@ -470,9 +483,9 @@ body > a[href="/logout"] { display: none !important; }
       <h3 id="plyTitle">پیپر (5 پلائی)</h3>
       <div class="tbar tbar5">
         <div class="field"><label for="cmbSel">محفوظ کمبی نیشن</label><select id="cmbSel"><option value="">— کمبی نیشن چنیں —</option><option value="SADAQAT  STF">SADAQAT  STF (5)</option><option value="SADAQAT BOX">SADAQAT BOX (5)</option><option value="MODERN APROVED COMB">MODERN APROVED COMB (5)</option><option value="COMMONDER SAMPLE">COMMONDER SAMPLE (5)</option><option value="DIOMOND STF">DIOMOND STF (5)</option><option value="DIOMOND BOX">DIOMOND BOX (5)</option><option value="DIOMOND BOX 7 PLY">DIOMOND BOX 7 PLY (7)</option><option value="DIOMOND STF WITH SF">DIOMOND STF WITH SF (5)</option></select></div>
-        <select id="rtSel" aria-label="ریٹ کی قسم"><option value="credit">کریڈٹ ریٹ</option><option value="cash">کیش ریٹ</option></select>
-        <button type="button" id="rlBtn" aria-expanded="false" aria-controls="rlDetails">ریٹ لسٹ ▾</button>
-        <button type="button" id="flBtn" aria-expanded="false" aria-controls="flDetails">نالی فیصد ▾</button>
+        <div class="field"><label for="rtSel">ریٹ</label><select id="rtSel" aria-label="ریٹ کی قسم"><option value="credit">کریڈٹ</option><option value="cash">کیش</option></select></div>
+        <div class="field"><label>ریٹ لسٹ</label><button type="button" id="rlBtn" aria-expanded="false" aria-controls="rlDetails">کھولیں ▾</button></div>
+        <div class="field"><label>نالی فیصد</label><button type="button" id="flBtn" aria-expanded="false" aria-controls="flDetails">کھولیں ▾</button></div>
         <div class="field" id="nbField"><label for="NB" title="ایک شیٹ میں سے کتنے باکس نکلتے ہیں">فی شیٹ باکس</label><input id="NB" type="text" inputmode="decimal" autocomplete="off" value="1"></div>
       </div>
       <div class="ratelist box" id="rlDetails" hidden="">
@@ -522,6 +535,7 @@ body > a[href="/logout"] { display: none !important; }
       <div class="field gain"><label for="PG">GST (%)</label><input id="PG" type="text" inputmode="decimal" autocomplete="off" placeholder="—" value=""></div>
     </div>
       </div>
+      <div class="field gap" style="margin-top:8px"><label for="EXN">خرچ میں کیا شامل ہے (اختیاری)</label><input id="EXN" type="text" autocomplete="off" maxlength="120" placeholder="مثلاً پرنٹنگ، ٹرانسپورٹ، کھاتے کا خرچ"></div>
     </div>
     <button class="apply" id="applyBtn" type="button">اپلائی</button>
   </section>
@@ -676,14 +690,15 @@ body > a[href="/logout"] { display: none !important; }
     try { $(id).scrollIntoView(opts); } catch (e) {}
   }
   function buildRows() {
-    var h = '<div class="prow head"><span>پرت</span><span>قسم</span><span class="hg">GSM</span><span class="hp">ریٹ فی کلو</span><span class="hs">ریٹ لسٹ سے پیپر</span></div>';
+    var h = '<div class="prow head"><span>پرت</span><span>قسم</span><span class="hg">GSM</span><span class="hp">ریٹ فی کلو</span><span class="hs">ریٹ لسٹ سے پیپر</span><span class="hn">یا اپنا نام</span></div>';
     for (var i = 0; i < 7; i++) {
       h += '<div class="prow" id="row' + i + '"><span>' + (i + 1) + '</span>' +
         '<select id="T' + i + '" aria-label="پرت ' + (i + 1) + ' کی قسم">' +
         '<option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select>' +
         '<input id="G' + i + '" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت ' + (i + 1) + ' کا GSM" value="' + DEF.G[i] + '">' +
         '<input id="P' + i + '" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت ' + (i + 1) + ' کا ریٹ فی کلو" value="' + DEF.P[i] + '">' +
-        '<select class="rs" id="RS' + i + '" aria-label="پرت ' + (i + 1) + ' کے لیے لسٹ سے پیپر چنیں"></select></div>';
+        '<select class="rs" id="RS' + i + '" aria-label="پرت ' + (i + 1) + ' کے لیے لسٹ سے پیپر چنیں"></select>' +
+        '<input class="nm" id="NM' + i + '" type="text" autocomplete="off" maxlength="30" placeholder="یا اپنا نام" aria-label="پرت ' + (i + 1) + ' کے پیپر کا اپنا نام"></div>';
     }
     $("paperRows").innerHTML = h;
     for (var j = 0; j < 7; j++) $("T" + j).value = DEF.T[j];
@@ -948,7 +963,7 @@ body > a[href="/logout"] { display: none !important; }
     for (var i = 0; i < plies; i++) {
       var g = val("G" + i), p = val("P" + i);
       if (!(g > 0) || !(p > 0)) { cmbMsg("پرت " + (i + 1) + " کا GSM اور ریٹ درست لکھیں۔", true); return; }
-      layers.push({ t: $("T" + i).value, g: g, p: p, rs: $("RS" + i).value });
+      layers.push({ t: $("T" + i).value, g: g, p: p, rs: $("RS" + i).value, nm: $("NM" + i).value.trim() });
     }
     var item = { name: name, plies: plies, layers: layers }, idx = cmbFind(name), again = idx >= 0;
     if (again) CL[idx] = item; else CL.push(item);
@@ -970,6 +985,7 @@ body > a[href="/logout"] { display: none !important; }
       $("P" + i).value = String(L.p);
       var x = L.rs ? rlFind(L.rs) : null;
       $("RS" + i).value = x ? String(x.id) : "";
+      $("NM" + i).value = L.nm || "";
       applyPick(i);   /* ریٹ لسٹ والا پیپر ہو تو GSM اور ریٹ لسٹ کے موجودہ (کریڈٹ یا کیش) ریٹ سے */
     }
     onPaperEdit();
@@ -1463,10 +1479,10 @@ body > a[href="/logout"] { display: none !important; }
 
   function save() {
     var o = { unit: unit, pe: pe, te: te, plies: plies, mode: mode, segs: segs, sunit: sunit, rt: rt, ps: [] };
-    for (var pi = 0; pi < 7; pi++) o.ps.push($("RS" + pi).value);
+    o.pn = []; for (var pi = 0; pi < 7; pi++) { o.ps.push($("RS" + pi).value); o.pn.push($("NM" + pi).value); }
     NUM.concat(SEL).forEach(function (id) { o[id] = $(id).value; });
     AMTU.forEach(function (id) { o[id] = $(id).value; });
-    o.PRem = $("PRem").value;
+    o.PRem = $("PRem").value; o.EXN = $("EXN").value;
     o.CO = $("sumCo").value; o.cm = costMode;
     try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
   }
@@ -1481,12 +1497,14 @@ body > a[href="/logout"] { display: none !important; }
       if (F[s.sunit]) sunit = s.sunit;
       if (s.rt === "credit" || s.rt === "cash") rt = s.rt;
       if (Array.isArray(s.ps)) for (var qi = 0; qi < 7; qi++) { if (s.ps[qi]) $("RS" + qi).value = s.ps[qi]; }
+      if (Array.isArray(s.pn)) for (var qj = 0; qj < 7; qj++) { if (typeof s.pn[qj] === "string") $("NM" + qj).value = s.pn[qj]; }
       /* پرانے ورژن کی پہلے سے بھری 40/15/11 اور 15/15/11 اب خالی */
       if (s.EX === "40" && s.PR === "15" && s.GS === "11") { s.EX = ""; s.PR = ""; s.GS = ""; }
       if (s.PX === "15" && s.PP === "15" && s.PG === "11") { s.PX = ""; s.PP = ""; s.PG = ""; }
       NUM.concat(SEL).forEach(function (k) { if (s[k] !== undefined) $(k).value = s[k]; });
       AMTU.forEach(function (k) { if (s[k] === "p" || s[k] === "r") $(k).value = s[k]; });
       if (typeof s.PRem === "string") $("PRem").value = s.PRem;
+      if (typeof s.EXN === "string") $("EXN").value = s.EXN;
       if (typeof s.CO === "string") COIDS.forEach(function (k) { $(k).value = s.CO; });
       if (s.cm === "manual" || s.cm === "plant") costMode = s.cm;
       $("pnote").hidden = pe;
@@ -1551,7 +1569,8 @@ body > a[href="/logout"] { display: none !important; }
     NUM.concat(SEL, AMTU).forEach(function (id) { values[id] = $(id).value; });
     var labelsByRS = {};
     for (var i = 0; i < 7; i++) {
-      var rs = $("RS" + i).value, item = rs ? rlFind(rs) : null;
+      var nm = $("NM" + i).value.trim(), rs = $("RS" + i).value, item = rs ? rlFind(rs) : null;
+      if (nm) { values["RS" + i] = "c" + i; labelsByRS["c" + i] = nm + " · " + String($("G" + i).value).trim(); continue; }
       values["RS" + i] = rs;   /* سرور کو معلوم ہو کہ ہر پرت میں لسٹ سے کون سا پیپر چنا ہے */
       if (item) labelsByRS[rs] = rlLabel(item);
     }
@@ -1578,6 +1597,7 @@ body > a[href="/logout"] { display: none !important; }
   function renderPreview(data) {
     $("szStiff").hidden = mode !== "stiff";
     ["szReel","szMaj","szArea","szNP","szAcross","szTot","szNote"].forEach(function (id) { $(id).innerHTML = data.display[id] || ""; });
+    if (data.Z) $("szNote").innerHTML += majorNote(data.Z);
     $("MR").placeholder = data.placeholders.MR || "";
     $("MM").placeholder = data.placeholders.MM || "";
   }
@@ -1594,6 +1614,8 @@ body > a[href="/logout"] { display: none !important; }
     if (!data) return false;
     renderCalculation(data);
     applyCostMode();
+    if (data.Z) $("szNote").innerHTML += majorNote(data.Z);
+    appendExpenseNote();
     LROWS = data.LROWS || []; LTOT = data.LTOT || null; PLAST = data.PLAST || null;
     enrichRows(); rebuildTables();
     if (!data.ok) {
@@ -1723,7 +1745,11 @@ body > a[href="/logout"] { display: none !important; }
   /* ریٹ لسٹ کے بٹن */
   for (var rsI = 0; rsI < 7; rsI++) {
     (function (i) {
-      $("RS" + i).addEventListener("change", function () { applyPick(i); onPaperEdit(); $("cmbSel").value = ""; });
+      $("RS" + i).addEventListener("change", function () { applyPick(i); onPaperEdit(); $("cmbSel").value = ""; if ($("RS" + i).value) $("NM" + i).value = ""; });
+      $("NM" + i).addEventListener("input", function () {
+        if ($("NM" + i).value.trim()) { $("RS" + i).value = ""; $("RS" + i).classList.remove("on"); }
+        $("cmbSel").value = ""; onPaperEdit();
+      });
       ["T", "G", "P"].forEach(function (pp) {
         $(pp + i).addEventListener(pp === "T" ? "change" : "input", function () { $("cmbSel").value = ""; });
       });
@@ -1743,7 +1769,7 @@ body > a[href="/logout"] { display: none !important; }
       var panel = $(a[1]), open = panel.hidden;
       panel.hidden = !open;
       $(a[0]).setAttribute("aria-expanded", String(open));
-      $(a[0]).textContent = a[2] + (open ? " ▴" : " ▾");
+      $(a[0]).textContent = open ? "بند ▴" : "کھولیں ▾"; fitSoon();
     });
   });
   $("rlAdd").addEventListener("click", function () {
@@ -1764,6 +1790,43 @@ body > a[href="/logout"] { display: none !important; }
   $("cmbName").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); saveCombo(); } });
 
   /* ---------- نیا لے آؤٹ: مینول/پلانٹ، عمل کا مینو، پروڈکشن پلان کی الگ اسکرین ---------- */
+  /* آخری سائز یا ہاتھ سے لکھا میجر: اصل (جینوئن) کتنا بنتا ہے اور آپ نے کتنا لکھا */
+  function majorNote(Z) {
+    var gen = Z.lenAuto, used = Z.lenIn, tail = "، آپ کا میجر <b>" + r(used, 2) + " in</b>، ضیاع <b>" + r(used - gen, 2) + " in</b>";
+    if (Z.sInfo) return "<br>آخری سائز <b>" + r(Z.sInfo.lastIn, 2) + " in</b> × <b>" + Z.sInfo.np + "</b> پیس = اصل میجر <b>" + r(gen, 2) + " in</b>" + tail;
+    if (Z.mm > 0) return "<br>اصل میجر <b>" + r(gen, 2) + " in</b>" + tail;
+    return "";
+  }
+  /* خرچ میں کیا شامل ہے: خرچ والے کارڈ کی وضاحت کے ساتھ */
+  function appendExpenseNote() {
+    var n = $("EXN").value.trim();
+    if (!n) return;
+    var id = costMode === "plant" ? "dpBox" : "dBox";
+    if ($(id).textContent.trim()) $(id).textContent += " · خرچ میں شامل: " + n;
+  }
+  $("EXN").addEventListener("input", onEdit);
+  /* خانوں کا لکھا پورا نظر آئے: سیل برابر رہتے ہیں، لکھا بڑا ہو تو فونٹ اپنے آپ چھوٹا ہو جاتا ہے */
+  var fitCv = document.createElement("canvas").getContext("2d"), fitT = null;
+  function fitEl(el) {
+    el.style.fontSize = "";
+    var w = el.clientWidth;
+    if (!w || !fitCv) return;
+    var cs = getComputedStyle(el), base = parseFloat(cs.fontSize);
+    if (!isFinite(base)) return;
+    var txt = el.tagName === "SELECT" ? (el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : "") : el.textContent;
+    var pad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0) + (el.tagName === "SELECT" ? 22 : 6);
+    fitCv.font = cs.fontWeight + " " + base + "px " + cs.fontFamily;
+    var tw = fitCv.measureText(txt).width, avail = w - pad;
+    if (tw > avail && avail > 10) el.style.fontSize = Math.max(8.5, base * avail / tw) + "px";
+  }
+  function fitAll() {
+    Array.prototype.forEach.call(document.querySelectorAll(".toprow select, .toprow button, .tbar5 select, .tbar5 button, #topnav a, #topnav button"), fitEl);
+  }
+  function fitSoon() { clearTimeout(fitT); fitT = setTimeout(fitAll, 40); }
+  window.addEventListener("resize", fitSoon);
+  document.addEventListener("change", fitSoon);
+  setTimeout(fitAll, 300);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
   function applyCostMode() {
     var pl = costMode === "plant";
     $("manualGrp").hidden = pl; $("plantGrp").hidden = !pl; $("plantCards").hidden = !pl;
@@ -1784,19 +1847,19 @@ body > a[href="/logout"] { display: none !important; }
     clearTimeout(toastT); toastT = setTimeout(function () { e.hidden = true; }, 2200);
   }
   function openProd() { apply(false).then(function () { openScreen("grpProd"); }); }
-  $("prodOpenBtn").addEventListener("click", openProd);
   ["prodBack", "trialBack", "histBack"].forEach(function (id) { $(id).addEventListener("click", function () { closeScreens(); }); });
   /* فارم صاف: سائز، کمبی نیشن، خرچ/منافع/GST اور نام صاف۔ ریٹ لسٹ، نالی فیصد اور پلائی جیسی ترتیبات رہتی ہیں */
   function clearForm() {
     if (!confirm("سارا فارم صاف کریں؟ (سائز، کمبی نیشن، خرچ، منافع، GST اور نام صاف ہو جائیں گے)")) return;
     var i;
-    ["L", "W", "H", "MR", "MM", "QT", "EX", "PR", "GS", "PX", "PP", "PG", "TS", "sumCo", "PCo", "sumRem", "PRem", "cmbName"].forEach(function (id) { $(id).value = ""; });
+    ["L", "W", "H", "MR", "MM", "QT", "EX", "PR", "GS", "PX", "PP", "PG", "TS", "sumCo", "PCo", "sumRem", "PRem", "cmbName", "EXN"].forEach(function (id) { $(id).value = ""; });
     SEGIDS.forEach(function (id) { $(id).value = ""; });
     $("NB").value = "1";
     for (i = 0; i < 7; i++) {
       $("G" + i).value = ""; $("P" + i).value = ""; $("V" + i).value = "";
       $("T" + i).value = DEF.T[i];
       $("RS" + i).value = ""; $("RS" + i).classList.remove("on");
+      $("NM" + i).value = "";
     }
     $("cmbSel").value = "";
     ["example", "pnote", "tnote"].forEach(function (id) { $(id).hidden = true; });
@@ -1815,7 +1878,7 @@ body > a[href="/logout"] { display: none !important; }
 
   /* اوپر کی پٹی: بٹن دبائیں تو اسی سیکشن پر پہنچ جائیں */
   var SCREENS = ["grpProd", "grpTrial", "histScreen"];
-  var NAVSCR = { "h-trial": "grpTrial", "histPanel": "histScreen" };
+  var NAVSCR = { "grpProd": "grpProd", "h-trial": "grpTrial", "histPanel": "histScreen" };
   var navLinks = Array.prototype.slice.call(document.querySelectorAll("#topnav a[data-t]"));
   function setScreenTop() {
     document.documentElement.style.setProperty("--scr-top", Math.ceil($("topnav").getBoundingClientRect().bottom) + "px");
@@ -1825,7 +1888,7 @@ body > a[href="/logout"] { display: none !important; }
     document.body.classList.toggle("scr-open", !!open);
     navLinks.forEach(function (a) {
       var t = a.dataset.t;
-      a.classList.toggle("on", t === "inPanel" ? (!open || open === "grpProd") : NAVSCR[t] === open);
+      a.classList.toggle("on", t === "inPanel" ? !open : NAVSCR[t] === open);
     });
   }
   /* پلانٹ رن، محفوظ شدہ اور پروڈکشن پلان نئی اسکرین میں کھلتے ہیں؛ ایک وقت میں ایک ہی کھڑکی سامنے */
@@ -1842,6 +1905,7 @@ body > a[href="/logout"] { display: none !important; }
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
       var t = a.dataset.t;
       if (t === "inPanel") { closeScreens(); window.scrollTo(0, 0); }
+      else if (t === "grpProd") openProd();
       else if (t === "h-trial") apply(false).then(function () { openScreen("grpTrial"); });
       else openScreen("histScreen");
     });
