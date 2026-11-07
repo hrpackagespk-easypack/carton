@@ -332,6 +332,16 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   #grpProd, #grpTrial { grid-column: span 2; }
 }
 /* نیا لے آؤٹ */
+.reel { border: 1px solid var(--line); border-radius: 8px; padding: 8px; margin-bottom: 8px; background: var(--bg); }
+.reel.fl { background: var(--flute-bg); border-color: var(--flute-line); }
+.rtop { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rinfo { flex: 1; min-width: 0; font-size: .85rem; font-weight: 600; line-height: 1.5; }
+.racts { display: flex; gap: 6px; }
+.ra { font: inherit; font-size: .95rem; min-width: 36px; min-height: 34px; border: 1px solid var(--accent); border-radius: 8px; background: var(--surface); color: var(--accent); cursor: pointer; }
+.rin { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.reel .field input { font-size: 1.05rem; padding: 6px 4px; }
+#trOut .big { margin-block: 5px; }
+#trOut .brk { font-size: .82rem; }
 .bism { display: block; font-family: "Amiri", "Noto Naskh Arabic", "Noto Nastaliq Urdu", serif; font-weight: 700; font-size: 1.3rem; line-height: 1.7; color: var(--accent); }
 .brand { display: block; font-family: var(--font-num); font-weight: 700; letter-spacing: .2em; font-size: 1.5rem; line-height: 1.2; }
 .apphead h1 { line-height: 1.3; }
@@ -613,29 +623,31 @@ body > a[href="/logout"] { display: none !important; }
   <div class="screen" id="grpTrial" hidden="">
   <div class="scrtop"><h2 class="sec2" id="h-trial">پلانٹ رن: اصل GSM</h2><button type="button" id="trialBack" class="copybtn">واپس حساب پر</button></div>
   <section class="panel" id="trialPanel" aria-labelledby="h-trial" aria-live="polite">
-    <div class="example ctx" id="ctxTrial"><div>ڈبے کا سائز: 50 × 31 × 27 سینٹی میٹر</div><div>ریل 24 in · میجر 65.78 in · کل مربع انچ 1578.7 · ایک شیٹ سے 1 باکس</div></div>
-    <p class="mnote">پلانٹ پر چلانے کے بعد بنی ہوئی شیٹ اور ہر پرت کا اصل وزن لکھیں۔ GSM = وزن ÷ (شیٹ × ایک شیٹ کا رقبہ)۔ رقبہ اوپر والے ریل سائز اور میجر سے لیا جاتا ہے۔</p>
-    <p class="example" id="tnote"></p>
-    <div class="field gap"><label for="TS">بنی ہوئی شیٹ</label><input id="TS" type="text" inputmode="decimal" autocomplete="off" value="5000"></div>
-    <div class="five">
-      <div class="field"><label for="V0">پرت 1 کا وزن (کلو)</label><input id="V0" type="text" inputmode="decimal" autocomplete="off" value="670"></div>
-      <div class="field"><label for="V1">پرت 2 کا وزن (کلو)</label><input id="V1" type="text" inputmode="decimal" autocomplete="off" value="745"></div>
-      <div class="field"><label for="V2">پرت 3 کا وزن (کلو)</label><input id="V2" type="text" inputmode="decimal" autocomplete="off" value="440"></div>
-      <div class="field"><label for="V3">پرت 4 کا وزن (کلو)</label><input id="V3" type="text" inputmode="decimal" autocomplete="off" value="770"></div>
-      <div class="field"><label for="V4">پرت 5 کا وزن (کلو)</label><input id="V4" type="text" inputmode="decimal" autocomplete="off" value="660"></div>
-      <div class="field" hidden=""><label for="V5">پرت 6 کا وزن (کلو)</label><input id="V5" type="text" inputmode="decimal" autocomplete="off" value="440"></div>
-      <div class="field" hidden=""><label for="V6">پرت 7 کا وزن (کلو)</label><input id="V6" type="text" inputmode="decimal" autocomplete="off" value="660"></div>
+    <div class="example ctx" id="ctxTrial"></div>
+    <div class="sumsave" style="margin-bottom:10px">
+      <div class="field"><label for="TPn">پلانٹ کا نام</label><input id="TPn" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً XYZ پلانٹ"></div>
+      <div class="field"><label for="TPp">پلانٹ کا نمبر</label><input id="TPp" type="text" inputmode="tel" autocomplete="off" maxlength="30" placeholder="03xx-xxxxxxx"></div>
+      <div class="field"><label for="TCo">کمپنی (جس کا مال بنوایا)</label><input id="TCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
+      <div class="field"><label>تاریخ</label><div class="datecell" id="trDate"></div></div>
+      <div class="field full"><label for="TRem">ریمارکس</label><input id="TRem" type="text" autocomplete="off" maxlength="120" placeholder="اختیاری"></div>
     </div>
-    <button class="apply" id="applyBtn4" type="button">اپلائی</button>
-    <p class="stale" id="tstale" hidden="">ناپ یا وزن بدل گیا ہے۔ نیا نتیجہ دیکھنے کے لیے اپلائی دبائیں۔</p>
-    <div class="brk-wrap"><table class="brk" id="tTbl"></table></div>
-    <p class="mnote" id="tNote"></p>
-    <h3 class="sub">کنزمپشن کے حساب سے لاگت</h3>
-    <div class="brk-wrap"><table class="brk" id="tCost"></table></div>
-    <div class="big cost"><span class="k">اصل پیپر کاسٹ (کل)</span><span class="v" id="tCostTot">—</span></div>
-    <div class="big cost"><span class="k">فی شیٹ</span><span class="v" id="tCostSheet">—</span></div>
-    <div class="big cost"><span class="k">فی باکس</span><span class="v" id="tCostBox">—</span></div>
-    <p class="mnote" id="tCostNote"></p>
+    <h3 class="sub">ریلیں جو پلانٹ کو بھیجیں</h3>
+    <p class="mnote">قسم، کوالٹی، GSM اور ریٹ آپ کے کمبی نیشن سے خود آتے ہیں۔ بھیجنے سے پہلے صرف ریل کا وزن لکھیں۔ پلانٹ سے ویسٹ، بیلنس اور شیٹ ملیں تو وہ لکھیں۔ ایک پرت میں دو ریلیں لگی ہوں تو ＋ دبا کر دوسری ریل کی قطار بنائیں۔</p>
+    <div id="reelRows"></div>
+    <div class="g c2" style="margin-top:8px">
+      <div class="field"><label for="TWp">متوقع ویسٹ (%)</label><input id="TWp" type="text" inputmode="decimal" autocomplete="off" value="2"></div>
+      <div class="field"><label for="TS">اصل بنی ہوئی شیٹ (پلانٹ نے بتائی)</label><input id="TS" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+    </div>
+    <div id="trOut"></div>
+    <div class="sumsave">
+      <div class="btn3"><button type="button" id="trSaveBtn">محفوظ</button><button type="button" id="trCopyBtn" class="sec">تصویر کاپی</button><button type="button" id="trShareBtn" class="sec">شیئر</button></div>
+    </div>
+    <p class="rlmsg" id="trMsg" aria-live="polite"></p>
+    <div hidden="">
+      <input id="V0" type="text"><input id="V1" type="text"><input id="V2" type="text"><input id="V3" type="text"><input id="V4" type="text"><input id="V5" type="text"><input id="V6" type="text">
+      <p class="stale" id="tstale" hidden=""></p><p class="example" id="tnote"></p>
+      <table id="tTbl"></table><p id="tNote"></p><table id="tCost"></table><span id="tCostTot"></span><span id="tCostSheet"></span><span id="tCostBox"></span><p id="tCostNote"></p>
+    </div>
   </section>
   </div>
   <div class="screen" id="histScreen" hidden="">
@@ -648,7 +660,7 @@ body > a[href="/logout"] { display: none !important; }
       <p class="rlmsg" id="folderMsg" aria-live="polite"></p>
     </div>
     <div class="tbar2"><div class="field"><label for="histFilter">دکھائیں</label>
-      <select id="histFilter"><option value="all">سب</option><option value="cost">کاسٹنگ خلاصہ</option><option value="plant">پلانٹ</option><option value="prod">پروڈکشن پلان</option></select></div></div>
+      <select id="histFilter"><option value="all">سب</option><option value="cost">کاسٹنگ خلاصہ</option><option value="plant">پلانٹ</option><option value="prod">پروڈکشن پلان</option><option value="trial">پلانٹ رن</option></select></div></div>
     <div id="histList"></div><div id="histView" hidden=""></div>
   </section>
   </div>
@@ -1001,9 +1013,10 @@ body > a[href="/logout"] { display: none !important; }
 
   /* ---------- خلاصہ، تصویر کی کاپی، محفوظ شدہ ریکارڈ اور فولڈر بیک اپ ---------- */
   var HKEY = "carton-history-v1", HL = [], LAST = null, LROWS = [], LTOT = null, CTXLINES = [], PLAST = null;
-  var COIDS = ["sumCo", "PCo"];
-  var KIND = { cost: "کاسٹنگ خلاصہ", plant: "پلانٹ", prod: "پروڈکشن پلان" };
-  var KINDEN = { cost: "Costing", plant: "Plant", prod: "Production" };
+  var REELS = [], LASTZ = null, TRES = null, TFIELDS = ["TPn", "TPp", "TCo", "TRem", "TWp"], TNAME = { p: "پلین", t: "موٹی نالی", n: "باریک نالی" };
+  var COIDS = ["sumCo", "PCo", "TCo"];
+  var KIND = { cost: "کاسٹنگ خلاصہ", plant: "پلانٹ", prod: "پروڈکشن پلان", trial: "پلانٹ رن" };
+  var KINDEN = { cost: "Costing", plant: "Plant", prod: "Production", trial: "PlantRun" };
   var MON3 = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
   var MON_UR = { "جنوری": 1, "فروری": 2, "مارچ": 3, "اپریل": 4, "مئی": 5, "جون": 6, "جولائی": 7, "اگست": 8, "ستمبر": 9, "اکتوبر": 10, "نومبر": 11, "دسمبر": 12 };
   var CARDCLS = { outCost: "cost", outBox: "cost", outRate: "gain", outFinal: "final", pLab: "cost", pCost: "cost", pBox: "cost", pRate: "gain", pFinal: "final" };
@@ -1020,7 +1033,7 @@ body > a[href="/logout"] { display: none !important; }
     if (m && MON_UR[m[2]]) return fmtDate(+m[1], MON_UR[m[2]], +m[3]);
     return t;
   }
-  function refreshDate() { $("sumDateShow").textContent = todayText(); }
+  function refreshDate() { $("sumDateShow").textContent = todayText(); $("trDate").textContent = todayText(); }
 
   /* سائز کی صرف دو لائنیں: (1) ڈبے یا اسٹفنر کا سائز، (2) ریل، میجر، مربع انچ اور پیس */
   function sizeLines2(Z) {
@@ -1180,7 +1193,7 @@ body > a[href="/logout"] { display: none !important; }
       } else if (b.t === "h") {
         T(b.text, W - P, y + 24, fnt(21, 700, F.body), COL.blue, "right"); y += 40;
       } else if (b.t === "table") {
-        var wts = b.cols.length > 5 ? { n0: 0.7, t: 1.3, p: 3.0, n: 1.3 } : { n0: 0.8, t: 1.5, p: 2.6, n: 1.6 }, sum = 0;
+        var wts = b.cols.length > 6 ? { n0: 0.6, t: 1.2, p: 3.0, n: 1.15 } : b.cols.length > 5 ? { n0: 0.7, t: 1.3, p: 3.0, n: 1.3 } : { n0: 0.8, t: 1.5, p: 2.6, n: 1.6 }, sum = 0;
         b.cols.forEach(function (cc) { sum += wts[cc.k]; });
         var cw = b.cols.map(function (cc) { return IN * wts[cc.k] / sum; });
         var xr = [], acc = W - P;
@@ -1488,7 +1501,7 @@ body > a[href="/logout"] { display: none !important; }
     for (var pi = 0; pi < 7; pi++) o.ps.push($("RS" + pi).value);
     NUM.concat(SEL).forEach(function (id) { o[id] = $(id).value; });
     AMTU.forEach(function (id) { o[id] = $(id).value; });
-    o.PRem = $("PRem").value; o.EXN = $("EXN").value;
+    o.PRem = $("PRem").value; o.EXN = $("EXN").value; o.reels = REELS; o.TF = {}; TFIELDS.forEach(function (id) { o.TF[id] = $(id).value; });
     o.CO = $("sumCo").value; o.cm = costMode;
     try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
   }
@@ -1510,6 +1523,8 @@ body > a[href="/logout"] { display: none !important; }
       AMTU.forEach(function (k) { if (s[k] === "p" || s[k] === "r") $(k).value = s[k]; });
       if (typeof s.PRem === "string") $("PRem").value = s.PRem;
       if (typeof s.EXN === "string") $("EXN").value = s.EXN;
+      if (Array.isArray(s.reels)) REELS = s.reels.filter(function (x) { return x && x.l >= 0 && x.l < 7; }).map(function (x) { return { l: x.l | 0, w: String(x.w || ""), ws: String(x.ws || ""), b: String(x.b || "") }; });
+      if (s.TF && typeof s.TF === "object") TFIELDS.forEach(function (id) { if (typeof s.TF[id] === "string") $(id).value = s.TF[id]; });
       if (typeof s.CO === "string") COIDS.forEach(function (k) { $(k).value = s.CO; });
       if (s.cm === "manual" || s.cm === "plant") costMode = s.cm;
       $("pnote").hidden = pe;
@@ -1624,6 +1639,7 @@ body > a[href="/logout"] { display: none !important; }
     appendExpenseNote();
     colorAddons();
     LROWS = data.LROWS || []; LTOT = data.LTOT || null; PLAST = data.PLAST || null;
+    LASTZ = data.Z || null;
     enrichRows(); rebuildTables();
     if (!data.ok) {
       ["sOrigReel","sOrigMaj","sNP","sAcross","sTot"].forEach(function (id) { $(id).textContent = "—"; });
@@ -1662,10 +1678,6 @@ body > a[href="/logout"] { display: none !important; }
   NUM.forEach(function (id) { $(id).addEventListener("input", TR.indexOf(id) >= 0 ? onTrialEdit : (isPaper(id) ? onPaperEdit : onEdit)); });
   SEL.forEach(function (id) { $(id).addEventListener("change", onPaperEdit); });
   AMTU.forEach(function (id) { $(id).addEventListener("change", onEdit); });
-  $("applyBtn4").addEventListener("click", function () {
-    apply();
-    nudge("tTbl", { behavior: "smooth", block: "center" });
-  });
   NUM.forEach(function (id) {
     if (["L", "W", "H"].concat(SEGIDS).indexOf(id) >= 0) return;
     $(id).addEventListener("keydown", function (e) {
@@ -1792,6 +1804,148 @@ body > a[href="/logout"] { display: none !important; }
   $("cmbSave").addEventListener("click", saveCombo);
   $("cmbName").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); saveCombo(); } });
 
+  /* ---------- پلانٹ رن: ہر ریل کی قطار، اندازہ، ویسٹ/بیلنس کا ملان اور اصل لاگت ---------- */
+  function fld(lab, cls, v) { return '<div class="field"><label>' + lab + '</label><input class="' + cls + '" type="text" inputmode="decimal" autocomplete="off" value="' + esc(v) + '"></div>'; }
+  function layerInfo(i) {
+    var rs = $("RS" + i).value, it = rs ? rlFind(rs) : null, g = val("G" + i);
+    return { t: $("T" + i).value, lab: it ? rlLabel(it) : "GSM " + (isFinite(g) ? g : "؟"), g: g, p: val("P" + i) };
+  }
+  function normReels() {
+    REELS = REELS.filter(function (x) { return x && x.l >= 0 && x.l < plies; });
+    for (var i = 0; i < plies; i++) if (!REELS.some(function (x) { return x.l === i; })) REELS.push({ l: i, w: "", ws: "", b: "" });
+    REELS.sort(function (a, b) { return a.l - b.l; });
+  }
+  function renderReels() {
+    normReels();
+    var h = "";
+    REELS.forEach(function (x, k) {
+      var li = layerInfo(x.l), many = REELS.filter(function (y) { return y.l === x.l; }).length > 1;
+      h += '<div class="reel' + (li.t !== "p" ? " fl" : "") + '" data-k="' + k + '"><div class="rtop"><b>پرت ' + (x.l + 1) + '</b><span class="rinfo">' + esc(TNAME[li.t] || "") + " · " + esc(li.lab) + " · ریٹ " + rateTxt(li.p) +
+        '</span><span class="racts"><button type="button" class="ra" data-a="add" aria-label="اسی پرت کی ایک اور ریل">＋</button>' + (many ? '<button type="button" class="ra" data-a="del" aria-label="یہ ریل ہٹائیں">✕</button>' : "") +
+        '</span></div><div class="rin">' + fld("وزن (کلو)", "rw", x.w) + fld("ویسٹ (کلو)", "rws", x.ws) + fld("بیلنس (کلو)", "rb", x.b) + "</div></div>";
+    });
+    $("reelRows").innerHTML = h;
+  }
+  function nbNow() {
+    if (mode === "stiff" && LASTZ && LASTZ.sInfo && LASTZ.sInfo.nb > 0) return LASTZ.sInfo.nb;
+    var n = val("NB"); return n > 0 ? n : 1;
+  }
+  function sgn(n, d) { return (n > 0 ? "+" : "") + fmt(n, d); }
+  function tcard(cls, k, v, d) { return '<div class="big ' + cls + '"><span class="k">' + k + '</span><span class="v">' + v + "</span>" + (d ? '<span class="d">' + d + "</span>" : "") + "</div>"; }
+  function trialCompute() {
+    var out = $("trOut");
+    TRES = null;
+    if (!LASTZ || !LROWS.length) { out.innerHTML = '<p class="mnote">پہلے حساب والی اسکرین پر ناپ اور پیپر کا کمبی نیشن درست لکھ کر اپلائی دبائیں۔</p>'; return; }
+    var areaM2 = LASTZ.lenIn * LASTZ.reel * 0.00064516, wp = val("TWp"), ts = val("TS"), nb = nbNow(), L = [], i;
+    if (!(wp >= 0)) wp = 0;
+    for (i = 0; i < plies; i++) {
+      var li = layerInfo(i), m = 1 + (li.t === "t" ? val("X1") : li.t === "n" ? val("X2") : 0) / 100;
+      L.push({ i: i, t: li.t, lab: li.lab, g: li.g, p: li.p, m: m, gm: areaM2 * li.g * m, w: 0, ws: 0, b: 0, cost: 0, wcost: 0, est: NaN });
+    }
+    REELS.forEach(function (x) {
+      var a = L[x.l], w = parseFloat(latin(x.w)), ws = parseFloat(latin(x.ws)), b = parseFloat(latin(x.b));
+      if (!a || !(w > 0)) return;
+      ws = ws > 0 ? ws : 0; b = b > 0 ? b : 0;
+      a.w += w; a.ws += ws; a.b += b; a.cost += (w - b) * a.p; a.wcost += ws * a.p;
+    });
+    var missing = L.filter(function (a) { return !(a.w > 0); }).map(function (a) { return a.i + 1; });
+    if (missing.length) { out.innerHTML = '<p class="mnote">اندازے کے لیے ہر پرت کی ریل کا وزن لکھیں (پرت ' + missing.join("، ") + " باقی ہے)۔</p>"; return; }
+    var est = Infinity, lim = 0;
+    L.forEach(function (a) {
+      a.est = Math.floor(a.w * (1 - wp / 100) * 1000 / a.gm + 1e-9);
+      if (a.est < est) { est = a.est; lim = a.i; }
+    });
+    var T = { W: 0, B: 0, WS: 0, cost: 0, wcost: 0, net: 0, need: 0 };
+    L.forEach(function (a) {
+      T.W += a.w; T.B += a.b; T.WS += a.ws; T.cost += a.cost; T.wcost += a.wcost;
+      if (ts > 0) {
+        a.net = a.w - a.b - a.ws; a.need = ts * a.gm / 1000;
+        a.eff = a.net * 1000 / (ts * areaM2); a.paper = a.eff / a.m; a.gdiff = a.paper - a.g; a.kdiff = a.net - a.need;
+        T.net += a.net; T.need += a.need;
+      }
+    });
+    var taken = T.W - T.B, wastePct = taken > 0 ? T.WS / taken * 100 : 0;
+    var h = tcard("gain", "متوقع شیٹ", fmt(est, 0), "ویسٹ " + r(wp, 2) + "% مان کر۔ پرت " + (lim + 1) + " کا پیپر سب سے پہلے ختم ہوگا۔");
+    var rows = "";
+    L.forEach(function (a) {
+      var ok = ts > 0;
+      rows += "<tr" + (a.t !== "p" ? ' class="fl"' : "") + "><td>" + (a.i + 1) + "</td><td>" + TNAME[a.t] + '</td><td class="n">' + fmt(a.w, 1) + '</td><td class="n">' + fmt(a.est, 0) + '</td><td class="n">' + fmt(a.g, 0) + '</td><td class="n"><b>' +
+        (ok ? r(a.paper, 1) : "—") + '</b></td><td class="n">' + (ok ? sgn(a.kdiff, 1) : "—") + "</td></tr>";
+    });
+    var tbl = '<div class="brk-wrap"><table class="brk"><tr><th>پرت</th><th>قسم</th><th>ریل وزن</th><th>متوقع شیٹ</th><th>منصوبہ GSM</th><th>اصل GSM</th><th>مال کا فرق (کلو)</th></tr>' + rows + "</table></div>";
+    var plan = LTOT ? LTOT.c : NaN, per = NaN, box = NaN;
+    if (ts > 0) {
+      per = T.cost / ts; box = per / nb;
+      h += tcard("gain", "اصل بنی ہوئی شیٹ", fmt(ts, 0), "متوقع " + fmt(est, 0) + " تھیں، فرق " + sgn(ts - est, 0) + " شیٹ");
+      h += tcard("cost", "کل ویسٹ", fmt(T.WS, 1) + " کلو (" + r(wastePct, 2) + "%)", "بھیجا " + fmt(T.W, 1) + " کلو، بیلنس واپس " + fmt(T.B, 1) + " کلو، لیا گیا " + fmt(taken, 1) + " کلو");
+      h += tcard("size", "مال کا ملان", sgn(T.net - T.need, 1) + " کلو", "شیٹوں میں لگا " + fmt(T.net, 1) + " کلو، منصوبے کے مطابق " + fmt(T.need, 1) + " کلو۔ " + (T.net - T.need > 0 ? "منصوبے سے زیادہ لگا (GSM زیادہ آیا)۔" : "منصوبے سے کم لگا۔"));
+      h += tcard("cost", "اصل پیپر کاسٹ (ویسٹ سمیت)", fmt(T.cost, 0), "ویسٹ کی لاگت " + fmt(T.wcost, 0) + "، وزن − بیلنس × ریٹ");
+      h += tcard("cost", "فی شیٹ", fmt(per, 2), isFinite(plan) ? "منصوبہ " + fmt(plan, 2) + "، فرق " + sgn(per - plan, 2) : "");
+      h += tcard("cost", "فی باکس", fmt(box, 2), nb !== 1 ? fmt(per, 2) + " ÷ " + r(nb, 2) + " باکس فی شیٹ" : "ایک شیٹ سے ایک باکس");
+    } else {
+      h += '<p class="mnote">پلانٹ سے "اصل بنی ہوئی شیٹ" ملے تو اوپر لکھیں، اصل GSM اور لاگت آ جائے گی۔</p>';
+    }
+    out.innerHTML = h + tbl;
+    TRES = { L: L, est: est, lim: lim, ts: ts, T: T, taken: taken, wastePct: wastePct, per: per, box: box, plan: plan, nb: nb, wp: wp };
+  }
+  function trialDoc(co, rem) {
+    var R = TRES, T = R.T, blocks = [{ t: "lines", lines: CTXLINES.slice() }];
+    var pl = $("TPn").value.trim(), ph = $("TPp").value.trim();
+    blocks.push({ t: "lines", lines: ["پلانٹ: " + (pl || "—") + (ph ? " · نمبر: " + ph : ""), "متوقع شیٹ: " + fmt(R.est, 0) + (R.ts > 0 ? " · اصل بنی شیٹ: " + fmt(R.ts, 0) : "")] });
+    blocks.push({ t: "h", text: "ریلیں" });
+    var rr = [];
+    REELS.forEach(function (x) {
+      var a = R.L[x.l], w = parseFloat(latin(x.w));
+      if (!a || !(w > 0)) return;
+      var ws = parseFloat(latin(x.ws)), b = parseFloat(latin(x.b));
+      rr.push({ c: [String(x.l + 1), a.lab, fmt(a.g, 0), rateTxt(a.p), fmt(w, 1), fmt(ws > 0 ? ws : 0, 1), fmt(b > 0 ? b : 0, 1)], hl: a.t !== "p" });
+    });
+    blocks.push({ t: "table", cols: [{ h: "پرت", k: "n0" }, { h: "پیپر", k: "p" }, { h: "GSM", k: "n" }, { h: "ریٹ", k: "n" }, { h: "وزن", k: "n" }, { h: "ویسٹ", k: "n" }, { h: "بیلنس", k: "n" }], rows: rr, total: { label: "کل", span: 4, vals: [fmt(T.W, 1), fmt(T.WS, 1), fmt(T.B, 1)] } });
+    blocks.push({ t: "h", text: "پرتوں کا حساب" });
+    blocks.push({ t: "table", cols: [{ h: "پرت", k: "n0" }, { h: "قسم", k: "t" }, { h: "متوقع شیٹ", k: "n" }, { h: "منصوبہ GSM", k: "n" }, { h: "اصل GSM", k: "n" }, { h: "مال کا فرق (کلو)", k: "n" }],
+      rows: R.L.map(function (a) { return { c: [String(a.i + 1), TNAME[a.t], fmt(a.est, 0), fmt(a.g, 0), R.ts > 0 ? String(r(a.paper, 1)) : "—", R.ts > 0 ? sgn(a.kdiff, 1) : "—"], hl: a.t !== "p" }; }), total: null });
+    var items = [{ k: "متوقع شیٹ", v: fmt(R.est, 0), d: ["ویسٹ " + r(R.wp, 2) + "% مان کر"], c: "gain" }];
+    if (R.ts > 0) {
+      items.push({ k: "اصل بنی ہوئی شیٹ", v: fmt(R.ts, 0), d: ["فرق " + sgn(R.ts - R.est, 0) + " شیٹ"], c: "gain" });
+      items.push({ k: "کل ویسٹ", v: fmt(T.WS, 1) + " کلو (" + r(R.wastePct, 2) + "%)", d: ["بھیجا " + fmt(T.W, 1) + "، بیلنس " + fmt(T.B, 1) + " کلو"], c: "cost" });
+      items.push({ k: "مال کا ملان", v: sgn(T.net - T.need, 1) + " کلو", d: ["لگا " + fmt(T.net, 1) + "، منصوبہ " + fmt(T.need, 1) + " کلو"], c: "size" });
+      items.push({ k: "اصل پیپر کاسٹ (ویسٹ سمیت)", v: fmt(T.cost, 0), d: ["ویسٹ کی لاگت " + fmt(T.wcost, 0)], c: "cost" });
+      items.push({ k: "فی شیٹ", v: fmt(R.per, 2), d: isFinite(R.plan) ? ["منصوبہ " + fmt(R.plan, 2) + "، فرق " + sgn(R.per - R.plan, 2)] : [], c: "cost" });
+      items.push({ k: "فی باکس", v: fmt(R.box, 2), d: [], c: "final" });
+    }
+    blocks.push({ t: "cards", items: items });
+    return { kind: "trial", title: co, rem: rem, date: todayText(), blocks: blocks };
+  }
+  function trialNow() {
+    trialCompute();
+    if (!TRES) { msgOf("trMsg", "پہلے ہر پرت کی ریل کا وزن لکھیں (اور حساب والی اسکرین پر اپلائی کریں)۔", true); return null; }
+    msgOf("trMsg", "", false); refreshDate();
+    return trialDoc(coName("TCo"), $("TRem").value.trim());
+  }
+  function openTrial() { apply(false).then(function () { renderReels(); trialCompute(); openScreen("grpTrial"); }); }
+  $("reelRows").addEventListener("input", function (e) {
+    var row = e.target.closest(".reel"), x = row ? REELS[+row.dataset.k] : null;
+    if (!x) return;
+    if (e.target.classList.contains("rw")) x.w = e.target.value;
+    else if (e.target.classList.contains("rws")) x.ws = e.target.value;
+    else if (e.target.classList.contains("rb")) x.b = e.target.value;
+    save(); trialCompute();
+  });
+  $("reelRows").addEventListener("click", function (e) {
+    var b = e.target.closest(".ra");
+    if (!b) return;
+    var row = b.closest(".reel"), k = +row.dataset.k, x = REELS[k];
+    if (b.dataset.a === "add") REELS.splice(k + 1, 0, { l: x.l, w: "", ws: "", b: "" });
+    else if (REELS.filter(function (y) { return y.l === x.l; }).length > 1) REELS.splice(k, 1);
+    renderReels(); save(); trialCompute();
+  });
+  $("reelRows").addEventListener("focusin", function (e) { if (e.target.tagName === "INPUT") selectAll(e.target); });
+  TFIELDS.forEach(function (id) { $(id).addEventListener("input", function () { save(); if (id === "TWp") trialCompute(); }); });
+  $("TS").addEventListener("input", trialCompute);
+  $("trCopyBtn").addEventListener("click", function () { var d = trialNow(); if (d) copyDocImage(d, $("trCopyBtn")); });
+  $("trShareBtn").addEventListener("click", function () { var d = trialNow(); if (d) shareDocImage(d, $("trShareBtn")); });
+  $("trSaveBtn").addEventListener("click", function () { var d = trialNow(); if (d) saveDoc("trial", d, TRES.ts > 0 ? "فی شیٹ " + fmt(TRES.per, 2) : "متوقع " + fmt(TRES.est, 0) + " شیٹ", "trMsg"); });
+
   /* ---------- نیا لے آؤٹ: مینول/پلانٹ، عمل کا مینو، پروڈکشن پلان کی الگ اسکرین ---------- */
   /* آخری سائز یا ہاتھ سے لکھا میجر: اصل (جینوئن) کتنا بنتا ہے اور آپ نے کتنا لکھا */
   function majorNote(Z) {
@@ -1863,7 +2017,7 @@ body > a[href="/logout"] { display: none !important; }
   function clearForm() {
     if (!confirm("سارا فارم صاف کریں؟ (سائز، کمبی نیشن، خرچ، منافع، GST اور نام صاف ہو جائیں گے)")) return;
     var i;
-    ["L", "W", "H", "MR", "MM", "QT", "EX", "PR", "GS", "PX", "PP", "PG", "TS", "sumCo", "PCo", "sumRem", "PRem", "cmbName", "EXN"].forEach(function (id) { $(id).value = ""; });
+    ["L", "W", "H", "MR", "MM", "QT", "EX", "PR", "GS", "PX", "PP", "PG", "TS", "sumCo", "PCo", "sumRem", "PRem", "cmbName", "EXN", "TPn", "TPp", "TCo", "TRem"].forEach(function (id) { $(id).value = ""; });
     SEGIDS.forEach(function (id) { $(id).value = ""; });
     $("NB").value = "1";
     for (i = 0; i < 7; i++) {
@@ -1871,6 +2025,7 @@ body > a[href="/logout"] { display: none !important; }
       $("T" + i).value = DEF.T[i];
       $("RS" + i).value = ""; $("RS" + i).classList.remove("on");
     }
+    REELS = []; $("TWp").value = "2"; renderReels();
     $("cmbSel").value = "";
     ["example", "pnote", "tnote"].forEach(function (id) { $(id).hidden = true; });
     pe = true; te = true; markRows(); closeScreens(); save();
@@ -1916,7 +2071,7 @@ body > a[href="/logout"] { display: none !important; }
       var t = a.dataset.t;
       if (t === "inPanel") { closeScreens(); window.scrollTo(0, 0); }
       else if (t === "grpProd") openProd();
-      else if (t === "h-trial") apply(false).then(function () { openScreen("grpTrial"); });
+      else if (t === "h-trial") openTrial();
       else openScreen("histScreen");
     });
   });
@@ -1934,6 +2089,7 @@ body > a[href="/logout"] { display: none !important; }
   syncRt();
   syncUnits();
   applyCostMode();
+  normReels(); renderReels();
   apply();
 })();
 </script>
