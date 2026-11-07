@@ -339,6 +339,9 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 .racts { display: flex; gap: 6px; }
 .ra { font: inherit; font-size: .95rem; min-width: 36px; min-height: 34px; border: 1px solid var(--accent); border-radius: 8px; background: var(--surface); color: var(--accent); cursor: pointer; }
 .rin { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+@media (min-width: 1000px) { .rin { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.rtop { justify-content: space-between; }
+.reel .rsel { width: 100%; font: inherit; font-size: .9rem; padding: 7px 4px; margin-bottom: 6px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); }
 .reel .field input { font-size: 1.05rem; padding: 6px 4px; }
 #trOut .big { margin-block: 5px; }
 #trOut .brk { font-size: .82rem; }
@@ -799,6 +802,7 @@ body > a[href="/logout"] { display: none !important; }
   }
   function persistRates() { try { localStorage.setItem(RKEY, JSON.stringify(RL)); } catch (e) {} }
   function rlLabel(x) { return (x.b ? x.b + " · " : "") + x.q + " · " + x.g; }
+  function rlName(x) { return (x.b ? x.b + " · " : "") + x.q; }
   function rlFind(id) {
     for (var i = 0; i < RL.length; i++) if (String(RL[i].id) === String(id)) return RL[i];
     return null;
@@ -1523,7 +1527,7 @@ body > a[href="/logout"] { display: none !important; }
       AMTU.forEach(function (k) { if (s[k] === "p" || s[k] === "r") $(k).value = s[k]; });
       if (typeof s.PRem === "string") $("PRem").value = s.PRem;
       if (typeof s.EXN === "string") $("EXN").value = s.EXN;
-      if (Array.isArray(s.reels)) REELS = s.reels.filter(function (x) { return x && x.l >= 0 && x.l < 7; }).map(function (x) { return { l: x.l | 0, w: String(x.w || ""), ws: String(x.ws || ""), b: String(x.b || "") }; });
+      if (Array.isArray(s.reels)) REELS = s.reels.filter(function (x) { return x && x.l >= 0 && x.l < 7; }).map(function (x) { return { l: x.l | 0, w: String(x.w || ""), ws: String(x.ws || ""), b: String(x.b || ""), rs: String(x.rs || ""), g: String(x.g || ""), p: String(x.p || "") }; });
       if (s.TF && typeof s.TF === "object") TFIELDS.forEach(function (id) { if (typeof s.TF[id] === "string") $(id).value = s.TF[id]; });
       if (typeof s.CO === "string") COIDS.forEach(function (k) { $(k).value = s.CO; });
       if (s.cm === "manual" || s.cm === "plant") costMode = s.cm;
@@ -1805,24 +1809,33 @@ body > a[href="/logout"] { display: none !important; }
   $("cmbName").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); saveCombo(); } });
 
   /* ---------- پلانٹ رن: ہر ریل کی قطار، اندازہ، ویسٹ/بیلنس کا ملان اور اصل لاگت ---------- */
-  function fld(lab, cls, v) { return '<div class="field"><label>' + lab + '</label><input class="' + cls + '" type="text" inputmode="decimal" autocomplete="off" value="' + esc(v) + '"></div>'; }
+  function fld(lab, cls, v, ph) { return '<div class="field"><label>' + lab + '</label><input class="' + cls + '" type="text" inputmode="decimal" autocomplete="off" value="' + esc(v) + '"' + (ph !== undefined && ph !== "" ? ' placeholder="' + esc(ph) + '"' : "") + "></div>"; }
   function layerInfo(i) {
     var rs = $("RS" + i).value, it = rs ? rlFind(rs) : null, g = val("G" + i);
-    return { t: $("T" + i).value, lab: it ? rlLabel(it) : "GSM " + (isFinite(g) ? g : "؟"), g: g, p: val("P" + i) };
+    return { t: $("T" + i).value, lab: it ? rlLabel(it) : "GSM " + (isFinite(g) ? g : "؟"), name: it ? rlName(it) : "", g: g, p: val("P" + i) };
   }
+  function newReel(l, o) { o = o || {}; return { l: l, w: "", ws: "", b: "", rs: o.rs || "", g: o.g || "", p: o.p || "" }; }
   function normReels() {
     REELS = REELS.filter(function (x) { return x && x.l >= 0 && x.l < plies; });
-    for (var i = 0; i < plies; i++) if (!REELS.some(function (x) { return x.l === i; })) REELS.push({ l: i, w: "", ws: "", b: "" });
+    for (var i = 0; i < plies; i++) if (!REELS.some(function (x) { return x.l === i; })) REELS.push(newReel(i));
     REELS.sort(function (a, b) { return a.l - b.l; });
+  }
+  /* اس ریل کا اپنا GSM، ریٹ اور نام: ریل میں لکھا نہ ہو تو کمبی نیشن والا */
+  function reelEff(x) {
+    var li = layerInfo(x.l), it = x.rs ? rlFind(x.rs) : null, g = parseFloat(latin(x.g)), p = parseFloat(latin(x.p));
+    return { g: g > 0 ? g : li.g, p: (String(x.p).trim() !== "" && isFinite(p) && p >= 0) ? p : li.p, name: it ? rlName(it) : li.name, t: li.t };
   }
   function renderReels() {
     normReels();
     var h = "";
     REELS.forEach(function (x, k) {
       var li = layerInfo(x.l), many = REELS.filter(function (y) { return y.l === x.l; }).length > 1;
-      h += '<div class="reel' + (li.t !== "p" ? " fl" : "") + '" data-k="' + k + '"><div class="rtop"><b>پرت ' + (x.l + 1) + '</b><span class="rinfo">' + esc(TNAME[li.t] || "") + " · " + esc(li.lab) + " · ریٹ " + rateTxt(li.p) +
-        '</span><span class="racts"><button type="button" class="ra" data-a="add" aria-label="اسی پرت کی ایک اور ریل">＋</button>' + (many ? '<button type="button" class="ra" data-a="del" aria-label="یہ ریل ہٹائیں">✕</button>' : "") +
-        '</span></div><div class="rin">' + fld("وزن (کلو)", "rw", x.w) + fld("ویسٹ (کلو)", "rws", x.ws) + fld("بیلنس (کلو)", "rb", x.b) + "</div></div>";
+      var opts = '<option value="">— کمبی نیشن والا: ' + esc(li.lab) + " —</option>";
+      RL.forEach(function (it) { opts += '<option value="' + it.id + '"' + (String(it.id) === String(x.rs) ? " selected" : "") + ">" + esc(rlLabel(it)) + "</option>"; });
+      h += '<div class="reel' + (li.t !== "p" ? " fl" : "") + '" data-k="' + k + '"><div class="rtop"><b>پرت ' + (x.l + 1) + " · " + esc(TNAME[li.t] || "") +
+        '</b><span class="racts"><button type="button" class="ra" data-a="add" aria-label="اسی پرت کی ایک اور ریل">＋</button>' + (many ? '<button type="button" class="ra" data-a="del" aria-label="یہ ریل ہٹائیں">✕</button>' : "") + "</span></div>" +
+        '<select class="rsel" aria-label="اس ریل کا پیپر لسٹ سے چنیں">' + opts + "</select>" +
+        '<div class="rin">' + fld("GSM", "rg", x.g, li.g) + fld("ریٹ", "rp", x.p, rateTxt(li.p)) + fld("وزن (کلو)", "rw", x.w) + fld("ویسٹ (کلو)", "rws", x.ws) + fld("بیلنس (کلو)", "rb", x.b) + "</div></div>";
     });
     $("reelRows").innerHTML = h;
   }
@@ -1840,24 +1853,27 @@ body > a[href="/logout"] { display: none !important; }
     if (!(wp >= 0)) wp = 0;
     for (i = 0; i < plies; i++) {
       var li = layerInfo(i), m = 1 + (li.t === "t" ? val("X1") : li.t === "n" ? val("X2") : 0) / 100;
-      L.push({ i: i, t: li.t, lab: li.lab, g: li.g, p: li.p, m: m, gm: areaM2 * li.g * m, w: 0, ws: 0, b: 0, cost: 0, wcost: 0, est: NaN });
+      L.push({ i: i, t: li.t, g: li.g, p: li.p, m: m, gm: areaM2 * li.g * m, w: 0, ws: 0, b: 0, cost: 0, costNet: 0, wcost: 0, estRaw: 0, est: NaN, names: [] });
     }
     REELS.forEach(function (x) {
       var a = L[x.l], w = parseFloat(latin(x.w)), ws = parseFloat(latin(x.ws)), b = parseFloat(latin(x.b));
       if (!a || !(w > 0)) return;
+      var e = reelEff(x);
       ws = ws > 0 ? ws : 0; b = b > 0 ? b : 0;
-      a.w += w; a.ws += ws; a.b += b; a.cost += (w - b) * a.p; a.wcost += ws * a.p;
+      a.w += w; a.ws += ws; a.b += b; a.cost += (w - b) * e.p; a.costNet += (w - b - ws) * e.p; a.wcost += ws * e.p;
+      a.estRaw += w * (1 - wp / 100) * 1000 / (areaM2 * e.g * a.m);
+      if (e.name && a.names.indexOf(e.name) < 0) a.names.push(e.name);
     });
     var missing = L.filter(function (a) { return !(a.w > 0); }).map(function (a) { return a.i + 1; });
     if (missing.length) { out.innerHTML = '<p class="mnote">اندازے کے لیے ہر پرت کی ریل کا وزن لکھیں (پرت ' + missing.join("، ") + " باقی ہے)۔</p>"; return; }
     var est = Infinity, lim = 0;
     L.forEach(function (a) {
-      a.est = Math.floor(a.w * (1 - wp / 100) * 1000 / a.gm + 1e-9);
+      a.est = Math.floor(a.estRaw + 1e-9);
       if (a.est < est) { est = a.est; lim = a.i; }
     });
-    var T = { W: 0, B: 0, WS: 0, cost: 0, wcost: 0, net: 0, need: 0 };
+    var T = { W: 0, B: 0, WS: 0, cost: 0, costNet: 0, wcost: 0, net: 0, need: 0 };
     L.forEach(function (a) {
-      T.W += a.w; T.B += a.b; T.WS += a.ws; T.cost += a.cost; T.wcost += a.wcost;
+      T.W += a.w; T.B += a.b; T.WS += a.ws; T.cost += a.cost; T.costNet += a.costNet; T.wcost += a.wcost;
       if (ts > 0) {
         a.net = a.w - a.b - a.ws; a.need = ts * a.gm / 1000;
         a.eff = a.net * 1000 / (ts * areaM2); a.paper = a.eff / a.m; a.gdiff = a.paper - a.g; a.kdiff = a.net - a.need;
@@ -1868,25 +1884,26 @@ body > a[href="/logout"] { display: none !important; }
     var h = tcard("gain", "متوقع شیٹ", fmt(est, 0), "ویسٹ " + r(wp, 2) + "% مان کر۔ پرت " + (lim + 1) + " کا پیپر سب سے پہلے ختم ہوگا۔");
     var rows = "";
     L.forEach(function (a) {
-      var ok = ts > 0;
-      rows += "<tr" + (a.t !== "p" ? ' class="fl"' : "") + "><td>" + (a.i + 1) + "</td><td>" + TNAME[a.t] + '</td><td class="n">' + fmt(a.w, 1) + '</td><td class="n">' + fmt(a.est, 0) + '</td><td class="n">' + fmt(a.g, 0) + '</td><td class="n"><b>' +
+      var ok = ts > 0, tk = a.w - a.b;
+      rows += "<tr" + (a.t !== "p" ? ' class="fl"' : "") + "><td>" + (a.i + 1) + "</td><td>" + TNAME[a.t] + (a.names.length ? "<br><small>" + esc(a.names.join("، ")) + "</small>" : "") + '</td><td class="n">' + fmt(a.w, 1) +
+        '</td><td class="n">' + (a.ws > 0 ? fmt(a.ws, 1) + (tk > 0 ? " (" + r(a.ws / tk * 100, 1) + "%)" : "") : "—") + '</td><td class="n">' + fmt(a.est, 0) + '</td><td class="n">' + fmt(a.g, 0) + '</td><td class="n"><b>' +
         (ok ? r(a.paper, 1) : "—") + '</b></td><td class="n">' + (ok ? sgn(a.kdiff, 1) : "—") + "</td></tr>";
     });
-    var tbl = '<div class="brk-wrap"><table class="brk"><tr><th>پرت</th><th>قسم</th><th>ریل وزن</th><th>متوقع شیٹ</th><th>منصوبہ GSM</th><th>اصل GSM</th><th>مال کا فرق (کلو)</th></tr>' + rows + "</table></div>";
-    var plan = LTOT ? LTOT.c : NaN, per = NaN, box = NaN;
+    var tbl = '<div class="brk-wrap"><table class="brk"><tr><th>پرت</th><th>قسم / پیپر</th><th>ریل وزن</th><th>ویسٹ</th><th>متوقع شیٹ</th><th>منصوبہ GSM</th><th>اصل GSM</th><th>مال کا فرق (کلو)</th></tr>' + rows + "</table></div>";
+    var plan = LTOT ? LTOT.c : NaN, per = NaN, box = NaN, perAll = NaN;
     if (ts > 0) {
-      per = T.cost / ts; box = per / nb;
+      per = T.costNet / ts; box = per / nb; perAll = T.cost / ts;
       h += tcard("gain", "اصل بنی ہوئی شیٹ", fmt(ts, 0), "متوقع " + fmt(est, 0) + " تھیں، فرق " + sgn(ts - est, 0) + " شیٹ");
       h += tcard("cost", "کل ویسٹ", fmt(T.WS, 1) + " کلو (" + r(wastePct, 2) + "%)", "بھیجا " + fmt(T.W, 1) + " کلو، بیلنس واپس " + fmt(T.B, 1) + " کلو، لیا گیا " + fmt(taken, 1) + " کلو");
       h += tcard("size", "مال کا ملان", sgn(T.net - T.need, 1) + " کلو", "شیٹوں میں لگا " + fmt(T.net, 1) + " کلو، منصوبے کے مطابق " + fmt(T.need, 1) + " کلو۔ " + (T.net - T.need > 0 ? "منصوبے سے زیادہ لگا (GSM زیادہ آیا)۔" : "منصوبے سے کم لگا۔"));
-      h += tcard("cost", "اصل پیپر کاسٹ (ویسٹ سمیت)", fmt(T.cost, 0), "ویسٹ کی لاگت " + fmt(T.wcost, 0) + "، وزن − بیلنس × ریٹ");
-      h += tcard("cost", "فی شیٹ", fmt(per, 2), isFinite(plan) ? "منصوبہ " + fmt(plan, 2) + "، فرق " + sgn(per - plan, 2) : "");
-      h += tcard("cost", "فی باکس", fmt(box, 2), nb !== 1 ? fmt(per, 2) + " ÷ " + r(nb, 2) + " باکس فی شیٹ" : "ایک شیٹ سے ایک باکس");
+      h += tcard("cost", "اصل پیپر کاسٹ (استعمال شدہ وزن)", fmt(T.costNet, 0), "(وزن − بیلنس − ویسٹ) × ریٹ۔ ویسٹ کی لاگت " + fmt(T.wcost, 0) + " الگ، ویسٹ سمیت کل " + fmt(T.cost, 0));
+      h += tcard("cost", "فی شیٹ", fmt(per, 2), (isFinite(plan) ? "منصوبہ " + fmt(plan, 2) + "، فرق " + sgn(per - plan, 2) + "۔ " : "") + "ویسٹ سمیت " + fmt(perAll, 2));
+      h += tcard("cost", "فی باکس", fmt(box, 2), (nb !== 1 ? fmt(per, 2) + " ÷ " + r(nb, 2) + " باکس فی شیٹ۔ " : "ایک شیٹ سے ایک باکس۔ ") + "ویسٹ سمیت " + fmt(perAll / nb, 2));
     } else {
-      h += '<p class="mnote">پلانٹ سے "اصل بنی ہوئی شیٹ" ملے تو اوپر لکھیں، اصل GSM اور لاگت آ جائے گی۔</p>';
+      h += '<p class="mnote">پلانٹ سے "اصل بنی ہوئی شیٹ" ملے تو اوپر لکھیں، اصل GSM، ویسٹ اور لاگت آ جائے گی۔</p>';
     }
     out.innerHTML = h + tbl;
-    TRES = { L: L, est: est, lim: lim, ts: ts, T: T, taken: taken, wastePct: wastePct, per: per, box: box, plan: plan, nb: nb, wp: wp };
+    TRES = { L: L, est: est, lim: lim, ts: ts, T: T, taken: taken, wastePct: wastePct, per: per, perAll: perAll, box: box, plan: plan, nb: nb, wp: wp };
   }
   function trialDoc(co, rem) {
     var R = TRES, T = R.T, blocks = [{ t: "lines", lines: CTXLINES.slice() }];
@@ -1897,21 +1914,21 @@ body > a[href="/logout"] { display: none !important; }
     REELS.forEach(function (x) {
       var a = R.L[x.l], w = parseFloat(latin(x.w));
       if (!a || !(w > 0)) return;
-      var ws = parseFloat(latin(x.ws)), b = parseFloat(latin(x.b));
-      rr.push({ c: [String(x.l + 1), a.lab, fmt(a.g, 0), rateTxt(a.p), fmt(w, 1), fmt(ws > 0 ? ws : 0, 1), fmt(b > 0 ? b : 0, 1)], hl: a.t !== "p" });
+      var e = reelEff(x), ws = parseFloat(latin(x.ws)), b = parseFloat(latin(x.b));
+      rr.push({ c: [String(x.l + 1), e.name || "—", fmt(e.g, 0), rateTxt(e.p), fmt(w, 1), fmt(ws > 0 ? ws : 0, 1), fmt(b > 0 ? b : 0, 1)], hl: a.t !== "p" });
     });
     blocks.push({ t: "table", cols: [{ h: "پرت", k: "n0" }, { h: "پیپر", k: "p" }, { h: "GSM", k: "n" }, { h: "ریٹ", k: "n" }, { h: "وزن", k: "n" }, { h: "ویسٹ", k: "n" }, { h: "بیلنس", k: "n" }], rows: rr, total: { label: "کل", span: 4, vals: [fmt(T.W, 1), fmt(T.WS, 1), fmt(T.B, 1)] } });
     blocks.push({ t: "h", text: "پرتوں کا حساب" });
-    blocks.push({ t: "table", cols: [{ h: "پرت", k: "n0" }, { h: "قسم", k: "t" }, { h: "متوقع شیٹ", k: "n" }, { h: "منصوبہ GSM", k: "n" }, { h: "اصل GSM", k: "n" }, { h: "مال کا فرق (کلو)", k: "n" }],
-      rows: R.L.map(function (a) { return { c: [String(a.i + 1), TNAME[a.t], fmt(a.est, 0), fmt(a.g, 0), R.ts > 0 ? String(r(a.paper, 1)) : "—", R.ts > 0 ? sgn(a.kdiff, 1) : "—"], hl: a.t !== "p" }; }), total: null });
+    blocks.push({ t: "table", cols: [{ h: "پرت", k: "n0" }, { h: "قسم / پیپر", k: "p" }, { h: "ویسٹ", k: "n" }, { h: "متوقع شیٹ", k: "n" }, { h: "منصوبہ GSM", k: "n" }, { h: "اصل GSM", k: "n" }, { h: "مال کا فرق", k: "n" }],
+      rows: R.L.map(function (a) { return { c: [String(a.i + 1), TNAME[a.t] + (a.names.length ? " · " + a.names.join("، ") : ""), a.ws > 0 ? fmt(a.ws, 1) : "—", fmt(a.est, 0), fmt(a.g, 0), R.ts > 0 ? String(r(a.paper, 1)) : "—", R.ts > 0 ? sgn(a.kdiff, 1) : "—"], hl: a.t !== "p" }; }), total: null });
     var items = [{ k: "متوقع شیٹ", v: fmt(R.est, 0), d: ["ویسٹ " + r(R.wp, 2) + "% مان کر"], c: "gain" }];
     if (R.ts > 0) {
       items.push({ k: "اصل بنی ہوئی شیٹ", v: fmt(R.ts, 0), d: ["فرق " + sgn(R.ts - R.est, 0) + " شیٹ"], c: "gain" });
       items.push({ k: "کل ویسٹ", v: fmt(T.WS, 1) + " کلو (" + r(R.wastePct, 2) + "%)", d: ["بھیجا " + fmt(T.W, 1) + "، بیلنس " + fmt(T.B, 1) + " کلو"], c: "cost" });
       items.push({ k: "مال کا ملان", v: sgn(T.net - T.need, 1) + " کلو", d: ["لگا " + fmt(T.net, 1) + "، منصوبہ " + fmt(T.need, 1) + " کلو"], c: "size" });
-      items.push({ k: "اصل پیپر کاسٹ (ویسٹ سمیت)", v: fmt(T.cost, 0), d: ["ویسٹ کی لاگت " + fmt(T.wcost, 0)], c: "cost" });
-      items.push({ k: "فی شیٹ", v: fmt(R.per, 2), d: isFinite(R.plan) ? ["منصوبہ " + fmt(R.plan, 2) + "، فرق " + sgn(R.per - R.plan, 2)] : [], c: "cost" });
-      items.push({ k: "فی باکس", v: fmt(R.box, 2), d: [], c: "final" });
+      items.push({ k: "اصل پیپر کاسٹ (استعمال شدہ وزن)", v: fmt(T.costNet, 0), d: ["ویسٹ کی لاگت " + fmt(T.wcost, 0) + " الگ، ویسٹ سمیت کل " + fmt(T.cost, 0)], c: "cost" });
+      items.push({ k: "فی شیٹ", v: fmt(R.per, 2), d: (isFinite(R.plan) ? ["منصوبہ " + fmt(R.plan, 2) + "، فرق " + sgn(R.per - R.plan, 2)] : []).concat(["ویسٹ سمیت " + fmt(R.perAll, 2)]), c: "cost" });
+      items.push({ k: "فی باکس", v: fmt(R.box, 2), d: ["ویسٹ سمیت " + fmt(R.perAll / R.nb, 2)], c: "final" });
     }
     blocks.push({ t: "cards", items: items });
     return { kind: "trial", title: co, rem: rem, date: todayText(), blocks: blocks };
@@ -1926,16 +1943,26 @@ body > a[href="/logout"] { display: none !important; }
   $("reelRows").addEventListener("input", function (e) {
     var row = e.target.closest(".reel"), x = row ? REELS[+row.dataset.k] : null;
     if (!x) return;
-    if (e.target.classList.contains("rw")) x.w = e.target.value;
-    else if (e.target.classList.contains("rws")) x.ws = e.target.value;
-    else if (e.target.classList.contains("rb")) x.b = e.target.value;
+    var c = e.target.classList;
+    if (c.contains("rw")) x.w = e.target.value;
+    else if (c.contains("rws")) x.ws = e.target.value;
+    else if (c.contains("rb")) x.b = e.target.value;
+    else if (c.contains("rg")) x.g = e.target.value;
+    else if (c.contains("rp")) x.p = e.target.value;
     save(); trialCompute();
+  });
+  $("reelRows").addEventListener("change", function (e) {
+    if (!e.target.classList.contains("rsel")) return;
+    var row = e.target.closest(".reel"), x = row ? REELS[+row.dataset.k] : null, it = x && e.target.value ? rlFind(e.target.value) : null;
+    if (!x) return;
+    x.rs = e.target.value; x.g = it ? String(it.g) : ""; x.p = it ? String(rt === "cash" ? it.h : it.c) : "";
+    renderReels(); save(); trialCompute();
   });
   $("reelRows").addEventListener("click", function (e) {
     var b = e.target.closest(".ra");
     if (!b) return;
     var row = b.closest(".reel"), k = +row.dataset.k, x = REELS[k];
-    if (b.dataset.a === "add") REELS.splice(k + 1, 0, { l: x.l, w: "", ws: "", b: "" });
+    if (b.dataset.a === "add") REELS.splice(k + 1, 0, newReel(x.l, x));
     else if (REELS.filter(function (y) { return y.l === x.l; }).length > 1) REELS.splice(k, 1);
     renderReels(); save(); trialCompute();
   });
