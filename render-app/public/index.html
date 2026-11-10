@@ -1149,6 +1149,8 @@ body > a[href="/logout"] { display: none !important; }
 
   /* ---- تصویر بنانا (canvas): کوئی بیرونی لائبریری نہیں، آف لائن بھی چلتا ہے ---- */
   var IMG = { W: 900, S: 2, PAD: 28 };
+  /* فون/ٹچ اسکرین: وہاں تصویر کی کلپ بورڈ کاپی واٹس ایپ میں پیسٹ نہیں ہوتی، اس لیے ڈاؤنلوڈ اور شیئر استعمال ہوتے ہیں */
+  var COARSE = !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
   function imgFonts() {
     var body = getComputedStyle(document.body).fontFamily || "sans-serif";
     var num = getComputedStyle($("outCost")).fontFamily || "monospace";
@@ -1254,10 +1256,11 @@ body > a[href="/logout"] { display: none !important; }
     var F = imgFonts(), probe = document.createElement("canvas").getContext("2d");
     var h = drawDoc(probe, doc, F, true);
     var cv = document.createElement("canvas");
-    cv.width = IMG.W * IMG.S; cv.height = Math.ceil(h * IMG.S);
+    var sc = Math.max(1, Math.min(IMG.S, 4000 / h));
+    cv.width = Math.round(IMG.W * sc); cv.height = Math.ceil(h * sc);
     var c = cv.getContext("2d");
     c.fillStyle = "#ffffff"; c.fillRect(0, 0, cv.width, cv.height);
-    c.scale(IMG.S, IMG.S);
+    c.scale(sc, sc);
     drawDoc(c, doc, F, false);
     return cv;
   }
@@ -1273,18 +1276,24 @@ body > a[href="/logout"] { display: none !important; }
     var url = cv.toDataURL("image/png");
     $("copyImg").src = url; $("copyDl").href = url; $("copyBox").hidden = false;
   }
+  function imgName(doc, ext) { return "PACKSOL-" + (KINDEN[doc.kind] || "Costing") + "-" + todayIso() + "." + ext; }
+  function dlBlob(blob, name) {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+  }
   function copyDocImage(doc, btn) {
     var cv = renderDoc(doc);
-    var blobP = new Promise(function (res) { cv.toBlob(res, "image/png"); });
-    function fallback() {
-      blobP.then(function (blob) {
-        var file = new File([blob], "costing.png", { type: "image/png" });
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-          navigator.share({ files: [file], title: doc.title }).catch(function () { showImgBox(cv); });
-        } else showImgBox(cv);
-      });
-      flash(btn, "تصویر نیچے ہے");
+    if (COARSE) {
+      cv.toBlob(function (blob) {
+        if (!blob) { showImgBox(cv); flash(btn, "تصویر نیچے ہے"); return; }
+        dlBlob(blob, imgName(doc, "png")); flash(btn, "تصویر محفوظ ہو گئی ✓");
+      }, "image/png");
+      return;
     }
+    var blobP = new Promise(function (res) { cv.toBlob(res, "image/png"); });
+    function fallback() { showImgBox(cv); flash(btn, "تصویر نیچے ہے"); }
     if (navigator.clipboard && window.ClipboardItem) {
       try {
         navigator.clipboard.write([new ClipboardItem({ "image/png": blobP })]).then(function () { flash(btn, "تصویر کاپی ہو گئی ✓"); }, fallback);
@@ -1293,22 +1302,24 @@ body > a[href="/logout"] { display: none !important; }
     }
     fallback();
   }
+  /* شیئر: صرف تصویر کی فائل (JPEG) بھیجتے ہیں، تاکہ واٹس ایپ کو خالی پیغام نہ لگے */
   function shareDocImage(doc, btn) {
     var cv = renderDoc(doc);
     cv.toBlob(function (blob) {
       if (!blob) { showImgBox(cv); flash(btn, "تصویر نیچے دکھا دی ہے۔"); return; }
-      var file = new File([blob], "costing.png", { type: "image/png" });
+      var file = new File([blob], imgName(doc, "jpg"), { type: "image/jpeg" });
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], title: doc.title }).catch(function () {
+        navigator.share({ files: [file] }).catch(function (err) {
+          if (err && err.name === "AbortError") return;
           showImgBox(cv); flash(btn, "شیئر نہیں ہو سکا؛ تصویر نیچے سے محفوظ کریں۔");
         });
       } else {
         showImgBox(cv); flash(btn, "اس براؤزر میں براہ راست شیئر نہیں؛ تصویر نیچے سے محفوظ کریں۔");
       }
-    }, "image/png");
+    }, "image/jpeg", 0.92);
   }
   function canShareFiles() {
-    try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [new File([""], "a.png", { type: "image/png" })] })); } catch (e) { return false; }
+    try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [new File([""], "a.jpg", { type: "image/jpeg" })] })); } catch (e) { return false; }
   }
 
   /* ڈیسک ٹاپ کا بیک اپ فولڈر (Chrome اور Edge): فولڈر ایک بار چنیں، پھر ہر محفوظ پر تصویر وہاں بھی لکھی جاتی ہے */
@@ -1414,7 +1425,7 @@ body > a[href="/logout"] { display: none !important; }
     if (!h) return;
     var v = $("histView"), doc = recDoc(h);
     var body = h.doc ? docToHTML(h.doc) : h.html.split(h.date).join(dateDisp(h.date));
-    v.innerHTML = '<div class="hvbar"><button type="button" class="copybtn" id="hvCopy">تصویر کاپی کریں</button>' +
+    v.innerHTML = '<div class="hvbar"><button type="button" class="copybtn" id="hvCopy">' + (COARSE ? "تصویر ڈاؤنلوڈ" : "تصویر کاپی کریں") + '</button>' +
       (canShareFiles() ? '<button type="button" class="copybtn" id="hvShare">شیئر</button>' : "") +
       '<button type="button" class="copybtn" id="hvClose">بند کریں</button></div><div id="hvBody">' + body + "</div>";
     v.hidden = false;
@@ -2062,6 +2073,7 @@ body > a[href="/logout"] { display: none !important; }
   $("clearBtn").addEventListener("click", clearForm);
   $("logoutLink").addEventListener("click", function (e) { if (!confirm("لاگ آؤٹ کریں؟")) e.preventDefault(); });
 
+  if (COARSE) ["sumCopyBtn", "prodCopyBtn", "trCopyBtn"].forEach(function (id) { $(id).textContent = "تصویر ڈاؤنلوڈ"; });
   wireDocs();
   $("sizeBtn").addEventListener("click", sizeApply);
   /* ہاتھ سے ریل یا میجر لکھیں تو اوپر کا نتیجہ فوراً بدلے */
