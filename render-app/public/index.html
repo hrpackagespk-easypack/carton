@@ -332,6 +332,32 @@ html { scroll-behavior: smooth; scroll-padding-top: 70px; }
   #grpProd, #grpTrial { grid-column: span 2; }
 }
 /* نیا لے آؤٹ */
+.rlbtns { grid-template-columns: repeat(4, 1fr); }
+.rlscroll { max-height: 46vh; overflow: auto; }
+.rlrow.head { border-bottom: 1px solid var(--line); padding-bottom: 4px; margin-bottom: 4px; }
+.prow .cb { position: relative; grid-column: 1 / 4; min-width: 0; }
+.prow input.nm { width: 100%; font: inherit; font-size: .85rem; padding: 6px 26px 6px 6px; direction: rtl; unicode-bidi: plaintext; text-align: start; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; }
+.prow input.nm.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.cbb { position: absolute; inset-block: 0; inset-inline-end: 0; width: 26px; border: 0; background: transparent; color: inherit; cursor: pointer; font-size: .8rem; }
+.cbm { position: absolute; z-index: 50; inset-inline: 0; top: 100%; max-height: 220px; overflow: auto; background: var(--surface); border: 1px solid var(--accent); border-radius: 8px; box-shadow: 0 6px 18px rgb(0 0 0 / .25); }
+.cbi { display: block; width: 100%; text-align: start; font: inherit; font-size: .88rem; padding: 9px 10px; border: 0; border-top: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+.cbi:first-child { border-top: 0; }
+.navstale { display: none !important; }
+@keyframes blinkSoft { 0%, 100% { box-shadow: 0 4px 16px rgb(0 0 0 / .3); } 50% { box-shadow: 0 0 0 7px var(--accent-soft), 0 4px 16px rgb(0 0 0 / .3); opacity: .8; } }
+.apply.blink { animation: blinkSoft 1.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .apply.blink { outline: 3px solid var(--accent-soft); } }
+.typing #applyBtn { display: none; }
+@media (min-width: 1000px) {
+  .prow .cb { order: 3; grid-column: auto; }
+  #grpTrial > * { max-width: none; }
+  #trialPanel { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.5fr) minmax(0, 1.4fr); gap: 12px; align-items: start; }
+  #trialPanel .mnote { display: none; }
+  #trialPanel .reel { padding: 6px; margin-bottom: 6px; }
+  #trialPanel .reel .field label { font-size: .72rem; }
+  #trialPanel .reel .field input { font-size: .95rem; padding: 4px 3px; }
+  #trialPanel .reel .rsel { padding: 5px 4px; margin-bottom: 4px; }
+  #trialPanel .rtop { margin-bottom: 4px; }
+}
 .reel { border: 1px solid var(--line); border-radius: 8px; padding: 8px; margin-bottom: 8px; background: var(--bg); }
 .reel.fl { background: var(--flute-bg); border-color: var(--flute-line); }
 .rtop { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
@@ -509,14 +535,16 @@ body > a[href="/logout"] { display: none !important; }
         <div class="field" id="nbField"><label for="NB" title="ایک شیٹ میں سے کتنے باکس نکلتے ہیں">فی شیٹ باکس</label><input id="NB" type="text" inputmode="decimal" autocomplete="off" value="1"></div>
       </div>
       <div class="ratelist box" id="rlDetails" hidden="">
-        <p class="mnote">ہر پرت کے نیچے "لسٹ سے پیپر چنیں" میں سے پیپر چنیں تو GSM اور ریٹ خود بھر جاتے ہیں (اوپر کریڈٹ یا کیش جو چنا ہو)۔ ریٹ بدلیں تو یہاں لکھ کر "محفوظ کریں" دبائیں۔</p>
-        <div id="rlBox"><div class="rlrow head"><span>برانڈ</span><span>کوالٹی</span><span>GSM</span><span>کریڈٹ</span><span>کیش</span><span></span></div><div class="rlrow" data-id="1"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="2"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="3"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="4"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="5"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="6"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="7"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="8"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="9"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="10"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="11"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="12"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div><div class="rlrow" data-id="13"><input type="text" class="t b" autocomplete="off" aria-label="برانڈ"><input type="text" class="t q" autocomplete="off" aria-label="کوالٹی"><input type="text" class="g" autocomplete="off" aria-label="GSM" inputmode="decimal"><input type="text" class="c" autocomplete="off" aria-label="کریڈٹ ریٹ" inputmode="decimal"><input type="text" class="h" autocomplete="off" aria-label="کیش ریٹ" inputmode="decimal"><button type="button" aria-label="یہ قطار ہٹائیں">✕</button></div></div>
         <div class="rlbtns">
           <button type="button" id="rlAdd">نئی قطار</button>
           <button type="button" id="rlSave" class="main">محفوظ کریں</button>
           <button type="button" id="rlReset">اصل لسٹ بحال</button>
+          <button type="button" id="rlClose">بند کریں</button>
         </div>
         <p class="rlmsg" id="rlMsg" aria-live="polite"></p>
+        <div class="rlrow head"><span>برانڈ</span><span>کوالٹی</span><span>GSM</span><span>کریڈٹ</span><span>کیش</span><span></span></div>
+        <div id="rlBox" class="rlscroll"></div>
+        <p class="mnote">پرت میں پیپر لسٹ سے چنیں تو GSM اور ریٹ خود بھر جاتے ہیں (اوپر کریڈٹ یا کیش جو چنا ہو)۔ ریٹ بدلیں تو یہاں لکھ کر "محفوظ کریں" دبائیں۔ نئی قطار سب سے اوپر آتی ہے۔</p>
       </div>
       <div class="ratelist box" id="flDetails" hidden="">
         <div class="pct">
@@ -525,7 +553,7 @@ body > a[href="/logout"] { display: none !important; }
         </div>
       </div>
       <p class="example" id="pnote" hidden="">یہ مثال کے GSM اور ریٹ ہیں۔ اپنے پیپر کے لکھیں۔</p>
-      <div id="paperRows"><div class="prow head"><span>پرت</span><span>قسم</span><span class="hg">GSM</span><span class="hp">ریٹ فی کلو</span><span class="hs">ریٹ لسٹ سے پیپر</span></div><div class="prow" id="row0"><span>1</span><select id="T0" aria-label="پرت 1 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G0" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 1 کا GSM" value="150"><input id="P0" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 1 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS0" aria-label="پرت 1 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row1"><span>2</span><select id="T1" aria-label="پرت 2 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G1" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 2 کا GSM" value="120"><input id="P1" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 2 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS1" aria-label="پرت 2 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row2"><span>3</span><select id="T2" aria-label="پرت 3 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G2" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 3 کا GSM" value="100"><input id="P2" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 3 کا ریٹ فی کلو" value="90"><select class="rs on" id="RS2" aria-label="پرت 3 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row3"><span>4</span><select id="T3" aria-label="پرت 4 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G3" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 4 کا GSM" value="120"><input id="P3" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 4 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS3" aria-label="پرت 4 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row4"><span>5</span><select id="T4" aria-label="پرت 5 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G4" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 5 کا GSM" value="150"><input id="P4" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 5 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS4" aria-label="پرت 5 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row5" hidden=""><span>6</span><select id="T5" aria-label="پرت 6 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G5" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 6 کا GSM" value="120"><input id="P5" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 6 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS5" aria-label="پرت 6 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row6" hidden=""><span>7</span><select id="T6" aria-label="پرت 7 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G6" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 7 کا GSM" value="150"><input id="P6" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 7 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS6" aria-label="پرت 7 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div></div>
+      <div id="paperRows"><div class="prow head"><span>پرت</span><span>قسم</span><span class="hg">GSM</span><span class="hp">ریٹ فی کلو</span><span class="hs">پیپر (لسٹ سے یا اپنا نام)</span></div><div class="prow" id="row0"><span>1</span><select id="T0" aria-label="پرت 1 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G0" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 1 کا GSM" value="150"><input id="P0" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 1 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS0" aria-label="پرت 1 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row1"><span>2</span><select id="T1" aria-label="پرت 2 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G1" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 2 کا GSM" value="120"><input id="P1" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 2 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS1" aria-label="پرت 2 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row2"><span>3</span><select id="T2" aria-label="پرت 3 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G2" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 3 کا GSM" value="100"><input id="P2" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 3 کا ریٹ فی کلو" value="90"><select class="rs on" id="RS2" aria-label="پرت 3 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row3"><span>4</span><select id="T3" aria-label="پرت 4 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G3" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 4 کا GSM" value="120"><input id="P3" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 4 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS3" aria-label="پرت 4 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row4"><span>5</span><select id="T4" aria-label="پرت 5 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G4" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 5 کا GSM" value="150"><input id="P4" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 5 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS4" aria-label="پرت 5 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow fl" id="row5" hidden=""><span>6</span><select id="T5" aria-label="پرت 6 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G5" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 6 کا GSM" value="120"><input id="P5" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 6 کا ریٹ فی کلو" value="100"><select class="rs on" id="RS5" aria-label="پرت 6 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div><div class="prow" id="row6" hidden=""><span>7</span><select id="T6" aria-label="پرت 7 کی قسم"><option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select><input id="G6" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 7 کا GSM" value="150"><input id="P6" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت 7 کا ریٹ فی کلو" value="95"><select class="rs on" id="RS6" aria-label="پرت 7 کے لیے لسٹ سے پیپر چنیں"><option value="">— لسٹ سے چنیں —</option><option value="1">PIONEER · KLB · 125</option><option value="2">LOCAL · KLB · 125</option><option value="3">LOCAL · BB 2.5 · 145</option><option value="4">UMAAR MOMIN · BB 2.5 · 145</option><option value="5">KING · ATL · 150</option><option value="6">KCL · 150</option><option value="7">CMP · 100</option><option value="8">WTL · 135</option><option value="9">SF · 110</option><option value="10">CB · 210</option><option value="11">TL · 120</option><option value="12">F · 100</option><option value="13">MM · KLB · 110</option></select></div></div>
       <details class="ratelist" id="cmbDetails">
         <summary>کمبی نیشن محفوظ کریں</summary>
         <p class="mnote">اوپر پرتوں میں جو کمبی نیشن لگا ہے (پلائی، قسم، GSM، ریٹ) اسے نام لکھ کر محفوظ کریں۔ پھر اوپر "محفوظ کمبی نیشن" سے وہ نام چنیں تو سب پرتیں خود بھر جاتی ہیں۔ اسی نام سے دوبارہ محفوظ کریں تو پرانا بدل جاتا ہے۔</p>
@@ -626,26 +654,32 @@ body > a[href="/logout"] { display: none !important; }
   <div class="screen" id="grpTrial" hidden="">
   <div class="scrtop"><h2 class="sec2" id="h-trial">پلانٹ رن: اصل GSM</h2><button type="button" id="trialBack" class="copybtn">واپس حساب پر</button></div>
   <section class="panel" id="trialPanel" aria-labelledby="h-trial" aria-live="polite">
-    <div class="example ctx" id="ctxTrial"></div>
-    <div class="sumsave" style="margin-bottom:10px">
-      <div class="field"><label for="TPn">پلانٹ کا نام</label><input id="TPn" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً XYZ پلانٹ"></div>
-      <div class="field"><label for="TPp">پلانٹ کا نمبر</label><input id="TPp" type="text" inputmode="tel" autocomplete="off" maxlength="30" placeholder="03xx-xxxxxxx"></div>
-      <div class="field"><label for="TCo">کمپنی (جس کا مال بنوایا)</label><input id="TCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
-      <div class="field"><label>تاریخ</label><div class="datecell" id="trDate"></div></div>
-      <div class="field full"><label for="TRem">ریمارکس</label><input id="TRem" type="text" autocomplete="off" maxlength="120" placeholder="اختیاری"></div>
+    <div class="tc tc1">
+      <div class="example ctx" id="ctxTrial"></div>
+      <div class="sumsave" style="margin-bottom:10px">
+        <div class="field"><label for="TPn">پلانٹ کا نام</label><input id="TPn" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً XYZ پلانٹ"></div>
+        <div class="field"><label for="TPp">پلانٹ کا نمبر</label><input id="TPp" type="text" inputmode="tel" autocomplete="off" maxlength="30" placeholder="03xx-xxxxxxx"></div>
+        <div class="field"><label for="TCo">کمپنی (جس کا مال بنوایا)</label><input id="TCo" type="text" autocomplete="off" maxlength="60" placeholder="مثلاً ABC پیکجز"></div>
+        <div class="field"><label>تاریخ</label><div class="datecell" id="trDate"></div></div>
+        <div class="field full"><label for="TRem">ریمارکس</label><input id="TRem" type="text" autocomplete="off" maxlength="120" placeholder="اختیاری"></div>
+      </div>
+      <div class="g c2">
+        <div class="field"><label for="TWp">متوقع ویسٹ (%)</label><input id="TWp" type="text" inputmode="decimal" autocomplete="off" value="2"></div>
+        <div class="field"><label for="TS">اصل بنی ہوئی شیٹ (پلانٹ نے بتائی)</label><input id="TS" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+      </div>
     </div>
-    <h3 class="sub">ریلیں جو پلانٹ کو بھیجیں</h3>
-    <p class="mnote">قسم، کوالٹی، GSM اور ریٹ آپ کے کمبی نیشن سے خود آتے ہیں۔ بھیجنے سے پہلے صرف ریل کا وزن لکھیں۔ پلانٹ سے ویسٹ، بیلنس اور شیٹ ملیں تو وہ لکھیں۔ ایک پرت میں دو ریلیں لگی ہوں تو ＋ دبا کر دوسری ریل کی قطار بنائیں۔</p>
-    <div id="reelRows"></div>
-    <div class="g c2" style="margin-top:8px">
-      <div class="field"><label for="TWp">متوقع ویسٹ (%)</label><input id="TWp" type="text" inputmode="decimal" autocomplete="off" value="2"></div>
-      <div class="field"><label for="TS">اصل بنی ہوئی شیٹ (پلانٹ نے بتائی)</label><input id="TS" type="text" inputmode="decimal" autocomplete="off" value=""></div>
+    <div class="tc tc2">
+      <h3 class="sub">ریلیں جو پلانٹ کو بھیجیں</h3>
+      <p class="mnote">قسم، کوالٹی، GSM اور ریٹ آپ کے کمبی نیشن سے خود آتے ہیں۔ بھیجنے سے پہلے صرف ریل کا وزن لکھیں۔ پلانٹ سے ویسٹ، بیلنس اور شیٹ ملیں تو وہ لکھیں۔ ایک پرت میں دو ریلیں ہوں تو ＋ دبائیں۔</p>
+      <div id="reelRows"></div>
     </div>
-    <div id="trOut"></div>
-    <div class="sumsave">
-      <div class="btn3"><button type="button" id="trSaveBtn">محفوظ</button><button type="button" id="trCopyBtn" class="sec">تصویر کاپی</button><button type="button" id="trShareBtn" class="sec">شیئر</button></div>
+    <div class="tc tc3">
+      <div id="trOut"></div>
+      <div class="sumsave">
+        <div class="btn3"><button type="button" id="trSaveBtn">محفوظ</button><button type="button" id="trCopyBtn" class="sec">تصویر کاپی</button><button type="button" id="trShareBtn" class="sec">شیئر</button></div>
+      </div>
+      <p class="rlmsg" id="trMsg" aria-live="polite"></p>
     </div>
-    <p class="rlmsg" id="trMsg" aria-live="polite"></p>
     <div hidden="">
       <input id="V0" type="text"><input id="V1" type="text"><input id="V2" type="text"><input id="V3" type="text"><input id="V4" type="text"><input id="V5" type="text"><input id="V6" type="text">
       <p class="stale" id="tstale" hidden=""></p><p class="example" id="tnote"></p>
@@ -712,14 +746,15 @@ body > a[href="/logout"] { display: none !important; }
     try { $(id).scrollIntoView(opts); } catch (e) {}
   }
   function buildRows() {
-    var h = '<div class="prow head"><span>پرت</span><span>قسم</span><span class="hg">GSM</span><span class="hp">ریٹ فی کلو</span><span class="hs">ریٹ لسٹ سے پیپر</span><span class="hc">لاگت</span></div>';
+    var h = '<div class="prow head"><span>پرت</span><span>قسم</span><span class="hg">GSM</span><span class="hp">ریٹ فی کلو</span><span class="hs">پیپر (لسٹ سے یا اپنا نام)</span><span class="hc">لاگت</span></div>';
     for (var i = 0; i < 7; i++) {
       h += '<div class="prow" id="row' + i + '"><span>' + (i + 1) + '</span>' +
         '<select id="T' + i + '" aria-label="پرت ' + (i + 1) + ' کی قسم">' +
         '<option value="p">پلین</option><option value="t">موٹی نالی</option><option value="n">باریک نالی</option></select>' +
         '<input id="G' + i + '" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت ' + (i + 1) + ' کا GSM" value="' + DEF.G[i] + '">' +
         '<input id="P' + i + '" type="text" inputmode="decimal" autocomplete="off" aria-label="پرت ' + (i + 1) + ' کا ریٹ فی کلو" value="' + DEF.P[i] + '">' +
-        '<select class="rs" id="RS' + i + '" aria-label="پرت ' + (i + 1) + ' کے لیے لسٹ سے پیپر چنیں"></select>' +
+        '<select class="rs" id="RS' + i + '" hidden></select>' +
+        '<div class="cb"><input class="nm" id="NM' + i + '" type="text" autocomplete="off" placeholder="لسٹ سے چنیں یا اپنا نام" aria-label="پرت ' + (i + 1) + ' کا پیپر"><button type="button" class="cbb" data-i="' + i + '" aria-label="لسٹ کھولیں">▾</button><div class="cbm" id="CM' + i + '" hidden></div></div>' +
         '<span class="lc" id="LC' + i + '">—</span></div>';
     }
     $("paperRows").innerHTML = h;
@@ -827,8 +862,9 @@ body > a[href="/logout"] { display: none !important; }
   /* چنے ہوئے پیپر کا GSM اور ریٹ (کریڈٹ یا کیش) پرت میں بھرنا */
   function applyPick(i) {
     var sel = $("RS" + i), x = rlFind(sel.value);
-    sel.classList.toggle("on", !!x);
+    sel.classList.toggle("on", !!x); $("NM" + i).classList.toggle("on", !!x);
     if (!x) return;
+    $("NM" + i).value = rlName(x);
     $("G" + i).value = String(x.g);
     $("P" + i).value = String(rt === "cash" ? x.h : x.c);
   }
@@ -867,12 +903,6 @@ body > a[href="/logout"] { display: none !important; }
   function renderRateEditor() {
     var box = $("rlBox");
     box.innerHTML = "";
-    var head = document.createElement("div");
-    head.className = "rlrow head";
-    ["برانڈ", "کوالٹی", "GSM", "کریڈٹ", "کیش", ""].forEach(function (t) {
-      var sp = document.createElement("span"); sp.textContent = t; head.appendChild(sp);
-    });
-    box.appendChild(head);
     RL.forEach(function (x) { box.appendChild(rlRow(x)); });
   }
   function saveRatesFromEditor() {
@@ -986,7 +1016,8 @@ body > a[href="/logout"] { display: none !important; }
     for (var i = 0; i < plies; i++) {
       var g = val("G" + i), p = val("P" + i);
       if (!(g > 0) || !(p > 0)) { cmbMsg("پرت " + (i + 1) + " کا GSM اور ریٹ درست لکھیں۔", true); return; }
-      layers.push({ t: $("T" + i).value, g: g, p: p, rs: $("RS" + i).value });
+      var rsv = $("RS" + i).value, itm = rsv ? rlFind(rsv) : null;
+      layers.push({ t: $("T" + i).value, g: g, p: p, rs: rsv, nm: $("NM" + i).value.trim(), cu: !!(itm && (itm.g !== g || (rt === "cash" ? itm.h : itm.c) !== p)) });
     }
     var item = { name: name, plies: plies, layers: layers }, idx = cmbFind(name), again = idx >= 0;
     if (again) CL[idx] = item; else CL.push(item);
@@ -1008,7 +1039,8 @@ body > a[href="/logout"] { display: none !important; }
       $("P" + i).value = String(L.p);
       var x = L.rs ? rlFind(L.rs) : null;
       $("RS" + i).value = x ? String(x.id) : "";
-      applyPick(i);   /* ریٹ لسٹ والا پیپر ہو تو GSM اور ریٹ لسٹ کے موجودہ (کریڈٹ یا کیش) ریٹ سے */
+      $("NM" + i).value = L.nm || (x ? rlName(x) : "");
+      if (L.cu) { $("NM" + i).classList.toggle("on", !!x); $("RS" + i).classList.toggle("on", !!x); } else applyPick(i);   /* اپنا GSM/ریٹ لکھا ہو تو وہی رہے، ورنہ لسٹ کا موجودہ ریٹ */
     }
     onPaperEdit();
     $("cmbSel").value = c.name;
@@ -1513,7 +1545,7 @@ body > a[href="/logout"] { display: none !important; }
 
   function save() {
     var o = { unit: unit, pe: pe, te: te, plies: plies, mode: mode, segs: segs, sunit: sunit, rt: rt, ps: [] };
-    for (var pi = 0; pi < 7; pi++) o.ps.push($("RS" + pi).value);
+    o.nm = []; for (var pi = 0; pi < 7; pi++) { o.ps.push($("RS" + pi).value); o.nm.push($("NM" + pi).value); }
     NUM.concat(SEL).forEach(function (id) { o[id] = $(id).value; });
     AMTU.forEach(function (id) { o[id] = $(id).value; });
     o.PRem = $("PRem").value; o.EXN = $("EXN").value; o.reels = REELS; o.TF = {}; TFIELDS.forEach(function (id) { o.TF[id] = $(id).value; });
@@ -1531,6 +1563,7 @@ body > a[href="/logout"] { display: none !important; }
       if (F[s.sunit]) sunit = s.sunit;
       if (s.rt === "credit" || s.rt === "cash") rt = s.rt;
       if (Array.isArray(s.ps)) for (var qi = 0; qi < 7; qi++) { if (s.ps[qi]) $("RS" + qi).value = s.ps[qi]; }
+      if (Array.isArray(s.nm)) for (var qn = 0; qn < 7; qn++) { if (typeof s.nm[qn] === "string") $("NM" + qn).value = s.nm[qn]; }
       /* پرانے ورژن کی پہلے سے بھری 40/15/11 اور 15/15/11 اب خالی */
       if (s.EX === "40" && s.PR === "15" && s.GS === "11") { s.EX = ""; s.PR = ""; s.GS = ""; }
       if (s.PX === "15" && s.PP === "15" && s.PG === "11") { s.PX = ""; s.PP = ""; s.PG = ""; }
@@ -1606,9 +1639,9 @@ body > a[href="/logout"] { display: none !important; }
     NUM.concat(SEL, AMTU).forEach(function (id) { values[id] = $(id).value; });
     var labelsByRS = {};
     for (var i = 0; i < 7; i++) {
-      var rs = $("RS" + i).value, item = rs ? rlFind(rs) : null;
-      values["RS" + i] = rs;   /* سرور کو معلوم ہو کہ ہر پرت میں لسٹ سے کون سا پیپر چنا ہے */
-      if (item) labelsByRS[rs] = rlLabel(item);
+      var nm = $("NM" + i).value.trim();
+      values["RS" + i] = nm ? "c" + i : "";
+      if (nm) labelsByRS["c" + i] = nm + " · " + String($("G" + i).value).trim();
     }
     return { mode:mode, unit:unit, sunit:sunit, segs:segs, plies:plies, values:values, labelsByRS:labelsByRS };
   }
@@ -1664,6 +1697,7 @@ body > a[href="/logout"] { display: none !important; }
     }
     applied = true;
     $("navStale").classList.remove("show");
+    $("applyBtn").classList.remove("blink"); $("sizeBtn").classList.remove("blink");
     $("stale").hidden = true; $("pstale").hidden = true; $("qstale").hidden = true; $("tstale").hidden = true;
     $("stiffOut").hidden = mode !== "stiff";
     $("stiffOrig").hidden = mode !== "stiff";
@@ -1672,7 +1706,7 @@ body > a[href="/logout"] { display: none !important; }
     if (scroll === true) nudge("resultPanel", { behavior:"smooth", block:"nearest" });
     return !!LAST;
   }
-  function onEdit() { save(); if (applied) $("navStale").classList.add("show"); }
+  function onEdit() { save(); if (applied) { $("navStale").classList.add("show"); $("applyBtn").classList.add("blink"); $("sizeBtn").classList.add("blink"); } }
   function markRows() {
     for (var i = 0; i < 7; i++) {
       var row = $("T" + i).parentNode;
@@ -1783,10 +1817,6 @@ body > a[href="/logout"] { display: none !important; }
       ["T", "G", "P"].forEach(function (pp) {
         $(pp + i).addEventListener(pp === "T" ? "change" : "input", function () { $("cmbSel").value = ""; });
       });
-      /* GSM یا ریٹ خود لکھیں تو لسٹ کا انتخاب ہٹ جاتا ہے */
-      ["G", "P"].forEach(function (p) {
-        $(p + i).addEventListener("input", function () { $("RS" + i).value = ""; $("RS" + i).classList.remove("on"); });
-      });
     })(rsI);
   }
   $("rtSel").addEventListener("change", function () {
@@ -1804,11 +1834,12 @@ body > a[href="/logout"] { display: none !important; }
   });
   $("rlAdd").addEventListener("click", function () {
     var row = rlRow(null);
-    $("rlBox").appendChild(row);
-    rlMsg("نئی قطار شامل ہو گئی۔ بھر کر \"محفوظ کریں\" دبائیں۔", false);
+    $("rlBox").insertBefore(row, $("rlBox").firstChild); $("rlBox").scrollTop = 0;
+    rlMsg("نئی قطار سب سے اوپر شامل ہو گئی۔ بھر کر \"محفوظ کریں\" دبائیں۔", false);
     row.querySelector(".b").focus();
   });
   $("rlSave").addEventListener("click", saveRatesFromEditor);
+  $("rlClose").addEventListener("click", function () { $("rlBtn").click(); });
   $("rlReset").addEventListener("click", function () {
     if (rlTimer) { clearTimeout(rlTimer); rlTimer = null; $("rlReset").textContent = "اصل لسٹ بحال"; resetRates(); return; }
     $("rlReset").textContent = "پکا؟ دوبارہ دبائیں";
@@ -1822,8 +1853,8 @@ body > a[href="/logout"] { display: none !important; }
   /* ---------- پلانٹ رن: ہر ریل کی قطار، اندازہ، ویسٹ/بیلنس کا ملان اور اصل لاگت ---------- */
   function fld(lab, cls, v, ph) { return '<div class="field"><label>' + lab + '</label><input class="' + cls + '" type="text" inputmode="decimal" autocomplete="off" value="' + esc(v) + '"' + (ph !== undefined && ph !== "" ? ' placeholder="' + esc(ph) + '"' : "") + "></div>"; }
   function layerInfo(i) {
-    var rs = $("RS" + i).value, it = rs ? rlFind(rs) : null, g = val("G" + i);
-    return { t: $("T" + i).value, lab: it ? rlLabel(it) : "GSM " + (isFinite(g) ? g : "؟"), name: it ? rlName(it) : "", g: g, p: val("P" + i) };
+    var nm = $("NM" + i).value.trim(), g = val("G" + i);
+    return { t: $("T" + i).value, lab: nm ? nm + " · " + (isFinite(g) ? g : "؟") : "GSM " + (isFinite(g) ? g : "؟"), name: nm, g: g, p: val("P" + i) };
   }
   function newReel(l, o) { o = o || {}; return { l: l, w: "", ws: "", b: "", rs: o.rs || "", g: o.g || "", p: o.p || "" }; }
   function normReels() {
@@ -1984,6 +2015,64 @@ body > a[href="/logout"] { display: none !important; }
   $("trShareBtn").addEventListener("click", function () { var d = trialNow(); if (d) shareDocImage(d, $("trShareBtn")); });
   $("trSaveBtn").addEventListener("click", function () { var d = trialNow(); if (d) saveDoc("trial", d, TRES.ts > 0 ? "فی شیٹ " + fmt(TRES.per, 2) : "متوقع " + fmt(TRES.est, 0) + " شیٹ", "trMsg"); });
 
+  /* ---------- ہر پرت کا پیپر: لسٹ سے چنیں یا اپنا نام لکھیں (ایک ہی خانہ) ---------- */
+  function cbMatch(txt) {
+    var q = String(txt).trim().toLowerCase();
+    if (!q) return null;
+    for (var k = 0; k < RL.length; k++) if (rlName(RL[k]).toLowerCase() === q || rlLabel(RL[k]).toLowerCase() === q) return RL[k];
+    return null;
+  }
+  function cbClose() { for (var i = 0; i < 7; i++) $("CM" + i).hidden = true; }
+  function cbOpen(i, all) {
+    cbClose();
+    var q = all ? "" : $("NM" + i).value.trim().toLowerCase(), h = "";
+    RL.forEach(function (it) {
+      var lab = rlLabel(it);
+      if (!q || lab.toLowerCase().indexOf(q) >= 0) h += '<button type="button" class="cbi" data-i="' + i + '" data-id="' + it.id + '">' + esc(lab) + "</button>";
+    });
+    if (!h) return;
+    $("CM" + i).innerHTML = h; $("CM" + i).hidden = false;
+  }
+  function cbPick(i, id) {
+    $("RS" + i).value = String(id);
+    applyPick(i);   /* نام، GSM اور ریٹ بھر دیتا ہے؛ اس کے بعد تینوں خود بدل سکتے ہیں */
+    cbClose(); $("cmbSel").value = ""; onPaperEdit();
+  }
+  var PRW = $("paperRows");
+  PRW.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest(".cbb, .cbi") : null;
+    if (!b) return;
+    var i = +b.dataset.i;
+    if (b.classList.contains("cbi")) cbPick(i, b.dataset.id);
+    else if ($("CM" + i).hidden) cbOpen(i, true); else cbClose();
+  });
+  PRW.addEventListener("input", function (e) {
+    if (!e.target.classList || !e.target.classList.contains("nm")) return;
+    var i = +e.target.id.slice(2), cur = $("RS" + i).value ? rlFind($("RS" + i).value) : null;
+    if (cur && rlName(cur).toLowerCase() !== e.target.value.trim().toLowerCase()) { $("RS" + i).value = ""; e.target.classList.remove("on"); }
+    cbOpen(i, false); $("cmbSel").value = ""; onPaperEdit();
+  });
+  PRW.addEventListener("change", function (e) {
+    if (!e.target.classList || !e.target.classList.contains("nm")) return;
+    var i = +e.target.id.slice(2), it = cbMatch(e.target.value);
+    if (it && String($("RS" + i).value) !== String(it.id)) { $("RS" + i).value = String(it.id); e.target.classList.add("on"); save(); }
+  });
+  PRW.addEventListener("focusin", function (e) { if (e.target.classList && e.target.classList.contains("nm")) cbOpen(+e.target.id.slice(2), true); });
+  document.addEventListener("click", function (e) { if (!(e.target.closest && e.target.closest(".cb"))) cbClose(); });
+  /* لکھتے وقت اپلائی کا بٹن ہٹ جاتا ہے (ریمارکس وغیرہ کو نہ ڈھانپے)، لکھنا ختم ہو تو واپس */
+  var typT = null;
+  document.addEventListener("focusin", function (e) {
+    var el = e.target, tg = el && el.tagName;
+    if (tg !== "INPUT" && tg !== "TEXTAREA" && tg !== "SELECT") return;
+    clearTimeout(typT);
+    var hide = COARSE;
+    if (!hide) {
+      var a = $("applyBtn").getBoundingClientRect(), b = el.getBoundingClientRect();
+      hide = !(b.right < a.left - 8 || b.left > a.right + 8 || b.bottom < a.top - 8 || b.top > a.bottom + 8);
+    }
+    document.body.classList.toggle("typing", hide);
+  });
+  document.addEventListener("focusout", function () { clearTimeout(typT); typT = setTimeout(function () { document.body.classList.remove("typing"); }, 250); });
   /* ---------- نیا لے آؤٹ: مینول/پلانٹ، عمل کا مینو، پروڈکشن پلان کی الگ اسکرین ---------- */
   /* آخری سائز یا ہاتھ سے لکھا میجر: اصل (جینوئن) کتنا بنتا ہے اور آپ نے کتنا لکھا */
   function majorNote(Z) {
@@ -2062,12 +2151,13 @@ body > a[href="/logout"] { display: none !important; }
       $("G" + i).value = ""; $("P" + i).value = ""; $("V" + i).value = "";
       $("T" + i).value = DEF.T[i];
       $("RS" + i).value = ""; $("RS" + i).classList.remove("on");
+      $("NM" + i).value = ""; $("NM" + i).classList.remove("on");
     }
     REELS = []; $("TWp").value = "2"; renderReels();
     $("cmbSel").value = "";
     ["example", "pnote", "tnote"].forEach(function (id) { $(id).hidden = true; });
     pe = true; te = true; markRows(); closeScreens(); save();
-    apply().then(function () { applied = false; $("navStale").classList.remove("show"); toast("فارم صاف ہو گیا"); });
+    apply().then(function () { applied = false; $("navStale").classList.remove("show"); $("applyBtn").classList.remove("blink"); $("sizeBtn").classList.remove("blink"); toast("فارم صاف ہو گیا"); });
     window.scrollTo(0, 0);
   }
   $("clearBtn").addEventListener("click", clearForm);
@@ -2121,7 +2211,7 @@ body > a[href="/logout"] { display: none !important; }
   loadCombos(); fillCombos(); renderComboList();
   loadHist(); renderHist(); refreshDate(); folderInit();
   if (load()) $("example").hidden = true;
-  for (var oi = 0; oi < 7; oi++) $("RS" + oi).classList.toggle("on", $("RS" + oi).value !== "");
+  for (var oi = 0; oi < 7; oi++) { var ri = $("RS" + oi).value ? rlFind($("RS" + oi).value) : null; if (ri && !$("NM" + oi).value) $("NM" + oi).value = rlName(ri); $("NM" + oi).classList.toggle("on", !!ri); $("RS" + oi).classList.toggle("on", !!ri); }
   markRows();
   applyMode();
   applyPlies();
